@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap');
+:root {
+  --color-primary: #1c6470;
+  --color-primary-light: #2f7e8b;
+  --color-white: #fff;
+  --color-title: #464d55;
+  --color-text: #adb1b4;
+  --bg-gradient: linear-gradient(180deg, #ffffff 0%, #d6f7ff 100%);
+  --font-family-primary: "Poppins", sans-serif;
+  --font-family-secondary: "Rubik", sans-serif;
+  --font-ko: 'IBM Plex Sans KR', sans-serif;
+  /* font sizes */
+  --fs-xs: 1.2rem;
+  --fs-sm: 1.4rem;
+  --fs-md: 1.6rem;
+  --fs-lg: 1.8rem;
+  --fs-xl: 2rem;
+  --fs-xxl: clamp(2.4rem, 5vw, 2.8rem);
+  --fs-biggest: clamp(3.2rem, 5vw, 6rem);
+  /* font weight */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  /* z-index */
+  --zindex-fixed: 1000;
+  --zindex-menu: 1010;
+
+  --width-container: 100rem;
+  --height-header: 10rem;
+
+  /* Transition and box shadow*/
+  --transition: 0.4s ease-in-out;
+  --shadow-primary: 0px 10px 30px 5px rgba(0, 0, 0, 0.05);
+  --shadow-header: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  --shadow-header1: 0px 0px 100px rgba(0, 0, 0, 0.05);
+
+  /* Border Radius */
+  --border-radius-sm: 1rem;
+  --border-radius-lg: 2rem;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  /* font-family: var(--font-family-primary); */
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  color: var(--color-title);
+  font-weight: var(--fw-bold);
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+  background-color: #F5F5F5;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+ul,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+input,
+button {
+  font: inherit;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+main {
+  overflow: hidden;
+}
+
+body {
+  /* font-family: var(--font-family-secondary); */
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  color: var(--color-text);
+  margin-top: var(--height-header);
+}
+.section {
+  padding: 12rem 0 8rem;
+}
+
+.section__header {
+  text-align: center;
+  padding-bottom: 3rem;
+}
+.section__header1 {
+  text-align: center;
+  padding-top: 5rem;
+}
+.section__title {
+  font-size: var(--fs-xxl);
+  color: var(--color-title);
+  margin-bottom: 2rem;
+}
+.section__title1 {
+  font-size: var(--fs-xl);
+  color: var(--color-text);
+  margin-bottom: 2rem;
+}
+
+.section__subtitle {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  font-family: var(--font-family-primary);
+}
+
+.container {
+  width: 90%;
+  max-width: var(--width-container);
+  margin: auto;
+}
+
+.d-grid {
+  display: grid;
+  gap: 3rem;
+}
+.d-grid1 {
+  margin-top: 14rem;
+  display: grid;
+  gap: 3rem;
+}
+.btn {
+  display: inline-block;
+  padding: 1.5rem 3rem;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  transition: var(--transition);
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-light);
+}
+.header--scroll {
+  --height-header: 7rem;
+  box-shadow: var(--shadow-header);
+}
+.p-3{
+  padding: 3rem;
+}
+.py-3{
+  padding: 3rem 0;
+}
+.py-2{
+  padding: 2rem 0;
+}
+.py-1{
+  padding: 1rem 0;
+}
+.px-1{
+  padding: 0 1rem;
+}
+.px-2{
+  padding: 0 2rem;
+}
+.px-3{
+  padding: 0 3rem;
+}
+.d-flex{
+  display: flex;
+}
