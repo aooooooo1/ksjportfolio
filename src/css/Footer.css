@@ -2,7 +2,7 @@
     box-shadow: var(--shadow-header1);
 }
 .footer__wrapper {
-padding: 5rem 0 3rem;
+padding: 5rem 0 0.5rem;
 }
 
 .footer__brand {

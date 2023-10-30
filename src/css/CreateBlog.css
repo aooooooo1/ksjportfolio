@@ -1,0 +1,28 @@
+.h1{
+    text-align: center;
+    font-weight: 500;
+    padding: 0 0 3rem;
+}
+.containerP{
+    padding: 3rem 0 0rem;
+}
+.inputW{
+    width: 600px;
+}
+.gridC{
+    display: grid;
+    justify-content: center;
+}
+.cencle{
+    background-color: #bf616a;
+    color: aliceblue;
+}
+.cencle:hover{
+    background-color: #d1838a;
+    color: aliceblue;
+}
+@media screen and (max-width:768px) {
+    .inputW{
+        width: 320px;
+    }
+}

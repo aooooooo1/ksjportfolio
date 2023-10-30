@@ -1,0 +1,12 @@
+{
+  "posts": [
+    {
+      "title": "test",
+      "body": "test123",
+      "date": "23년 10월 31일",
+      "email": "te@test.com",
+      "id": 1
+    }
+  ],
+  "user": []
+}

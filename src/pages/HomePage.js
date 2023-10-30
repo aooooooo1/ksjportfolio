@@ -7,8 +7,12 @@ import port1 from '../img/port1.webp';
 import port2 from '../img/port2.webp';
 import port3 from '../img/port3.webp';
 import port4 from '../img/port4.webp';
+import { useSelector } from 'react-redux';
 
 const HomePage = () => {
+    const isLogin = useSelector((state)=>{
+        return state.auth.isLogin;
+    })
     return (
         <>
             <div className="homeMainImg" style={{backgroundImage:`url(${homeimg})`}}>
@@ -18,9 +22,15 @@ const HomePage = () => {
                 <div className='homeStartP'>
                     다양한 플랫폼을 이용해서 자신만의 포트폴리오를 만들어 보세요!
                 </div>
-                <div className='homeBtn'>
-                    <Link to='/login' className="btn btn--primary">바로 시작하기</Link>
-                </div>
+                {isLogin ? 
+                    <div className='homeBtn'>
+                        <Link to='/portfolio' className="btn btn--primary">포트폴리오 바로가기</Link>
+                    </div>
+                :
+                    <div className='homeBtn'>
+                        <Link to='/login' className="btn btn--primary">바로 시작하기</Link>
+                    </div>
+                }
             </div>
             <div className='home2 container'>
                 <div className='nav__brand py-1'>
@@ -59,7 +69,7 @@ const HomePage = () => {
             <div className='home2 container'>
                 <h1><span className='color-primary'>제작</span> 사례</h1>
                 <p className='py-1'>모두의 Portfolio를 이용하여 무궁무진하게 사용 가능합니다.</p>
-                <div className='d-flex-make py-3'>
+                <div className='d-flex-make'>
                     <div className='p-3 imgMake'>
                             <img src={port1} alt='tech'/>
                     </div>
@@ -73,9 +83,15 @@ const HomePage = () => {
                             <img src={port4} alt='tech'/>
                     </div>
                 </div>
-                <div className='BtnMake'>
-                    <Link to='/login' className="btn btn--primary">더보기</Link>
-                </div>
+                {isLogin ? 
+                    <div className='homeBtn'>
+                        <Link to='/portfolio' className="btn btn--primary">포트폴리오 바로가기</Link>
+                    </div>
+                :
+                    <div className='homeBtn'>
+                        <Link to='/login' className="btn btn--primary">더보기</Link>
+                    </div>
+                }
             </div>
         </>
     )

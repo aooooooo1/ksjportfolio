@@ -12,7 +12,7 @@
 }
 .header--scroll {
     --height-header: 7rem;
-    box-shadow: var(--shadow-header);
+    box-shadow: var(--shadow-header1);
 }
 .nav {
     display: flex;

@@ -1,0 +1,28 @@
+.justify-content-center{
+    justify-content: center;
+}
+.chargeMain{
+    padding: 3rem 0 6rem;
+}
+.textAlign{
+    text-align: center;
+}
+.textKo{
+    /* font-family: var(--font-ko); */
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+}
+.primaryC{
+    color: #1c6470;
+}
+.cardW{
+    width: 400px;
+}
+@media screen and (max-width:768px) {
+    .cardW{
+        width: 300px;
+    }
+    .cardH{
+        font-size: 10px;
+    }
+}

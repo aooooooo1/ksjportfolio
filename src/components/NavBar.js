@@ -1,11 +1,23 @@
 import { useState } from "react"
-import { Link } from "react-router-dom/cjs/react-router-dom"
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom"
 import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase-config";
+import { logout as reduxLogout } from "../redux/authSlice";
+import useToast from "../hooks/toast";
+import { v4 as uuidv4 } from 'uuid';
 
 const NavBar = ({isScrolled}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
     const curPath = location.pathname;
+    const dispatch = useDispatch();
+    const {toast_add} = useToast();
+    const history = useHistory();
+    const isLogin = useSelector((state)=>{
+        return state.auth.isLogin;
+    })
     //메뉴 열기
     const openMenu = ()=>{
         setIsMenuOpen(true);
@@ -13,6 +25,17 @@ const NavBar = ({isScrolled}) => {
     //메뉴 닫기
     const closeMenu = ()=>{
         setIsMenuOpen(false);
+    }
+    //logout
+    const logout = async ()=>{
+        await signOut(auth);
+        dispatch(reduxLogout());
+        toast_add({
+            text:'로그아웃 되었습니다. 안녕히가세요.',
+            type: 'success',
+            id : uuidv4()
+        })
+        history.push('/');
     }
     return (
         <header id="header" className={`header ${isScrolled?'header--scroll':''}`}>
@@ -31,9 +54,21 @@ const NavBar = ({isScrolled}) => {
                         <li className="nav__item">
                             <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath ==='/board' ? 'nav__link--active':''}`}>게시판</Link>
                         </li>
-                        <li className="nav__item">
-                            <Link to="/login" onClick={closeMenu} className={`nav__link ${curPath ==='/login' ? 'nav__link--active':''}`}>로그인/회원가입</Link>
-                        </li>
+                        {
+                            isLogin ? <>
+                            <li className="nav__item">
+                                <Link to="/my" onClick={closeMenu} className={`nav__link ${curPath ==='/my' ? 'nav__link--active':''}`}>내정보</Link>
+                            </li>
+                            <li className="nav__item">
+                                <div onClick={logout} className="nav__link cursor-pointer">로그아웃</div>
+                            </li>
+                            </>
+                            : 
+                            <li className="nav__item">
+                                <Link to="/login" onClick={closeMenu} className={`nav__link ${curPath ==='/login' ? 'nav__link--active':''}`}>로그인/회원가입</Link>
+                            </li>
+                        }
+                        
                     </ul>
                     <span className="nav__close" onClick={closeMenu}>
                         <i id="nav-close" className="ri-close-line"></i>

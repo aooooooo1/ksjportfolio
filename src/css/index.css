@@ -33,7 +33,7 @@
   --transition: 0.4s ease-in-out;
   --shadow-primary: 0px 10px 30px 5px rgba(0, 0, 0, 0.05);
   --shadow-header: 0px 2px 5px rgba(0, 0, 0, 0.05);
-  --shadow-header1: 0px 0px 100px rgba(0, 0, 0, 0.05);
+  --shadow-header1: 0px 0px 100px rgba(0, 0, 0, 0.25);
 
   /* Border Radius */
   --border-radius-sm: 1rem;
@@ -58,7 +58,7 @@ h4 {
 html {
   font-size: 62.5%;
   scroll-behavior: smooth;
-  background-color: #F5F5F5;
+  background-color: #fff;
 }
 body,
 h1,
@@ -158,7 +158,15 @@ body {
 .btn {
   display: inline-block;
   padding: 1.5rem 3rem;
-  border-radius: var(--border-radius-sm);
+  border-radius: 3rem;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-regular);
+  transition: var(--transition);
+}
+.btnSm {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  border-radius: 3rem;
   font-size: var(--fs-md);
   font-weight: var(--fw-regular);
   transition: var(--transition);
@@ -199,4 +207,35 @@ body {
 }
 .d-flex{
   display: flex;
+}
+.toast{
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  padding: 30px;
+}
+.toastR{
+  min-width: 200px;
+  border-radius: 3rem !important;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-size: 17px !important;
+  background-color: #ffc9c9 !important;
+}
+.toastS{
+  min-width: 200px;
+  border-radius: 3rem !important;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-size: 17px !important;
+  background-color: #99bfc6 !important;
+}
+.cursor-pointer{
+  cursor: pointer;
+}
+.textA{
+  text-align: center;
+}
+.justify-content-between{
+  justify-content: space-between;
 }

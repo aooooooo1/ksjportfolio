@@ -1,6 +1,10 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 
 const Footer = () => {
+    const isLogin = useSelector(state=>{
+        return state.auth.isLogin;
+    })
     return (
         <footer class="footer">
             <div class="d-grid footer__wrapper container">
@@ -38,9 +42,17 @@ const Footer = () => {
                         <li class="footer__item">
                             <Link to="/board">게시판</Link>
                         </li>
-                        <li class="footer__item">
-                            <Link to="/login">로그인/회원가입</Link>
-                        </li>
+                        {
+                            isLogin ?
+                            <li class="footer__item">
+                                <Link to="/my">내정보</Link>
+                            </li>
+                            :
+                            <li class="footer__item">
+                                <Link to="/login">로그인/회원가입</Link>
+                            </li>
+                        }
+                        
                     </ul>
                 </div>
                 <div class="footer__content">
