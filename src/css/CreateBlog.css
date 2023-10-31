@@ -3,6 +3,9 @@
     font-weight: 500;
     padding: 0 0 3rem;
 }
+.justify{
+    justify-content: space-between;
+}
 .containerP{
     padding: 3rem 0 0rem;
 }

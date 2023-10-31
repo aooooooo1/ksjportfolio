@@ -1,0 +1,12 @@
+.justi{
+    justify-content: space-between;
+    align-items: center;
+}
+.alignC{
+    align-items: center;
+}
+.boardDetailMain{
+    max-width: 600px;
+}
+@media screen and (max-width:768px) {
+}

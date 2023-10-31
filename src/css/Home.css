@@ -7,7 +7,7 @@
 .homeStart{
     font-size: 8rem;
     text-align: center;
-    color: white;
+    color: white !important;
     padding-top: 15%;
 }
 .homeStart span{

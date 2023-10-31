@@ -3,7 +3,7 @@ export default function InputForm(props){
     return(
         <Input
             type='text'
-            style={{fontSize:"20px", width:"300px", backgroundColor:"#e6fcf5"}}
+            style={{fontSize:"20px", width:"260px", backgroundColor:"#d4e6e9", borderRadius:'1rem'}}
             value={props.value}
             onChange={props.onChange}
             placeholder="입력하세요."
@@ -16,10 +16,10 @@ export default function InputForm(props){
                 borderColor: 'neutral.outlinedHoverBorder',
             },
             '&::before': {
-                border: '1px solid #1565c0',
+                border: '1px solid #1c6470',
                 transform: 'scaleX(0)',
-                left: 0,
-                right: 0,
+                left: 10,
+                right: 10,
                 bottom: '-2px',
                 top: 'unset',
                 transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',

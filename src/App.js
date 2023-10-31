@@ -26,7 +26,7 @@ function App() {
   //토스트 배열 추가 
   const toast = useSelector(state=>{
     return state.toast.toast;
-  })
+  });
   //토스트 삭제
   const {toast_del} = useToast();
 

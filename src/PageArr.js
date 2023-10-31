@@ -5,6 +5,9 @@ import BoardPage from './pages/BoardPage';
 import LoginRegister from './pages/LoginRegister';
 import My from './pages/MyPage';
 import CreateBlogPage from './pages/CreateBlogPage';
+import BoardDetail from './pages/BoardDetail';
+import BoardEditPage from './pages/BoardEditPage';
+
 const PageArr = [
     {
         path:'/',
@@ -25,6 +28,14 @@ const PageArr = [
     {
         path:'/board/create',
         component:CreateBlogPage,
+    },
+    {
+        path:'/board/:id',
+        component:BoardDetail,
+    },
+    {
+        path:'/board/:id/edit',
+        component:BoardEditPage,
     },
     {
         path:'/login',

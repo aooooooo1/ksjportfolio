@@ -51,7 +51,7 @@ h3,
 h4 {
   /* font-family: var(--font-family-primary); */
   font-family: 'IBM Plex Sans KR', sans-serif;
-  color: var(--color-title);
+  color: var(--color-title) !important;
   font-weight: var(--fw-bold);
 }
 
