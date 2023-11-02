@@ -28,6 +28,9 @@ tr{
 tr:hover{
     background-color: #d4e6e9;
 }
+.th{
+    background-color: #508a94 !important;
+}
 /* 페이징네이션 */
 .pagination{
     padding: 30px 0;
@@ -42,22 +45,31 @@ tr:hover{
     padding: 0;
     list-style-type: none;
 }
-.pagination a {
+.pagination .pagebtn {
     display: inline-block;
     padding: 10px 18px;
     color: #222;
 }
-.p1 a {
+.p1 .pagebtn {
+    border: 1px solid rgb(220, 216, 216);
+    border-radius: 100%;
     width: 40px;
     height: 40px;
     line-height: 40px;
     padding: 0;
     text-align: center;
 }
-.p1 a.is-active {
-    background-color: #86a793;
+.p1 .pagebtn:hover {
+    background-color: #5da0ac;
+    border-radius: 100%;
+}
+.p1 .pagebtn.is-active {
+    background-color: #1c6470;
     border-radius: 100%;
     color: #fff;
+}
+.writer{
+    width: 15%;
 }
 @media screen and (max-width:768px) {
     th{
@@ -68,5 +80,8 @@ tr:hover{
     }
     .boardDate{
         display: none;
+    }
+    .writer{
+        width: 33%;
     }
 }

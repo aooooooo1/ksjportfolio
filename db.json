@@ -5,21 +5,8 @@
       "body": "test123",
       "date": "23년 10월 31일",
       "email": "te@test.com",
+      "publicM": true,
       "id": 1
-    },
-    {
-      "title": "123123",
-      "body": "123123",
-      "date": "23년 11월 01일",
-      "publicM": true,
-      "id": 2
-    },
-    {
-      "title": "444444",
-      "body": "444444444444",
-      "date": "23년 11월 01일",
-      "publicM": true,
-      "id": 3
     },
     {
       "title": "fasd",
@@ -54,29 +41,72 @@
       "id": 9
     },
     {
-      "title": "123123",
-      "body": "123123",
-      "date": "23년 11월 01일",
-      "email": "123@test.com",
-      "publicM": true,
-      "id": 10
-    },
-    {
-      "title": "444444",
-      "body": "444444444444",
-      "date": "23년 11월 01일",
-      "email": "123@test.com",
-      "publicM": true,
-      "id": 11
-    },
-    {
       "title": "5555",
       "body": "555",
       "date": "23년 11월 01일",
       "email": "123@test.com",
       "publicM": false,
       "id": 12
+    },
+    {
+      "title": "false",
+      "body": "f",
+      "date": "23년 11월 01일",
+      "email": "admin@admin.com",
+      "publicM": false,
+      "id": 13
+    },
+    {
+      "title": "f",
+      "body": "f",
+      "date": "23년 11월 01일",
+      "email": "admin@admin.com",
+      "publicM": false,
+      "id": 14
+    },
+    {
+      "title": "1",
+      "body": "1",
+      "date": "23년 11월 01일",
+      "email": "admin@admin.com",
+      "publicM": false,
+      "id": 15
+    },
+    {
+      "title": "2",
+      "body": "2",
+      "date": "23년 11월 01일",
+      "email": "admin@admin.com",
+      "publicM": false,
+      "id": 16
+    },
+    {
+      "title": "t",
+      "body": "t",
+      "date": "23년 11월 02일",
+      "email": "admin@admin.com",
+      "publicM": false,
+      "id": 17
+    },
+    {
+      "title": "t1",
+      "body": "t1",
+      "date": "23년 11월 02일",
+      "email": "admin@admin.com",
+      "publicM": true,
+      "id": 18
     }
   ],
-  "user": []
+  "user": [
+    {
+      "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Ffree-icon-nameplate-8914619.pngd614a0af-2c47-4085-abcc-f0d550812620?alt=media&token=409b39d6-7a80-4c24-8e41-425981c455ca",
+      "email": "admin@admin.com",
+      "id": 1
+    },
+    {
+      "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Fpaper-plane.png2eed2088-f031-4ae9-9f25-f3eb71a202ab?alt=media&token=a481b615-5744-4399-8506-d7ce8373df90",
+      "email": "123@test.com",
+      "id": 2
+    }
+  ]
 }

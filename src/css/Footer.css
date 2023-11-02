@@ -71,6 +71,15 @@ color: #fff;
     margin: 0 7px;
     vertical-align: baseline;
 }
+.barMy{
+    background: #1c6470;
+    width: 3px;
+    height: 15px;
+    display: inline-block;
+    line-height: 5px;
+    margin: 3px 7px 0;
+    vertical-align: baseline;
+}
 .footerM{
     font-size: var(--fs-sm);
 }

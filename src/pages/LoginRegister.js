@@ -8,10 +8,13 @@ import {
 import useToast from "../hooks/toast";
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch } from "react-redux";
-import { login as reduxLogin } from "../redux/authSlice";
+import { login as reduxLogin , loginAdmin} from "../redux/authSlice";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const LoginRegister = () => {
+  const [eye, setEye] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickName, setNickName] = useState('');
@@ -39,19 +42,24 @@ const LoginRegister = () => {
   },[])
   //register
   const register = async () => {
+    toast_add({
+      text:'서버와 통신중입니다. 잠시만 기달려주세요..',
+      type: 'error',
+      id : uuidv4()
+    })
     try {
         const user = await createUserWithEmailAndPassword(
             auth,
             email,
             password,
         );
-      toast_add({
-        text:'성공적으로 회원가입이 완료되었습니다. 바로 로그인 해주세요!',
-        type: 'success',
-        id : uuidv4()
-      })
-      setActiveTab('#login');
-      console.log(user);
+        toast_add({
+          text:'성공적으로 회원가입이 완료되었습니다. 바로 로그인 해주세요!',
+          type: 'success',
+          id : uuidv4()
+        })
+        setActiveTab('#login');
+        console.log(user);
     } catch (error) {
       if(error.message ==='Firebase: Error (auth/invalid-email).'){
         toast_add({
@@ -82,7 +90,7 @@ const LoginRegister = () => {
     }
   };
   //login
-  const login = async ()=>{
+  const login = async (e)=>{
     try{
       const user = await signInWithEmailAndPassword(
         auth,
@@ -92,7 +100,11 @@ const LoginRegister = () => {
       dispatch(reduxLogin());
       localStorage.removeItem('user');
       localStorage.setItem('user',user.user.email);
-      console.log('test')
+      if(user.user.email === 'admin@admin.com'){
+        dispatch(loginAdmin());
+        localStorage.setItem('reloadAndRedirect', '/my');
+        window.location.reload();
+      }
       toast_add({
         text: '정상적으로 로그인을 성공하였습니다.',
         type: 'success',
@@ -108,7 +120,18 @@ const LoginRegister = () => {
       })
     }
   }
-
+  useEffect(() => {
+    const reloadAndRedirect = localStorage.getItem('reloadAndRedirect');
+    if (reloadAndRedirect) {
+      localStorage.removeItem('reloadAndRedirect'); // 필요하면 저장소에서 제거
+      history.push(reloadAndRedirect); // 경로 변경
+      toast_add({
+        text: '관리자님 안녕하세요.',
+        type: 'success',
+        id:uuidv4()
+      })
+    }
+  }, [history]);
 
   const handleInputFocus = () => {
     setIsFocus(true);
@@ -139,7 +162,15 @@ const LoginRegister = () => {
     e.preventDefault();
     setActiveTab(target);
   }
-
+  //eyeOnOff
+  const eyeOnOff = ()=>{
+    if(eye){
+      setEye(false);
+    }else{
+      setEye(true);
+    }
+    console.log(eye)
+  }
   return (
     <div className="container containerP">
     <h1 className="h1">로그인 / 회원가입</h1>
@@ -175,12 +206,22 @@ const LoginRegister = () => {
               </div>
               <div className="field-wrap">
                 <label className={`${isFocusP?'active':''}`}>비밀번호<span className="req">*</span></label>
-                <input type="password" required autoComplete="off" value={password} 
-                  onChange={e=>setPassword(e.target.value)}
-                  onFocus={handleInputFocusP}
-                  onBlur={handleInputBlurP}/>
+                <div className="d-flex eye">
+                  <input className="eyeInput" type={eye?"password":'text'} required autoComplete="off" value={password} 
+                    onChange={e=>setPassword(e.target.value)}
+                    onFocus={handleInputFocusP}
+                    onBlur={handleInputBlurP}
+                    onKeyUp={(e)=>{if(e.key==='Enter'){register();}}}
+                    />
+                  <span className="cursor-pointer" onClick={eyeOnOff}>
+                    {
+                      eye?<VisibilityOffIcon style={{fontSize:"30px",height:'100%'}}/>
+                      : <VisibilityIcon style={{fontSize:"30px",height:'100%'}}/>
+                    }
+                  </span>
+                </div>
               </div>
-              <button type="button" onClick={register} className="btnSm btn--primary">시작하기</button>
+              <button type="button" onClick={register} className="btnSm btn--primary">시작하기 (Enter)</button>
           </form>
         </div>
         {/* 로그인 */}
@@ -196,12 +237,22 @@ const LoginRegister = () => {
             </div>
             <div className="field-wrap">
               <label className={`${isFocusP?'active':''}`}>비밀번호<span className="req">*</span></label>
-              <input type="password" required autoComplete="off" value={loginPassword} 
-                onChange={e=>setLoginPassword(e.target.value)}
-                onFocus={handleInputFocusP}
-                onBlur={handleInputBlurP}/>
+              <div className="d-flex eye">
+                <input className="eyeInput" type={eye?"password":'text'} required autoComplete="off" value={loginPassword} 
+                  onChange={e=>setLoginPassword(e.target.value)}
+                  onFocus={handleInputFocusP}
+                  onBlur={handleInputBlurP}
+                  onKeyUp={(e)=>{if(e.key==='Enter'){login();}}}
+                  />
+                  <span className="cursor-pointer" onClick={eyeOnOff}>
+                    {
+                      eye?<VisibilityOffIcon style={{fontSize:"30px",height:'100%'}}/>
+                      : <VisibilityIcon style={{fontSize:"30px",height:'100%'}}/>
+                    }
+                  </span>
+              </div>
             </div>
-            <button type="button" onClick={login} className="btnSm btn--primary">로그인</button>
+            <button type="button" onClick={login} className="btnSm btn--primary">로그인 (Enter)</button>
           </form>
         </div>
       </div>

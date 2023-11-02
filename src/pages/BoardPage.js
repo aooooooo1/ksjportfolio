@@ -9,31 +9,96 @@ import axios from 'axios';
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase-config';
+import { auth, storage } from '../firebase-config';
 import useToast from '../hooks/toast';
 import { v4 as uuidv4 } from 'uuid';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+import { Avatar } from '@mui/material';
+import { list ,getDownloadURL, ref, listAll } from 'firebase/storage';
+import e from 'cors';
 
 
 const BoardPage = () => {
+  const isAdmin = useSelector((state)=>{
+    return state.auth.isAdmin
+  })
+
   const isLogin = useSelector((state)=>{
     return state.auth.isLogin;
   })
+  //사용자의 정보를 user에 넣음
   const [user, setUser] = useState({});
-
   useEffect(()=>{
       onAuthStateChanged(auth, (currentUser)=>{
           setUser(currentUser);
       })
   },[])
+  const userEmail = localStorage.getItem('user');
+  const imageListRef = ref(storage, `userProfileImg`);
+    const [imageList, setImageList] = useState([]);
+
+  // const [imageListS, setImageListS] = useState();
 
   const [post, setPost] = useState([]);
+  const [users, setUsers] = useState([]);
   const history = useHistory();
   const {toast_add} = useToast();
+  const [currentPage, setCurrentPage] = useState(1);
+  //총 게시글 갯수
+  const [totalPost, setTotalPost] = useState(0);
+  const [numberOfPages, setNumberOfPages] = useState(0);
+  //주소 가져오기
+  const location = useLocation();
+  const url = new URLSearchParams(location.search);
+  const urlPage = url.get('page');
+  //서치
+  const [searchInput, setSearchInput] = useState('');
+
+
+
+  const [imgUserEmail, setImgUserEmail] = useState([]);
+
+
+
+
+  let limit = 5
+  useEffect(()=>{
+    //페이지 갯수
+    setNumberOfPages(Math.ceil(totalPost / limit))
+  },[totalPost,limit])
+
+  const getPostHistory = (page)=>{
+    history.push(`${location.pathname}?page=${page}`);
+    getPost(page);
+  }
   //게시글 가져오는 함수
   const getPost = useCallback((page)=>{
-    axios.get(`http://localhost:3002/posts`)
+    setCurrentPage(page);
+    let params = {
+      _page:page,
+        _limit:limit,
+        _sort:'id',
+        _order:'desc',
+        title_like:searchInput,
+    }
+    if(!isAdmin){
+      params = {...params, publicM:true};
+    }
+    //유저정보
+    axios.get(`http://localhost:3002/user`).then((res)=>{
+      setUsers(res.data);
+      console.log('유저데이터',res.data)
+    }).catch((er)=>{
+      console.log(er);
+    });
+
+    //게시글정보
+    axios.get(`http://localhost:3002/posts`,{
+      params:params
+    })
       .then((res)=>{
         setPost(res.data);
+        setTotalPost(res.headers['x-total-count'])
     }).catch(()=>{
       toast_add({
         text:'서버가 꺼져있습니다. 관리자에게 문의해 주세요.',
@@ -41,11 +106,12 @@ const BoardPage = () => {
         id:uuidv4()
     })
     })
-  },[])
-  //로딩후Getpoast실행
+  },[limit,isAdmin,searchInput])
+  //페이지주소가 바뀔때 마다 실행
   useEffect(()=>{
-    getPost();
-  },[getPost])
+    getPost(parseInt(urlPage)||1)
+  },[urlPage,getPost])
+
 
   //게시글 삭제
   const deletePost = (e,id)=>{
@@ -65,12 +131,29 @@ const BoardPage = () => {
       });
     })
   }
+  //서치함수
+  const search = ()=>{
+    getPost(1)
+  }
+  //사진 리스트 불러오기
+  // useEffect(()=>{
+  //   listAll(imageListRef).then((res)=>{
+  //     res.items.forEach((v)=>{
+  //       getDownloadURL(v).then((urlv)=>{
+  //         setImageList((prev)=>[...prev, urlv]);
+  //         // setImageListS(urlv);
+  //       })
+  //     })
+  //   });
+  // },[]);
+
+
 
   return (
     <div className="container chargeMain">
-      <h1 className="textA fontW5">게시판</h1>
+      <h1 className="textA fontW5">{isAdmin?'관리자 게시판':'게시판'}</h1>
       <div className="py-3 d-flex justify-content-between">
-          <InputForm/>
+          <InputForm onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
           {
             isLogin ? 
               <Link to="/board/create" className="postAdd">
@@ -88,8 +171,9 @@ const BoardPage = () => {
             <th style={{ width: '10%', textAlign:"center" }}>번호</th>
             <th style={{textAlign:"center"}}>제목</th>
             <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
-            <th style={{ width: '20%', textAlign:"center"}}>글쓴이</th>
-            {isLogin?<th style={{ width: '10%', textAlign:"center"}}>삭제</th>:<th style={{width:'1%'}}></th>}
+            <th className='writer' style={{ textAlign:"center"}}>글쓴이</th>
+            {isLogin?<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>:<th style={{width:'1%'}}></th>}
+            {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>공개</th>}
           </tr>
         </thead>
         <tbody>
@@ -97,23 +181,48 @@ const BoardPage = () => {
             post.length > 0 ? post.map((po,i)=>{
               return(
                 <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
+                    {/* 번호 */}
                     <td style={{textAlign:"center"}}>{i+1}</td>
+                    {/* 제목 */}
                     <td style={{textAlign:"center"}} className="overText">{po.title}</td>
+                    {/* 날짜 */}
                     <td className='boardDate' style={{textAlign:"center"}}>{po.date}</td>
-                    {/* <td style={{textAlign:"center"}}>{po.publicM?'공개':'비공개'}</td> */}
-                    <td style={{textAlign:"center"}}>{po.email ? po.email.split('@')[0]:''}</td>
-                    {isLogin&&user.email===po.email?<td onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" /></td>:<td></td>}
+                    {/* 글쓴이 */}
+                    <td className='' style={{justifyContent:'start',display:'flex',height:'100%',alignItems:'center'}}> 
+                    {
+                      users.map((u)=>{
+                        if(u.email === po.email){
+                          return (
+                            <Avatar
+                              style={{ border: '1px solid gray',marginRight:'1rem' }}
+                              key={u.imageListS}
+                              alt=""
+                              src={u.imageListS}
+                              sx={{ width: 40, height: 40 }}
+                            />
+                          )
+                        }
+                        return null;
+                      })
+                    }
+                      {/* <Avatar style={{border:'1px solid #E0E0E0',marginRight:'1rem'}} key={imageListS} alt="" src={imageListS} sx={{ width: 50, height: 50 }}/> */}
+                    {po.email ? po.email.split('@')[0]:''}
+                    </td>
+                    {/* 삭제 */}
+                    {isLogin&&(user.email===po.email||isAdmin)&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
+                    {/* 공개 */}
+                    {isAdmin&&<td className='media768' style={{textAlign:"center"}}>{po.publicM?'공개':<DoNotDisturbIcon style={{fontSize:'large', color:'#B71C1C',verticalAlign:'middle'}}/>}</td>}
                 </tr>
               );
             }) : <tr>
-                    <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다. 게시글을 작성해 주세요!</td>
+                    <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다.</td>
                 </tr>
           }
         </tbody>
       </Table>
-      {
-        post.length > 0 && <Pagination/>
-      }
+      
+        <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
+      
     </div>
   )
 }

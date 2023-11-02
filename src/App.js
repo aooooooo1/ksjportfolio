@@ -7,12 +7,12 @@ import {useState, useEffect} from 'react';
 import Toast from './components/Toast';
 import { useDispatch, useSelector } from 'react-redux';
 import useToast from './hooks/toast';
-import { login } from './redux/authSlice';
+import { login , loginAdmin} from './redux/authSlice';
 function App() {
   const dispatch = useDispatch();
   const [load, setLoad] = useState(true);
-  //스크롤 헤더 
   const [isScrolled, setIsScrolled] = useState(false);
+  //스크롤 헤더 
   useEffect(()=>{
     const handleScroll = ()=>{
       if(window.scrollY > 80){
@@ -34,6 +34,9 @@ function App() {
   useEffect(()=>{
     if(localStorage.getItem('user')){
       dispatch(login());
+    }
+    if(localStorage.getItem('user')==='admin@admin.com'){
+      dispatch(loginAdmin());
     }
     setLoad(false);
   },[])
