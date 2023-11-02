@@ -16,7 +16,7 @@ import axios from 'axios';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { v4 as uuidv4 } from 'uuid';
 import '../css/My.css';
-
+import '../css/Board.css';
 const MyPage = () => {
     const [post, setPost] = useState([]);
     const [users, setUsers] = useState([]);
@@ -260,9 +260,10 @@ const MyPage = () => {
                     <th style={{ width: '10%', textAlign:"center" }}>번호</th>
                     <th style={{textAlign:"center"}}>제목</th>
                     <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
-                    <th className='media768' style={{ width: '15%', textAlign:"center"}}>글쓴이</th>
-                    <th style={{ width: '10%', textAlign:"center"}}>삭제</th>
-                    <th style={{ width: '10%', textAlign:"center"}}>공개</th>
+                    <th className='writerMy' style={{width:'1%'}}></th>
+                    <th className='writerMy' style={{ width: '15%', textAlign:"center"}}>글쓴이</th>
+                    <th className='myD'  style={{ textAlign:"center"}}>삭제</th>
+                    <th className='myD'  style={{ textAlign:"center"}}>공개</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -271,29 +272,32 @@ const MyPage = () => {
                     return(
                         <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
                             <td style={{textAlign:"center"}}>{i+1}</td>
-                            <td style={{textAlign:"center"}} className="overText">{po.title}</td>
+                            <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
                             <td className='boardDate' style={{textAlign:"center"}}>{po.date}</td>
-                            <td className='media768' style={{justifyContent:'center',display:'flex',height:'100%',alignItems:'center'}}>
+                            <td className='media768'>
                                 {
                                     users.map((u)=>{
                                         if(u.email === userEmail){
                                         return (
                                             <Avatar
-                                            style={{ border: '1px solid gray', marginRight:'1rem' }}
+                                            className='avatar writerMy'
+                                            style={{ border: '1px solid gray'}}
                                             key={u.imageListS}
                                             alt=""
                                             src={u.imageListS}
-                                            sx={{ width: 40, height: 40 }}
                                             />
                                         )
                                         }
                                         return null;
                                     })
                                 }
-                                {/* <Avatar style={{border:'1px solid #E0E0E0',marginRight:'1rem'}} key={imageListS} alt="" src={imageListS} sx={{ width: 50, height: 50 }}/> */}
+                            </td>
+                            <td className='writerMy' style={{textAlign:'center'}}>
                                 {po.email ? po.email.split('@')[0]:''}
                             </td>
+                            {/* 딜리트 아이콘 */}
                             {(user.email===po.email)?<td onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}}/></td>:<td></td>}
+                            {/* 공개여부 */}
                             <td style={{textAlign:"center"}}>{po.publicM?'공개':<DoNotDisturbIcon style={{fontSize:'large', color:'#B71C1C',verticalAlign:'middle'}}/>}</td>
                         </tr>
                     );

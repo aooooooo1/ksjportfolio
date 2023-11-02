@@ -8,5 +8,28 @@
 .boardDetailMain{
     max-width: 600px;
 }
+.detailH{
+    width: 80%;
+}
+.reply{
+    max-width: 600px;
+    margin: 0 auto;
+}
+.replyForm{
+    margin: 0 auto;
+    border: 1px solid rgb(189, 185, 185);
+    margin-bottom: 2rem;
+}
 @media screen and (max-width:768px) {
+    .detailH{
+        font-size: 20px;
+        width: 70%;
+    }
+    .detailText{
+        margin: 0 auto;
+        width: 90%;
+    }
+    .replyForm{
+        width: 90%;
+    }
 }

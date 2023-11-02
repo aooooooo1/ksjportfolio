@@ -176,6 +176,14 @@ body {
   background-color: var(--color-primary);
   color: var(--color-white);
 }
+.btn--fix {
+  background-color: inherit;
+  color: #464d55;
+  border: 1px solid #464d55;
+}
+.btn--fix:hover {
+  background-color: #ccced0;
+}
 
 .btn--primary:hover {
   background-color: var(--color-primary-light);

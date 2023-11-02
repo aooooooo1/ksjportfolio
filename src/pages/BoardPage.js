@@ -15,8 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { Avatar } from '@mui/material';
 import { list ,getDownloadURL, ref, listAll } from 'firebase/storage';
-import e from 'cors';
-
+import CampaignIcon from '@mui/icons-material/Campaign';
 
 const BoardPage = () => {
   const isAdmin = useSelector((state)=>{
@@ -47,6 +46,8 @@ const BoardPage = () => {
   //총 게시글 갯수
   const [totalPost, setTotalPost] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
+  //게시글 넘버
+  const [postNum, setPostNum] = useState(0);
   //주소 가져오기
   const location = useLocation();
   const url = new URLSearchParams(location.search);
@@ -135,18 +136,9 @@ const BoardPage = () => {
   const search = ()=>{
     getPost(1)
   }
-  //사진 리스트 불러오기
-  // useEffect(()=>{
-  //   listAll(imageListRef).then((res)=>{
-  //     res.items.forEach((v)=>{
-  //       getDownloadURL(v).then((urlv)=>{
-  //         setImageList((prev)=>[...prev, urlv]);
-  //         // setImageListS(urlv);
-  //       })
-  //     })
-  //   });
-  // },[]);
-
+  useEffect(()=>{
+    setPostNum((currentPage-1)*5 + 1);
+  },[currentPage]) 
 
 
   return (
@@ -171,42 +163,82 @@ const BoardPage = () => {
             <th style={{ width: '10%', textAlign:"center" }}>번호</th>
             <th style={{textAlign:"center"}}>제목</th>
             <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
+            <th style={{width:'6%'}}></th>
             <th className='writer' style={{ textAlign:"center"}}>글쓴이</th>
             {isLogin?<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>:<th style={{width:'1%'}}></th>}
             {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>공개</th>}
           </tr>
         </thead>
         <tbody>
+          {/* 관리자공지사항 */}
+          {
+            post.map((po)=>{
+              if(po.email === 'admin@admin.com' && po.publicM === true){
+                return(
+                  <tr style={{backgroundColor:'rgb(255 240 240)'}} key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
+                    <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td>
+                    <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
+                    <td style={{textAlign:"center"}} className='boardDate'>{po.date}</td>
+                    <td style={{textAlign:"center"}}>
+                      {
+                        users.map((u)=>{
+                          if(u.email === po.email){
+                            return (
+                              <Avatar
+                                className='avatar'
+                                style={{ border: '1px solid gray'}}
+                                key={u.imageListS}
+                                alt=""
+                                src={u.imageListS}
+                              />
+                            )
+                          }
+                          return null;
+                        })
+                      }
+                    </td>
+                    <td style={{textAlign:"center"}}>{po.email.split('@')[0]}</td>
+                    <td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>
+                    {isAdmin&&<td className='media768'></td>}
+                  </tr>
+                )
+              }
+              return null;
+            })
+          }
+          {/* 게시판 */}
           {
             post.length > 0 ? post.map((po,i)=>{
               return(
                 <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
                     {/* 번호 */}
-                    <td style={{textAlign:"center"}}>{i+1}</td>
+                    <td style={{textAlign:"center"}}>{postNum + i}</td>
                     {/* 제목 */}
-                    <td style={{textAlign:"center"}} className="overText">{po.title}</td>
+                    <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
                     {/* 날짜 */}
                     <td className='boardDate' style={{textAlign:"center"}}>{po.date}</td>
-                    {/* 글쓴이 */}
-                    <td className='' style={{justifyContent:'start',display:'flex',height:'100%',alignItems:'center'}}> 
+                    {/* 프로필 사진*/}
+                    <td> 
                     {
                       users.map((u)=>{
                         if(u.email === po.email){
                           return (
                             <Avatar
-                              style={{ border: '1px solid gray',marginRight:'1rem' }}
+                              className='avatar'
+                              style={{ border: '1px solid gray'}}
                               key={u.imageListS}
                               alt=""
                               src={u.imageListS}
-                              sx={{ width: 40, height: 40 }}
                             />
                           )
                         }
                         return null;
                       })
                     }
-                      {/* <Avatar style={{border:'1px solid #E0E0E0',marginRight:'1rem'}} key={imageListS} alt="" src={imageListS} sx={{ width: 50, height: 50 }}/> */}
-                    {po.email ? po.email.split('@')[0]:''}
+                    </td>
+                    {/* 닉네임 */}
+                    <td style={{textAlign:'center'}}>
+                      {po.email ? po.email.split('@')[0]:''}
                     </td>
                     {/* 삭제 */}
                     {isLogin&&(user.email===po.email||isAdmin)&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}

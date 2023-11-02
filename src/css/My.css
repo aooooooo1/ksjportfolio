@@ -1,5 +1,15 @@
+.myD{
+    width: 7%;
+}
+
+
+
+
 @media screen and (max-width:768px) {
     .media768{
         display: none !important;
+    }
+    .myD{
+        width: 15%;
     }
 }

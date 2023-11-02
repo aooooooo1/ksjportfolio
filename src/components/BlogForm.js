@@ -18,6 +18,11 @@ const BlogForm = ({edit}) => {
     const [showError, setShowError] = useState(false);
     const history = useHistory();
     const [user, setUser] = useState({});
+    useEffect(()=>{
+        onAuthStateChanged(auth, (currentUser)=>{
+            setUser(currentUser);
+        })
+    },[])
     const {toast_add} = useToast();
     const handleInputFocus = () => {
         setIsFocus(true);
@@ -36,11 +41,6 @@ const BlogForm = ({edit}) => {
         }
     };
     
-    useEffect(()=>{
-        onAuthStateChanged(auth, (currentUser)=>{
-            setUser(currentUser);
-        })
-    },[])
     //유효성검사
     const validate = ()=>{
         let vali;
@@ -94,15 +94,17 @@ const BlogForm = ({edit}) => {
                         id:uuidv4()
                     })
                 })
+                return
             }
-
+            const comments = [];
             //데이터 post
             axios.post("http://localhost:3002/posts",{
                 title,
                 body,
                 date: formattedDate,
                 email:user.email,
-                publicM
+                publicM,
+                comments
             }).then(()=>{
                 history.push('/board');
                 toast_add({

@@ -74,8 +74,7 @@ label.activeB .req {
 label.highlight {
 	color:#fff;
 }
-input,
-textarea {
+input{
     font-size: 17px;
     display: block;
     width: 100%;
@@ -101,8 +100,7 @@ textarea {
     padding-right: 10px;
 }
 
-.input:focus,
-textarea:focus {
+.input:focus{
     outline: 0;
     border: 2px solid #1c6470
 }
