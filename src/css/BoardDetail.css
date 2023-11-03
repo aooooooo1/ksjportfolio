@@ -5,11 +5,15 @@
 .alignC{
     align-items: center;
 }
+.jusifyB{
+    justify-content: space-between;
+}
 .boardDetailMain{
     max-width: 600px;
 }
 .detailH{
-    width: 80%;
+    word-wrap: break-word;
+    width: 75%;
 }
 .reply{
     max-width: 600px;
@@ -17,18 +21,83 @@
 }
 .replyForm{
     margin: 0 auto;
-    border: 1px solid rgb(189, 185, 185);
-    margin-bottom: 2rem;
+    margin-bottom: 4rem;
 }
 .myImgDiv{
     display: flex;
     justify-content: center;
     align-items: center;
 }
+.justifyB{
+    justify-content: space-between;
+}
+.thumb:hover{
+    background-color: #c9e2e8;
+    border-radius: 100%;
+}
+/* .detailTextReply{
+    word-wrap: break-word;
+    width: 65%;
+} */
+.menu-item:hover{
+    background-color: #d3e4e8;
+    color: #616161;
+    border-radius: 1rem;
+}
+.menu-item2:hover{
+    background-color: #d3e4e8;
+    color: #616161;
+    border-radius: 1rem;
+}
+.menu-item{
+    padding: 0.5rem;
+}
+.reM1{
+    text-align: center;
+    width: 50px;
+}
+.reMobtn{
+    padding: 0.65rem;
+}
+
+@media screen and (max-width:378px) {
+    .reM1{
+    }
+    .reM2{
+    }
+}
+
+
+@media screen and (max-width:600px) {
+    .detailTextReply{
+        width: 400px !important;
+    }
+}
+@media screen and (max-width:545px) {
+    .detailTextReply{
+        width: 350px !important;
+    }
+}
+@media screen and (max-width:493px) {
+    .detailTextReply{
+        width: 270px !important;
+    }
+}
+@media screen and (max-width:407px) {
+    .detailTextReply{
+        width: 220px !important;
+    }
+}
+@media screen and (max-width:345px) {
+    .detailTextReply{
+        width: 170px !important;
+    }
+}
+
+
 @media screen and (max-width:768px) {
     .detailH{
         font-size: 20px;
-        width: 70%;
     }
     .detailText{
         margin: 0 auto;
@@ -39,5 +108,9 @@
     }
     .myImgDiv{
         display: block;
+    }
+    .detailTextReply{
+        word-wrap: break-word;
+        width: 55%;
     }
 }

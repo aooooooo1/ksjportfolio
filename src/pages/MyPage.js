@@ -234,7 +234,7 @@ const MyPage = () => {
                             if(u.email === userEmail){
                             return (
                                 <Avatar
-                                style={{ border: '1px solid gray',margin:'0 auto'}}
+                                style={{ border: '1px solid #dad4d4',margin:'0 auto'}}
                                 key={u.imageListS}
                                 alt=""
                                 src={u.imageListS}
@@ -285,7 +285,7 @@ const MyPage = () => {
                                         return (
                                             <Avatar
                                             className='avatar writerMy'
-                                            style={{ border: '1px solid gray'}}
+                                            style={{ border: '1px solid #dad4d4'}}
                                             key={u.imageListS}
                                             alt=""
                                             src={u.imageListS}

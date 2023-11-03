@@ -2,98 +2,30 @@
   "posts": [
     {
       "title": "test",
-      "body": "test",
+      "body": "tse",
       "date": "23년 11월 03일",
       "email": "123@test.com",
       "publicM": true,
-      "comments": [
-        {
-          "date": "23년 11월 03일 14시08분",
-          "email": "123@test.com",
-          "text": "f"
-        },
-        {
-          "date": "23년 11월 03일 14시09분",
-          "email": "123@test.com",
-          "text": "2"
-        },
-        {
-          "date": "23년 11월 03일 14시09분",
-          "email": "123@test.com",
-          "text": "233"
-        },
-        {
-          "date": "23년 11월 03일 14시18분",
-          "email": "123@test.com",
-          "text": "44"
-        },
-        {
-          "date": "23년 11월 03일 14시26분",
-          "email": "123@test.com",
-          "text": "555"
-        },
-        {
-          "date": "23년 11월 03일 14시41분",
-          "email": "123@test.com",
-          "text": "66"
-        },
-        {
-          "date": "23년 11월 03일 14시47분",
-          "email": "123@test.com",
-          "text": "777"
-        },
-        {
-          "date": "23년 11월 03일 14시48분",
-          "email": "123@test.com",
-          "text": "8888"
-        },
-        {
-          "date": "23년 11월 03일 15시14분",
-          "email": "123@test.com",
-          "text": "9"
-        },
-        {
-          "date": "23년 11월 03일 15시14분",
-          "email": "123@test.com",
-          "text": "91"
-        },
-        {
-          "date": "23년 11월 03일 15시14분",
-          "email": "123@test.com",
-          "text": "912"
-        },
-        {
-          "date": "23년 11월 03일 15시14분",
-          "email": "123@test.com",
-          "text": "9123"
-        },
-        {
-          "date": "23년 11월 03일 15시14분",
-          "email": "123@test.com",
-          "text": "9123"
-        }
-      ],
-      "id": 22
+      "comments": [],
+      "id": 1
     },
     {
-      "title": "2번 게시물",
-      "body": "입니다.",
+      "title": "tes",
+      "body": "tst",
       "date": "23년 11월 03일",
       "email": "123@test.com",
+      "publicM": false,
+      "comments": [],
+      "id": 2
+    },
+    {
+      "title": "tt",
+      "body": "tt",
+      "date": "23년 11월 04일",
+      "email": "123@test.com",
       "publicM": true,
-      "comments": [
-        {
-          "date": "23년 11월 03일 14시13분",
-          "email": "123@test.com",
-          "text": "2q"
-        },
-        {
-          "date": "23년 11월 03일 14시13분",
-          "email": "123@test.com",
-          "text": "2q q "
-        }
-      ],
-      "id": 23
+      "comments": [],
+      "id": 3
     }
   ],
   "user": [
@@ -110,109 +42,103 @@
   ],
   "comments": [
     {
-      "text": "f",
-      "date": "23년 11월 03일 14시08분",
+      "text": "11",
+      "date": "23년 11월 04일 00시09분",
       "email": "123@test.com",
-      "postId": "22",
-      "id": 1
+      "postId": "3",
+      "thumbUpNum": 1,
+      "thumbDownNum": 0,
+      "id": 1,
+      "isThumbUp": true,
+      "isThumbDown": false
     },
     {
-      "text": "2",
-      "date": "23년 11월 03일 14시09분",
+      "text": "11ggg",
+      "date": "23년 11월 04일 00시09분",
       "email": "123@test.com",
-      "postId": "22",
-      "id": 2
+      "postId": "3",
+      "thumbUpNum": 1,
+      "thumbDownNum": 1,
+      "id": 2,
+      "isThumbUp": true,
+      "isThumbDown": true
     },
     {
-      "text": "233",
-      "date": "23년 11월 03일 14시09분",
+      "text": "123ffff😍😍😍😍😍",
+      "date": "23년 11월 04일 00시10분",
       "email": "123@test.com",
-      "postId": "22",
-      "id": 3
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 1,
+      "id": 5,
+      "isThumbUp": false,
+      "isThumbDown": true
     },
     {
-      "text": "2q",
-      "date": "23년 11월 03일 14시13분",
+      "text": "123ffff😍😍😍😍😍fsadfsadfsdfsdafsadfsdf",
+      "date": "23년 11월 04일 00시11분",
       "email": "123@test.com",
-      "postId": "23",
-      "id": 4
-    },
-    {
-      "text": "2q q ",
-      "date": "23년 11월 03일 14시13분",
-      "email": "123@test.com",
-      "postId": "23",
-      "id": 5
-    },
-    {
-      "text": "44",
-      "date": "23년 11월 03일 14시18분",
-      "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 6
     },
     {
-      "text": "555",
-      "date": "23년 11월 03일 14시26분",
+      "text": "123ffff😍😍😍😍😍fsadfsadfsdfsdafsadfsdfsadfsadfsdfsadfasdfasdfasdfasdfasdfasdf",
+      "date": "23년 11월 04일 00시12분",
       "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 7
     },
     {
-      "text": "66",
-      "date": "23년 11월 03일 14시41분",
+      "text": "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf",
+      "date": "23년 11월 04일 00시13분",
       "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 8
     },
     {
-      "text": "777",
-      "date": "23년 11월 03일 14시47분",
+      "text": "1234444",
+      "date": "23년 11월 04일 03시06분",
       "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 9
     },
     {
-      "text": "8888",
-      "date": "23년 11월 03일 14시48분",
+      "text": "👍👍👍👍🏖🏖🏖😍😍😀😀",
+      "date": "23년 11월 04일 04시04분",
       "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 10
     },
     {
-      "text": "9",
-      "date": "23년 11월 03일 15시14분",
+      "text": "👍👍👍👍🏖🏖🏖😍😍😀😀",
+      "date": "23년 11월 04일 04시04분",
       "email": "123@test.com",
-      "postId": "22",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
       "id": 11
-    },
-    {
-      "text": "91",
-      "date": "23년 11월 03일 15시14분",
-      "email": "123@test.com",
-      "postId": "22",
-      "id": 12
-    },
-    {
-      "text": "912",
-      "date": "23년 11월 03일 15시14분",
-      "email": "123@test.com",
-      "postId": "22",
-      "id": 13
-    },
-    {
-      "text": "9123",
-      "date": "23년 11월 03일 15시14분",
-      "email": "123@test.com",
-      "postId": "22",
-      "id": 14
-    },
-    {
-      "text": "9123",
-      "date": "23년 11월 03일 15시14분",
-      "email": "123@test.com",
-      "postId": "22",
-      "id": 15
     }
   ]
 }

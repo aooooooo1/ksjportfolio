@@ -15,8 +15,15 @@ import useToast from "../hooks/toast";
 import { v4 as uuidv4 } from 'uuid';
 import { Avatar } from '@mui/material';
 import PaginationReply from "../components/PaginationReply";
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 
 const BoardDetail = (props) => {
+    const admin = localStorage.getItem('user');
     const [users, setUsers] = useState([]);
     const [replyComments, setReplyComments]=useState([]);
     const [replyCommentsPage, setReplyCommentsPage]=useState([]);
@@ -45,6 +52,19 @@ const BoardDetail = (props) => {
     const [totalPost, setTotalPost] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
     const [postNum, setPostNum] = useState(0);
+    //좋아요
+    const [thumbUpNum,setThumbUpNum] = useState(0);
+    const [thumbDownNum,setThumbDownNum] = useState(0);
+    const [thumbUpCounts, setThumbUpCounts] = useState({});
+    const [thumbDownCounts, setThumbDownCounts] = useState({});
+    const [isThumbUp, setIsThumbUp] = useState(false);
+    const [isThumbDown, setIsThumbDown] = useState(false);
+    //폭죽
+
+  
+
+
+
 
 
     useEffect(()=>{
@@ -61,12 +81,15 @@ const BoardDetail = (props) => {
             }
         })
         .then((res)=>{
+            // console.log('useE',res.data);
             setReplyCommentsPage(res.data);
             setTotalPost(res.headers['x-total-count'])
         }).catch((er)=>{
             console.log(er)
         })
     },[props.match.params.id])
+
+
 
     //게시글내용 한번 가져오기
     useEffect(()=>{
@@ -89,48 +112,42 @@ const BoardDetail = (props) => {
 
     const local =localStorage.getItem('user');
     const postId = props.match.params.id; 
+    //date
+    const currentDate = new Date();
+    const year = currentDate.getFullYear()%100;
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = currentDate.getHours().toString().padStart(2, '0');
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0'); 
+    const formattedDate = `${year}년 ${month}월 ${day}일 ${hours}시${minutes}분`;
     //댓글등록 btn
     const detailReply = ()=>{
-        //date
-        const currentDate = new Date();
-        const year = currentDate.getFullYear()%100;
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const hours = currentDate.getHours().toString().padStart(2, '0');
-        const minutes = currentDate.getMinutes().toString().padStart(2, '0'); 
-        const formattedDate = `${year}년 ${month}월 ${day}일 ${hours}시${minutes}분`;
-        const comment = {
-            date: formattedDate,
-            email: user.email,
-            text
-        };
-        axios.get(`http://localhost:3002/posts/${postId}`)
-            .then((response) => {
-                const postData = response.data;
-                postData.comments.push(comment);
-                axios.put(`http://localhost:3002/posts/${postId}`, postData)
-                    .then((updateResponse) => {
-                        // setReplyComments(postData.comments);
-                        // setReplyCommentsPage(postData.comments);
-                        getDetailReply();
-                        console.log(postData.comments)
-                        toast_add({
-                            text:'댓글이 정상적으로 등록처리 되었습니다.',
-                            type:'success',
-                            id:uuidv4()
-                        });
-                        axios.post(`http://localhost:3002/comments`,{
-                            text,
-                            date: formattedDate,
-                            email: user.email,
-                            postId
-                        }).then((res)=>{
 
-                        }).catch((er)=>{
-                            console.log(er)
-                        });
-                })
-                .catch((updateError) => {
+        axios.get(`http://localhost:3002/comments`)
+            .then((res) => {
+                const postData = res.data;
+                // postData.comments.push(comment);
+                axios.post(`http://localhost:3002/comments`, {
+                    text,
+                    date: formattedDate,
+                    email: user.email,
+                    postId,
+                    thumbUpNum,
+                    thumbDownNum,
+                    isThumbUp:false,
+                    isThumbDown
+                }).then((res) => {
+                    console.log('120',res.data)
+                    const newComment = res.data;
+                    // setReplyComments(postData.comments);
+                    setReplyCommentsPage([...replyCommentsPage, newComment]);
+                    // getDetailReply();
+                    toast_add({
+                        text:'댓글이 정상적으로 등록처리 되었습니다.',
+                        type:'success',
+                        id:uuidv4()
+                    });
+                }).catch((updateError) => {
                     console.error("Error updating post:", updateError);
                     toast_add({
                         text:'서버가 꺼져있는것 같아요.. 관리자에게 문의해주세요.',
@@ -154,12 +171,240 @@ const BoardDetail = (props) => {
         setPostNum((currentPage-1)*10 + 1);
     },[currentPage]) 
 
+    //좋아요
+    const thumbUp = (e, reply)=>{
+        setIsThumbUp(true)
+        e.stopPropagation();
+            axios.get(`http://localhost:3002/comments`).then((res)=>{
+                const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum + 1;
+                const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum;
+                setIsThumbUp(true)
+                axios.put(`http://localhost:3002/comments/${reply.id}`,{
+                    text: reply.text,
+                    date: reply.date,
+                    email: reply.email,
+                    postId,
+                    thumbUpNum: updatedThumbUpNum,
+                    thumbDownNum: updatedThumbDownNum,
+                    id: reply.id,
+                    isThumbUp : true,
+                    isThumbDown : reply.isThumbDown
+                }).then((res)=>{
+                    setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
+                    getDetailReply();
+                    toast_add({
+                        text:'좋아요!!🤩🤩',
+                        type:'success',
+                        id:uuidv4()
+                    });
+                }).catch((er)=>{
+                    console.log(er)
+                    toast_add({
+                        text:`${er}`,
+                        type:'success',
+                        id:uuidv4()
+                    });
+                })
+            })
+    }
+    //좋아요 취소
+    const thumbUpCancel=(e, reply)=>{
+            setIsThumbUp(false);
+            e.stopPropagation();
+            axios.get(`http://localhost:3002/comments`).then((res)=>{
+                const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum - 1;
+                const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum;
+                axios.put(`http://localhost:3002/comments/${reply.id}`,{
+                    text: reply.text,
+                    date: reply.date,
+                    email: reply.email,
+                    postId,
+                    thumbUpNum: updatedThumbUpNum,
+                    thumbDownNum: updatedThumbDownNum,
+                    id: reply.id,
+                    isThumbUp: false,
+                    isThumbDown : reply.isThumbDown
+                }).then((res)=>{
+                    setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
+                    getDetailReply();
+                    toast_add({
+                        text:'좋아요를 취소하였습니다.🥺',
+                        type:'success',
+                        id:uuidv4()
+                    });
+                }).catch((er)=>{
+                    console.log(er)
+                    toast_add({
+                        text:`${er}`,
+                        type:'success',
+                        id:uuidv4()
+                    });
+                })
+            })
+    }
+    //싫어요
+    const thumbDown = (e, reply)=>{
+        setIsThumbDown(true);
+        e.stopPropagation();
+        axios.get(`http://localhost:3002/comments`).then((res)=>{
+            const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum;
+            const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum + 1;
+            axios.put(`http://localhost:3002/comments/${reply.id}`,{
+                text: reply.text,
+                date: reply.date,
+                email: reply.email,
+                postId,
+                thumbUpNum: updatedThumbUpNum,
+                thumbDownNum: updatedThumbDownNum,
+                id: reply.id,
+                isThumbUp:reply.isThumbUp,
+                isThumbDown:true
+            }).then((res)=>{
+                setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
+                getDetailReply();
+            }).catch((er)=>{
+                console.log(er)
+                toast_add({
+                    text:`${er}`,
+                    type:'success',
+                    id:uuidv4()
+                });
+            })
+        })
+    }
+    //싫어요 취소 isThumbDown true
+    const thumbDownCancel = (e, reply)=>{
+        setIsThumbDown(false);
+        // e.stopPropagation();
+        axios.get(`http://localhost:3002/comments`).then((res)=>{
+            const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum;
+            const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum - 1;
+            axios.put(`http://localhost:3002/comments/${reply.id}`,{
+                text: reply.text,
+                date: reply.date,
+                email: reply.email,
+                postId,
+                thumbUpNum: updatedThumbUpNum,
+                thumbDownNum: updatedThumbDownNum,
+                id: reply.id,
+                isThumbUp:reply.isThumbUp,
+                isThumbDown:false
+            }).then((res)=>{
+                setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
+                getDetailReply();
+            }).catch((er)=>{
+                console.log(er)
+                toast_add({
+                    text:`${er}`,
+                    type:'success',
+                    id:uuidv4()
+                });
+            })
+        })
+    }
+    //게시글 삭제
+    const deletePost = (e,id)=>{
+        e.stopPropagation();
+        axios.delete(`http://localhost:3002/posts/${id}`).then(()=>{
+            toast_add({
+                text:'성공적으로 게시글을 삭제 완료 하였습니다.',
+                type:'success',
+                id:uuidv4()
+            });
+            history.push('/board')
+        }).catch((er)=>{
+        toast_add({
+            text:`${er}`,
+            type:'error',
+            id:uuidv4()
+        });
+        })
+    }
+    //toggle Menu
+    const [openMenus, setOpenMenus] = useState({});
+    const toggleMenu = (commentId) => {
+        setOpenMenus((prevOpenMenus) => ({
+            [commentId]: !prevOpenMenus[commentId],
+        }));
+        console.log(openMenus)
+    };
+    //댓글 수정 들어가기 버튼
+    const [replyModifyForm, setReplyModifyForm] = useState({});
+    const [replyModifyText, setReplyModifyText] = useState('');
+    const replyModify = (id)=>{
+        setReplyModifyForm((prev)=>({[id]:!prev[id]}));
+        axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`)
+        .then((res)=>{
+            const re = res.data;
+            const filterReply = re.filter((v)=>{
+                return v.id === id
+            })
+            console.log(filterReply[0].text);
+            setReplyModifyText(filterReply[0].text);
+        }).catch((er)=>{
+            console.log(er)
+        })
+    }
+    //수정완료버튼
+    const replyModifyBtn = (v)=>{
+        axios.put(`http://localhost:3002/comments/${v.id}`,{
+                    text: replyModifyText,
+                    date: formattedDate,
+                    email: v.email ,
+                    postId: v.postId,
+                    thumbUpNum: v.thumbUpNum,
+                    thumbDownNum: v.thumbDownNum,
+                    id: v.id,
+                    isThumbUp: v.isThumbUp,
+                    isThumbDown: v.isThumbDown 
+                }).then((res)=>{
+                    setThumbUpCounts({...thumbUpCounts, [v.id]:res.data});
+                    getDetailReply();
+                    replyModify();
+                    toast_add({
+                        text:'댓글 수정 완료',
+                        type:'success',
+                        id:uuidv4()
+                    });
+                }).catch((er)=>{
+                    console.log(er)
+                    toast_add({
+                        text:`${er}`,
+                        type:'success',
+                        id:uuidv4()
+                    });
+                })
+    }
+    //삭제 버튼
+    const replyDelete = (id)=>{
+        console.log(id);
+        axios.delete(`http://localhost:3002/comments/${id}`).then((res)=>{
+            getDetailReply();
+            toast_add({
+                text:'댓글 삭제 완료',
+                type:'success',
+                id:uuidv4()
+            });
+        }).catch((er)=>{
+            console.log(er)
+            toast_add({
+                text:`${er}`,
+                type:'success',
+                id:uuidv4()
+            });
+        })
+    }
+
+
     return (
         <>
         <div className="container boardDetailMain" style={{minHeight:'300px',marginTop:'13rem'}}>
             <div className="d-flex justi">
                 <h1 className="fontW5 boardH1 detailH">{title}</h1>
-                {isLogin&&userE===local?<Link to={`/board/${id}/edit`} className="btnSm btn--fix">수정</Link>:null}
+                <div>
+                    {isLogin&&userE===local?<Link to={`/board/${id}/edit`} className="btnSm btn--fix">수정</Link>:null}
+                    {isLogin&&userE===local?<button onClick={e=>deletePost(e,postId)} className="btnSm btn--fix" style={{color:'#c92a2a'}}>삭제</button>:null}
+                </div>
             </div>
             <div className="d-flex justi" style={{borderBottom:"1px solid #ced4da",padding:"1rem 0"}}>
                 <div className="d-flex alignC">
@@ -181,11 +426,11 @@ const BoardDetail = (props) => {
                             })
                         }
                     </div>
-                    <div style={{marginLeft:"1rem"}}>{userE ? userE.split('@')[0]: '삭제'}</div>
+                    <div style={{marginLeft:"1rem",fontWeight:'500',color:'#495057'}}>{userE ? userE.split('@')[0]: '삭제'}</div>
                 </div>
                 <div>{date}</div>
             </div>
-            <div style={{padding:'1rem 0', fontSize:'18px'}}>{body}</div>
+            <div style={{padding:'1rem 0', fontSize:'18px',color:'#757575'}}>{body}</div>
         </div>
         <div className="reply">
             <div className="textA detailText" style={{marginBottom:'5rem'}} >
@@ -233,30 +478,95 @@ const BoardDetail = (props) => {
                     replyCommentsPage.map((v,i)=>{
                         return(
                             <div key={i} className="replyForm">
-                                <div>{postNum+i}번 댓글</div>
-                                {/* 프로필사진 */}
-                                <div>
-                                {
-                                    users.map((u)=>{
-                                        if(u.email === v.email){
-                                        return (
-                                            <Avatar
-                                            className='avatar'
-                                            style={{ border: '1px solid gray'}}
-                                            key={u.imageListS}
-                                            alt=""
-                                            src={u.imageListS}
-                                            />
-                                        )
+                                <div className="d-flex justifyB">
+                                    <div className="d-flex">
+                                        {/* <div style={{display:''}}>{postNum+i-1}</div> */}
+                                        {/* 프로필사진 */}
+                                        <div style={{marginRight:'1rem'}}>
+                                        {
+                                            users.map((u)=>{
+                                                if(u.email === v.email){
+                                                return (
+                                                    <Avatar
+                                                    className='avatarReply'
+                                                    style={{ border: '1px solid #dad4d4', width:'40px',height:'40px'}}
+                                                    key={u.imageListS}
+                                                    alt=""
+                                                    src={u.imageListS}
+                                                    />
+                                                )
+                                                }
+                                                return null;
+                                            })
                                         }
-                                        return null;
-                                    })
-                                }
+                                        </div>
+                                        <div>
+                                            <div className="d-flex alignC">
+                                                {/* 이메일 */}
+                                                <div style={{fontWeight:'500', color:'#495057'}}>{v.email.split('@')[0]}</div>
+                                                {/* 날짜 */}
+                                                <div style={{fontSize:'12px',marginLeft:'1rem'}}>{v.date}</div>
+                                            </div>
+                                            {/* 내용수정 */}
+                                            {
+                                                replyModifyForm[v.id] && (
+                                                    <div className="" >
+                                                    <Textarea
+                                                    style={{fontSize:'16px'}}
+                                                    value={replyModifyText}
+                                                    onChange={(event) => setReplyModifyText(event.target.value)}
+                                                    minRows={3}
+                                                    maxRows={4}
+                                                    endDecorator={
+                                                        <Typography level="body-lg" sx={{ ml: 'auto' }}>
+                                                            {replyModifyText.length} 자
+                                                        </Typography>
+                                                    }
+                                                    sx={{ minWidth: 200 }}
+                                                    />
+                                                    <div style={{textAlign:'right',marginTop:'0.5rem'}} >
+                                                        <button className="btnSm btn--fix reMobtn" onClick={()=>replyModify(v.id)}>취소</button>
+                                                        <button className="btnSm btn--primary reMobtn" onClick={()=>replyModifyBtn(v)}>수정</button>
+                                                    </div>
+                                                </div>
+                                                )
+                                            }
+                                            {/* 내용 */}
+                                            {
+                                                replyModifyForm[v.id] 
+                                                ? 
+                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'450px'}}></p>
+                                                :
+                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'450px'}}>{v.text}</p>
+                                            }
+                                            {/* 좋아요 */}
+                                            <div className="d-flex alignC">
+                                                {
+                                                    v.isThumbUp===false ? <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                        : <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                }
+                                                
+                                                <div style={{marginRight:'1rem'}}>{v.thumbUpNum}</div>
+                                                {
+                                                    v.isThumbDown ===false ? <ThumbDownAltOutlinedIcon onClick={(e)=>{thumbDown(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                        : <ThumbDownIcon onClick={(e)=>{thumbDownCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                }
+                                                {admin==='admin@admin.com'&&<div style={{marginRight:'1rem'}}>{v.thumbDownNum}</div>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="reM1">
+                                        <div key={v.id} className="reM2">
+                                            <MoreVertIcon className="cursor-pointer menu-item2" style={{fontSize:'22px',color:'#616161'}} onClick={() => toggleMenu(v.id)}></MoreVertIcon>
+                                            {openMenus[v.id] && (
+                                                <div className="menu">
+                                                    <div onClick={()=>replyModify(v.id)} className="menu-item cursor-pointer">수정</div>
+                                                    <div onClick={()=>replyDelete(v.id)} className="menu-item cursor-pointer">삭제</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-                                {/* 이메일 */}
-                                <div>{v.email.split('@')[0]}</div>
-                                <div>{v.date}</div>
-                                <div>{v.text}</div>
                             </div>
                         )
                     })

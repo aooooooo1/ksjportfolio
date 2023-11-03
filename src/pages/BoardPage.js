@@ -225,7 +225,7 @@ const BoardPage = () => {
                           return (
                             <Avatar
                               className='avatar'
-                              style={{ border: '1px solid gray'}}
+                              style={{ border: '1px solid #dad4d4'}}
                               key={u.imageListS}
                               alt=""
                               src={u.imageListS}
