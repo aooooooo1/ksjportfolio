@@ -215,35 +215,39 @@ const MyPage = () => {
     return (
         <div className='container chargeMain'>
             <h1 className="textA fontW5" style={{marginBottom:'2rem'}}>내정보</h1>
-            <div>
-                <div onClick={refBox} style={{border:'1px solid #adb5bd', padding:'1rem',width:'170px',height:'170px',position:'relative',borderRadius:'50%'}} className='container cursor-pointer' >
-                    <UploadFileIcon style={{fontSize:"60px", position:'absolute',right:'0',bottom:'0',color:'grey'}}/>
-                    <input accept='image/*' onChange={imgChange} type="file" ref={inputRef} style={{display:'none'}}/>
-                    {userImg?<img style={{width:'150px', height:'150px'}} src={URL.createObjectURL(userImg)} alt=''></img>:''}
+            <div className='myImgDiv'>
+                <div>
+                    <div>
+                        <div onClick={refBox} style={{border:'1px solid #adb5bd', padding:'1rem',width:'100px',height:'100px',position:'relative',borderRadius:'50%'}} className='container cursor-pointer' >
+                            <UploadFileIcon style={{fontSize:"40px", position:'absolute',right:'0',bottom:'0',color:'grey'}}/>
+                            <input accept='image/*' onChange={imgChange} type="file" ref={inputRef} style={{display:'none'}}/>
+                            {userImg?<img style={{width:'150px', height:'150px'}} src={URL.createObjectURL(userImg)} alt=''></img>:''}
+                        </div>
+                    </div>
+                    <div className='textA' style={{padding:'3rem'}}>
+                        <button onClick={uploadServerImg} className='btnSm btn--primary'>업로드</button>
+                    </div>
                 </div>
-            </div>
-            <div className='textA' style={{padding:'3rem'}}>
-                <button onClick={uploadServerImg} className='btnSm btn--primary'>업로드</button>
-            </div>
-            <div className='d-flex justifyC'>
-                {
-                    users.map((u)=>{
-                        if(u.email === userEmail){
-                        return (
-                            <Avatar
-                            style={{ border: '1px solid gray', marginRight:'1rem' }}
-                            key={u.imageListS}
-                            alt=""
-                            src={u.imageListS}
-                            sx={{ width: 100, height: 100 }}
-                            />
-                        )
-                        }
-                        return null;
-                    })
-                }
-                <div className='d-flex alignC' style={{marginLeft:'2rem', fontSize:'18px'}}>
-                    <p>이메일 : {userEmail}</p>
+                <div className=''>
+                    {
+                        users.map((u)=>{
+                            if(u.email === userEmail){
+                            return (
+                                <Avatar
+                                style={{ border: '1px solid gray',margin:'0 auto'}}
+                                key={u.imageListS}
+                                alt=""
+                                src={u.imageListS}
+                                sx={{ width: 100, height: 100 }}
+                                />
+                            )
+                            }
+                            return null;
+                        })
+                    }
+                    <div className='' style={{padding:'3rem', fontSize:'18px'}}>
+                        <p style={{textAlign:'center'}}>이메일 : {userEmail}</p>
+                    </div>
                 </div>
             </div>
             <h3 className='fontW5' style={{marginTop:'3rem'}}><span className="barMy"></span>내가 쓴 글</h3>

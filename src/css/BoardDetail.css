@@ -20,6 +20,11 @@
     border: 1px solid rgb(189, 185, 185);
     margin-bottom: 2rem;
 }
+.myImgDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 @media screen and (max-width:768px) {
     .detailH{
         font-size: 20px;
@@ -31,5 +36,8 @@
     }
     .replyForm{
         width: 90%;
+    }
+    .myImgDiv{
+        display: block;
     }
 }
