@@ -16,6 +16,9 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { Avatar } from '@mui/material';
 import { list ,getDownloadURL, ref, listAll } from 'firebase/storage';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+
 
 const BoardPage = () => {
   const isAdmin = useSelector((state)=>{
@@ -62,7 +65,7 @@ const BoardPage = () => {
 
 
 
-  let limit = 5
+  let limit = 10
   useEffect(()=>{
     //페이지 갯수
     setNumberOfPages(Math.ceil(totalPost / limit))
@@ -92,7 +95,6 @@ const BoardPage = () => {
     }).catch((er)=>{
       console.log(er);
     });
-
     //게시글정보
     axios.get(`http://localhost:3002/posts`,{
       params:params
@@ -137,9 +139,55 @@ const BoardPage = () => {
     getPost(1)
   }
   useEffect(()=>{
-    setPostNum((currentPage-1)*5 + 1);
-  },[currentPage]) 
-
+    setPostNum((currentPage-1)*limit + 1);
+  },[currentPage,limit]) 
+  //toggle Menu
+  const [openClear, setOpenClear] = useState(false);
+  const toggleClear = () => {
+      setOpenClear((prev) => (!prev));
+  };
+  //boardLately
+  const boardLately = ()=>{
+    getPost(1);
+  }
+  //boardPopular
+  const boardPopular = ()=>{
+    const getPostPopular = (page=1)=>{
+      setCurrentPage(page);
+      let params = {
+        _page:page,
+          _limit:limit,
+          _sort:'postUpNum',
+          _order:'desc',
+          title_like:searchInput,
+      }
+      if(!isAdmin){
+        params = {...params, publicM:true};
+      }
+      //유저정보
+      axios.get(`http://localhost:3002/user`).then((res)=>{
+        setUsers(res.data);
+        console.log('유저데이터',res.data)
+      }).catch((er)=>{
+        console.log(er);
+      });
+      //게시글정보
+      axios.get(`http://localhost:3002/posts`,{
+        params:params
+      })
+        .then((res)=>{
+          setPost(res.data);
+          setTotalPost(res.headers['x-total-count'])
+      }).catch(()=>{
+        toast_add({
+          text:'서버가 꺼져있습니다. 관리자에게 문의해 주세요.',
+          type:'success',
+          id:uuidv4()
+      })
+      })
+    }
+    getPostPopular();
+  }
 
   return (
     <div className="container chargeMain">
@@ -157,6 +205,21 @@ const BoardPage = () => {
             </Link>
           }
       </div>
+      <div className="d-flex cursor-pointer clearAll" style={{marginBottom:'2rem'}} onClick={toggleClear}>
+        <ClearAllIcon style={{fontSize:'25px',marginRight:'0.5rem'}}/>
+      <div>정렬기준</div>
+      {
+          openClear&&
+          <div className="clearParent">
+              <div className="clearModalBoard" style={{width:'80px'}}>
+                  <ul style={{lineHeight:'30px', textAlign:'center'}}>
+                      <li className="cursor-pointer clearList" onClick={boardLately}>최신순</li>
+                      <li className="cursor-pointer clearList" onClick={boardPopular}>인기순</li>
+                  </ul>
+              </div>
+          </div>
+      }
+      </div>
       <Table aria-label="basic table" style={{fontSize:"16px"}}>
         <thead>
           <tr>
@@ -165,7 +228,7 @@ const BoardPage = () => {
             <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
             <th style={{width:'6%'}}></th>
             <th className='writer' style={{ textAlign:"center"}}>글쓴이</th>
-            {isLogin?<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>:<th style={{width:'1%'}}></th>}
+            {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>}
             {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>공개</th>}
           </tr>
         </thead>
@@ -178,7 +241,7 @@ const BoardPage = () => {
                   <tr style={{backgroundColor:'rgb(255 240 240)'}} key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
                     <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td>
                     <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
-                    <td style={{textAlign:"center"}} className='boardDate'>{po.date}</td>
+                    <td style={{textAlign:"center",color:'#9E9E9E',fontSize:'14px'}} className='boardDate'>{po.date}</td>
                     <td style={{textAlign:"center"}}>
                       {
                         users.map((u)=>{
@@ -198,7 +261,7 @@ const BoardPage = () => {
                       }
                     </td>
                     <td style={{textAlign:"center"}}>{po.email.split('@')[0]}</td>
-                    <td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>
+                    {isAdmin&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
                     {isAdmin&&<td className='media768'></td>}
                   </tr>
                 )
@@ -212,11 +275,16 @@ const BoardPage = () => {
               return(
                 <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
                     {/* 번호 */}
-                    <td style={{textAlign:"center"}}>{postNum + i}</td>
+                    <td style={{textAlign:"center",fontSize:'14px',color:'#757575'}}>{postNum + i}</td>
                     {/* 제목 */}
-                    <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
+                    <td style={{textAlign:"center"}} className="line-limit">
+                      {po.title}
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                      </span>
+                    </td>
                     {/* 날짜 */}
-                    <td className='boardDate' style={{textAlign:"center"}}>{po.date}</td>
+                    <td className='boardDate' style={{textAlign:"center", color:'#9E9E9E',fontSize:'14px'}}>{po.date}</td>
                     {/* 프로필 사진*/}
                     <td> 
                     {
@@ -237,11 +305,11 @@ const BoardPage = () => {
                     }
                     </td>
                     {/* 닉네임 */}
-                    <td style={{textAlign:'center'}}>
+                    <td style={{textAlign:'center', fontWeight:'500'}}>
                       {po.email ? po.email.split('@')[0]:''}
                     </td>
                     {/* 삭제 */}
-                    {isLogin&&(user.email===po.email||isAdmin)&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
+                    {isAdmin&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
                     {/* 공개 */}
                     {isAdmin&&<td className='media768' style={{textAlign:"center"}}>{po.publicM?'공개':<DoNotDisturbIcon style={{fontSize:'large', color:'#B71C1C',verticalAlign:'middle'}}/>}</td>}
                 </tr>

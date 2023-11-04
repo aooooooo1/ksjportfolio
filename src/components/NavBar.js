@@ -7,6 +7,8 @@ import { auth } from "../firebase-config";
 import { logout as reduxLogout } from "../redux/authSlice";
 import useToast from "../hooks/toast";
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
+import { Avatar } from "@mui/material";
 
 const NavBar = ({isScrolled}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +20,15 @@ const NavBar = ({isScrolled}) => {
     const isLogin = useSelector((state)=>{
         return state.auth.isLogin;
     })
+    //유저정보-이미지 가져옴
+    const [users, setUsers] = useState([]);
+    useEffect(()=>{
+        axios.get(`http://localhost:3002/user`).then((res)=>{
+                setUsers(res.data);
+            }).catch((er)=>{
+                console.log(er);
+        });
+    },[])
     //admin
     const [adminMode, setAdminMode]=useState(false);
     useEffect(()=>{
@@ -75,11 +86,30 @@ const NavBar = ({isScrolled}) => {
                         {
                             isLogin ? <>
                             <li className="nav__item">
-                                <Link to="/my" onClick={closeMenu} className={`nav__link ${curPath ==='/my' ? 'nav__link--active':''}`}>{adminMode?'관리자': '내정보'}</Link>
+                                <Link to="/my" onClick={closeMenu} className={`nav__link ${curPath ==='/my' ? 'nav__link--active':''}`}>
+                                <div>
+                                    {
+                                        users.map((u)=>{
+                                            if(u.email === localStorage.getItem('user')){
+                                            return (
+                                                <Avatar 
+                                                className='avatar'
+                                                style={{ border: '1px solid gray'}}
+                                                key={u.imageListS}
+                                                alt=""
+                                                src={u.imageListS}
+                                                />
+                                            )
+                                            }
+                                            return null;
+                                        })
+                                    }
+                                </div>
+                                </Link>
                             </li>
-                            <li className="nav__item">
+                            {/* <li className="nav__item">
                                 <div onClick={logout} className="nav__link cursor-pointer">로그아웃</div>
-                            </li>
+                            </li> */}
                             </>
                             : 
                             <li className="nav__item">

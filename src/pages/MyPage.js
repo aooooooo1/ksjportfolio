@@ -11,12 +11,15 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import Table from '@mui/joy/Table';
 import DeleteIcon from "@mui/icons-material/Delete";
 import Pagination1 from '../components/Pagination';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import axios from 'axios';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { v4 as uuidv4 } from 'uuid';
 import '../css/My.css';
 import '../css/Board.css';
+import { logout as reduxLogout } from "../redux/authSlice";
+import { useDispatch } from 'react-redux';
+
 const MyPage = () => {
     const [post, setPost] = useState([]);
     const [users, setUsers] = useState([]);
@@ -82,10 +85,50 @@ const MyPage = () => {
         })
         })
     },[limit,searchInput,user.email])
+    //좋아요 한 게시글 가져오는 함수
+    // const [postUp, setPostUp] = useState([]);
+    const postUp = useRef(new Set());
+    const getPostLike = useCallback((page)=>{
+        let params = {
+        _page:page,
+            _limit:limit,
+            _sort:'id',
+            _order:'desc',
+            title_like:searchInput,
+        }
+        axios.get(`http://localhost:3002/posts`,{
+        params:params
+        })
+        .then((res)=>{
+            const nowUser = localStorage.getItem('user')
+            const likePost = res.data
+            const likedPosts = new Set();
+            for(let i = 0; i < likePost.length; i++){
+                let forLike = likePost[i].userEmail;
+                for(let j = 0; j < forLike.length; j++){
+                    let forEmail = forLike[j];
+                    let likePostBool = forEmail === nowUser
+                    if(likePostBool){
+                        likedPosts.add(likePost[i]);
+                    }
+                }
+            }
+            postUp.current = [...likedPosts];
+            console.log(postUp.current)
+        }).catch((er)=>{
+        toast_add({
+            text:`${er}`,
+            type:'error',
+            id:uuidv4()
+        })
+        })
+    },[limit,searchInput,toast_add])
+
     //페이지주소가 바뀔때 마다 실행
     useEffect(()=>{
         getPost(parseInt(urlPage)||1)
-    },[urlPage,getPost])
+        getPostLike(1)
+    },[urlPage,getPost,getPostLike])
 
 
     //게시글 삭제
@@ -128,7 +171,6 @@ const MyPage = () => {
     useEffect(()=>{
         axios.get(`http://localhost:3002/user`).then((res)=>{
             setUsers(res.data);
-            console.log('유저데이터',res.data)
         }).catch((er)=>{
             console.log(er);
         });
@@ -201,17 +243,31 @@ const MyPage = () => {
         })
     }
     
-    //사진 리스트 불러오기
-    // useEffect(()=>{
-    //     list(imageListRef).then((res)=>{
-    //         res.items.forEach((v)=>{
-    //             getDownloadURL(v).then((urlv)=>{
-    //                 // setImageList((prev)=>[...prev, urlv]);
-    //                 setImageListS(urlv);
-    //             })
-    //         })
-    //     })
-    // },[]);
+
+    //logout
+    const dispatch = useDispatch();
+    const logout = async ()=>{
+        if(localStorage.getItem('user')==='admin@admin.com'){
+            await signOut(auth);
+            dispatch(reduxLogout());
+            history.push('/');
+            setTimeout(()=>{
+                window.location.reload();
+            },500)
+        }else{
+            await signOut(auth);
+            dispatch(reduxLogout());
+            console.log('로그아웃 정상완료')
+        }
+        history.push('/');
+        toast_add({
+            text:'로그아웃 되었습니다. 안녕히가세요.',
+            type: 'success',
+            id : uuidv4()
+        });
+    }
+
+
     return (
         <div className='container chargeMain'>
             <h1 className="textA fontW5" style={{marginBottom:'2rem'}}>내정보</h1>
@@ -221,7 +277,7 @@ const MyPage = () => {
                         <div onClick={refBox} style={{border:'1px solid #adb5bd', padding:'1rem',width:'100px',height:'100px',position:'relative',borderRadius:'50%'}} className='container cursor-pointer' >
                             <UploadFileIcon style={{fontSize:"40px", position:'absolute',right:'0',bottom:'0',color:'grey'}}/>
                             <input accept='image/*' onChange={imgChange} type="file" ref={inputRef} style={{display:'none'}}/>
-                            {userImg?<img style={{width:'150px', height:'150px'}} src={URL.createObjectURL(userImg)} alt=''></img>:''}
+                            {userImg?<img style={{width:'150px'}} src={URL.createObjectURL(userImg)} alt=''></img>:''}
                         </div>
                     </div>
                     <div className='textA' style={{padding:'3rem'}}>
@@ -250,7 +306,10 @@ const MyPage = () => {
                     </div>
                 </div>
             </div>
-            <h3 className='fontW5' style={{marginTop:'3rem'}}><span className="barMy"></span>내가 쓴 글</h3>
+            <div className='logoutBtn'>
+                <div onClick={logout} className="btnSm btn--fix cursor-pointer ">로그아웃</div>
+            </div>
+            <h3 className='fontW5' style={{marginTop:'3rem'}}><span className="barMy"></span>내가 쓴 게시글</h3>
             {/* 게시판 */}
             <div className="py-3 d-flex justify-content-between">
                 <InputForm onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
@@ -311,9 +370,56 @@ const MyPage = () => {
                 }
                 </tbody>
             </Table>
-            
-                <Pagination1 currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
-            
+            <Pagination1 currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
+            {/* 좋아요 게시글 */}
+            <h3 className='fontW5' style={{marginTop:'3rem'}}><span className="barMy"></span>좋아요 누른 게시글</h3>
+            <Table aria-label="basic table" style={{fontSize:"16px"}}>
+                <thead>
+                <tr>
+                    <th style={{ width: '10%', textAlign:"center" }}>번호</th>
+                    <th style={{textAlign:"center"}}>제목</th>
+                    <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
+                    <th className='writerMy' style={{width:'1%'}}></th>
+                    <th className='writerMy' style={{ width: '15%', textAlign:"center"}}>글쓴이</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                    postUp.current.length > 0 ? postUp.current.map((post,i)=>{
+                    return(
+                        <tr key={i+1} onClick={()=>history.push(`/board/${post.id}`)} className="cursor-pointer">
+                            <td style={{textAlign:"center"}}>{i+1}</td>
+                            <td style={{textAlign:"center"}} className="line-limit">{post.title}</td>
+                            <td className='boardDate' style={{textAlign:"center"}}>{post.date}</td>
+                            <td className='media768'>
+                                {
+                                    users.map((u)=>{
+                                        if(u.email === post.email){
+                                        return (
+                                            <Avatar
+                                            className='avatar writerMy'
+                                            style={{ border: '1px solid #dad4d4'}}
+                                            key={u.imageListS}
+                                            alt=""
+                                            src={u.imageListS}
+                                            />
+                                        )
+                                        }
+                                        return null;
+                                    })
+                                }
+                            </td>
+                            <td className='writerMy' style={{textAlign:'center'}}>
+                                {post.email ? post.email.split('@')[0]:''}
+                            </td>
+                        </tr>
+                    );
+                    }) : <tr>
+                            <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다.</td>
+                        </tr>
+                }
+                </tbody>
+            </Table>
         </div>
     )
 }  

@@ -6,6 +6,7 @@ import { auth } from "../firebase-config";
 import useToast from "../hooks/toast";
 import { v4 as uuidv4 } from 'uuid';
 import { bool } from "prop-types";
+import '../css/CreateBlog.css'
 const BlogForm = ({edit}) => {
     const [publicM , setPublicM] = useState(false);
     const {id} = useParams();
@@ -84,7 +85,9 @@ const BlogForm = ({edit}) => {
                     body,
                     date: formattedDate,
                     email:user.email,
-                    publicM
+                    publicM,
+                    postUpNum:0,
+                    isPostUp:false
                 }).then(()=>{
                     history.push(`/board/${id}`);
                 }).catch(()=>{
@@ -104,7 +107,9 @@ const BlogForm = ({edit}) => {
                 date: formattedDate,
                 email:user.email,
                 publicM,
-                comments
+                comments,
+                postUpNum:0,
+                isPostUp:false
             }).then(()=>{
                 history.push('/board');
                 toast_add({
@@ -178,7 +183,7 @@ const BlogForm = ({edit}) => {
                 <textarea type="text" required value={body} 
                     onChange={e=>setBody(e.target.value)} 
                     onFocus={handleInputFocusB}
-                    onBlur={handleInputBlurB} rows={8} className="inputW"/>
+                    onBlur={handleInputBlurB} rows={8} className="inputW createTextArea"/>
             </div>
             <div className="d-flex" >
                 <input checked={publicM} onChange={e=>setPublicM(e.target.checked)} className="cursor-pointer" type="checkbox" style={{width:"20px"}}/><div style={{marginTop:'5px'}}>공개</div>

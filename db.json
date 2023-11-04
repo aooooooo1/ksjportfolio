@@ -1,31 +1,46 @@
 {
   "posts": [
     {
-      "title": "test",
-      "body": "tse",
-      "date": "23년 11월 03일",
-      "email": "123@test.com",
-      "publicM": true,
-      "comments": [],
-      "id": 1
-    },
-    {
-      "title": "tes",
-      "body": "tst",
-      "date": "23년 11월 03일",
-      "email": "123@test.com",
-      "publicM": false,
-      "comments": [],
-      "id": 2
-    },
-    {
-      "title": "tt",
-      "body": "tt",
+      "title": "f",
+      "body": "f",
       "date": "23년 11월 04일",
+      "email": "12@test.com",
+      "publicM": true,
+      "postUpNum": 6,
+      "isPostUp": false,
+      "id": 14,
+      "userEmail": [
+        "test123@test.com",
+        "test1456@test.com",
+        "test1@test.com",
+        "123@test.com"
+      ]
+    },
+    {
+      "title": "f",
+      "body": "f",
+      "date": "23년 11월 05일",
       "email": "123@test.com",
       "publicM": true,
-      "comments": [],
-      "id": 3
+      "postUpNum": 1,
+      "isPostUp": false,
+      "id": 15,
+      "userEmail": [
+        "123@test.com"
+      ]
+    },
+    {
+      "title": "qwe",
+      "body": "qew",
+      "date": "23년 11월 05일",
+      "email": "123@test.com",
+      "publicM": true,
+      "postUpNum": 1,
+      "isPostUp": false,
+      "id": 16,
+      "userEmail": [
+        "123@test.com"
+      ]
     }
   ],
   "user": [
@@ -38,107 +53,34 @@
       "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Fpointer.png9ad2298b-6508-489c-8bd7-383db591abec?alt=media&token=0c2d1742-95dc-4f02-a806-6a297aaefb15",
       "email": "123@test.com",
       "id": 2
+    },
+    {
+      "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Fport1.webp9f8487ba-4258-417e-9176-77715c2d8115?alt=media&token=545d230f-71ed-46e4-9d75-dcaf8e46966f",
+      "email": "12@test.com",
+      "id": 3
+    },
+    {
+      "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Fhomeimg.jpg2608f4d9-b40e-4711-9d80-2cf35e6573bd?alt=media&token=d39a59f2-c3df-4db0-9453-3a21bb43edd4",
+      "email": "test@test.com",
+      "id": 4
+    },
+    {
+      "imageListS": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userProfileImg%2Fdatabase.pngb496e282-19d1-4e58-a19f-d636cac81c67?alt=media&token=52a2c551-0910-4ce8-aeda-0e0172002cce",
+      "email": "test1@test.com",
+      "id": 5
     }
   ],
   "comments": [
     {
-      "text": "11",
-      "date": "23년 11월 04일 00시09분",
+      "text": "ff",
+      "date": "23년 11월 05일 02시47분",
       "email": "123@test.com",
-      "postId": "3",
+      "postId": "15",
       "thumbUpNum": 1,
       "thumbDownNum": 0,
       "id": 1,
       "isThumbUp": true,
       "isThumbDown": false
-    },
-    {
-      "text": "11ggg",
-      "date": "23년 11월 04일 00시09분",
-      "email": "123@test.com",
-      "postId": "3",
-      "thumbUpNum": 1,
-      "thumbDownNum": 1,
-      "id": 2,
-      "isThumbUp": true,
-      "isThumbDown": true
-    },
-    {
-      "text": "123ffff😍😍😍😍😍",
-      "date": "23년 11월 04일 00시10분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 1,
-      "id": 5,
-      "isThumbUp": false,
-      "isThumbDown": true
-    },
-    {
-      "text": "123ffff😍😍😍😍😍fsadfsadfsdfsdafsadfsdf",
-      "date": "23년 11월 04일 00시11분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 6
-    },
-    {
-      "text": "123ffff😍😍😍😍😍fsadfsadfsdfsdafsadfsdfsadfsadfsdfsadfasdfasdfasdfasdfasdfasdf",
-      "date": "23년 11월 04일 00시12분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 7
-    },
-    {
-      "text": "asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf",
-      "date": "23년 11월 04일 00시13분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 8
-    },
-    {
-      "text": "1234444",
-      "date": "23년 11월 04일 03시06분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 9
-    },
-    {
-      "text": "👍👍👍👍🏖🏖🏖😍😍😀😀",
-      "date": "23년 11월 04일 04시04분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 10
-    },
-    {
-      "text": "👍👍👍👍🏖🏖🏖😍😍😀😀",
-      "date": "23년 11월 04일 04시04분",
-      "email": "123@test.com",
-      "postId": "1",
-      "thumbUpNum": 0,
-      "thumbDownNum": 0,
-      "isThumbUp": false,
-      "isThumbDown": false,
-      "id": 11
     }
   ]
 }

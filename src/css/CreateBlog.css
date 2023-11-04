@@ -24,6 +24,12 @@
     background-color: #d1838a;
     color: aliceblue;
 }
+.createTextArea{
+    border-radius: 2rem;
+    padding: 1.5rem;
+    font-size: 16px;
+    border: 1px solid #a0b3b0;
+}
 @media screen and (max-width:768px) {
     .inputW{
         width: 320px;

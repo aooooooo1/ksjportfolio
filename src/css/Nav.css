@@ -68,7 +68,7 @@
     transition: var(--transition);
 }
 .nav__link--active::before {
-    width: 50%;
+    width: 100%;
 }
 .nav__link--active,
 .nav__link:hover {

@@ -20,7 +20,10 @@ import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 const BoardDetail = (props) => {
     const admin = localStorage.getItem('user');
@@ -36,6 +39,7 @@ const BoardDetail = (props) => {
     const [date, setDate] = useState();
     const [userE, setUserE] =useState('');
     const [boardId, setBoardId] = useState(0);
+    const [publicM, setPublicM] = useState(null);
     const history = useHistory();
     const [text, setText] = useState('');
     const addEmoji = (emoji) => () => setText(`${text}${emoji}`);
@@ -56,12 +60,14 @@ const BoardDetail = (props) => {
     const [thumbUpNum,setThumbUpNum] = useState(0);
     const [thumbDownNum,setThumbDownNum] = useState(0);
     const [thumbUpCounts, setThumbUpCounts] = useState({});
-    const [thumbDownCounts, setThumbDownCounts] = useState({});
     const [isThumbUp, setIsThumbUp] = useState(false);
     const [isThumbDown, setIsThumbDown] = useState(false);
+
+    const [isPostUp, setIsPostUp] = useState(false);
+    const [postUpNum, setPostUpNum] = useState(0);
     //폭죽
 
-  
+
 
 
 
@@ -90,23 +96,42 @@ const BoardDetail = (props) => {
     },[props.match.params.id])
 
 
-
+    const getDetail = useCallback((page=1)=>{
+        axios.get(`http://localhost:3002/posts/${props.match.params.id}`)
+        .then((res)=>{
+            setTitle(res.data.title);
+            setBody(res.data.body);
+            setDate(res.data.date);
+            setUserE(res.data.email);
+            setBoardId(res.data.id);
+            setPublicM(res.data.publicM);
+            setReplyComments(res.data.comments);
+            setPostUpNum(res.data.postUpNum);
+            setIsPostUp(res.data.isPostUp);
+        })
+    },[props.match.params.id])
+    //게시글 좋아용 validate
+    const postUpVali = useCallback(()=>{
+        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+            // console.log('post/userEmail',res.data.userEmail[0])
+            const existingEmail = res.data.userEmail;
+            const nowUser = localStorage.getItem('user');
+            if(existingEmail){
+                let filterdE = existingEmail.filter(v=>v === nowUser);
+                if(filterdE[0] === nowUser){
+                    setIsPostUp(true);
+                }else{
+                    setIsPostUp(false);
+                }
+            }
+        })
+    },[id])
     //게시글내용 한번 가져오기
     useEffect(()=>{
-        const getDetail = (page=1)=>{
-            axios.get(`http://localhost:3002/posts/${props.match.params.id}`)
-            .then((res)=>{
-                setTitle(res.data.title);
-                setBody(res.data.body);
-                setDate(res.data.date);
-                setUserE(res.data.email);
-                setBoardId(res.data.id);
-                setReplyComments(res.data.comments);
-            })
-        }
         getDetail();
         getDetailReply();
-    },[props.match.params.id,getDetailReply]);
+        postUpVali();
+    },[getDetailReply,postUpVali,getDetail]);
 
     
 
@@ -122,7 +147,23 @@ const BoardDetail = (props) => {
     const formattedDate = `${year}년 ${month}월 ${day}일 ${hours}시${minutes}분`;
     //댓글등록 btn
     const detailReply = ()=>{
-
+        if(text===''){
+            toast_add({
+                text:'댓글을 입력하셔야 등록이 가능합니다.😢😢',
+                type:'error',
+                id:uuidv4()
+            });
+            return;
+        }
+        if(!isLogin){
+            toast_add({
+                text:'로그인 먼저 해주세요!!😭😭',
+                type:'error',
+                id:uuidv4()
+            });
+            return;
+        }
+        
         axios.get(`http://localhost:3002/comments`)
             .then((res) => {
                 const postData = res.data;
@@ -157,11 +198,10 @@ const BoardDetail = (props) => {
                 });
             })
     }
-    //유저정보
+    //유저정보-이미지 가져옴
     useEffect(()=>{
         axios.get(`http://localhost:3002/user`).then((res)=>{
                 setUsers(res.data);
-                console.log('유저데이터',res.data)
             }).catch((er)=>{
                 console.log(er);
         });
@@ -175,9 +215,9 @@ const BoardDetail = (props) => {
     const thumbUp = (e, reply)=>{
         setIsThumbUp(true)
         e.stopPropagation();
-            axios.get(`http://localhost:3002/comments`).then((res)=>{
-                const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum + 1;
-                const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum;
+            axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+                const updatedThumbUpNum = res.data.thumbUpNum + 1;
+                const updatedThumbDownNum = res.data.thumbDownNum;
                 setIsThumbUp(true)
                 axios.put(`http://localhost:3002/comments/${reply.id}`,{
                     text: reply.text,
@@ -211,9 +251,9 @@ const BoardDetail = (props) => {
     const thumbUpCancel=(e, reply)=>{
             setIsThumbUp(false);
             e.stopPropagation();
-            axios.get(`http://localhost:3002/comments`).then((res)=>{
-                const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum - 1;
-                const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum;
+            axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+                const updatedThumbUpNum = res.data.thumbUpNum - 1;
+                const updatedThumbDownNum = res.data.thumbDownNum;
                 axios.put(`http://localhost:3002/comments/${reply.id}`,{
                     text: reply.text,
                     date: reply.date,
@@ -227,11 +267,6 @@ const BoardDetail = (props) => {
                 }).then((res)=>{
                     setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                     getDetailReply();
-                    toast_add({
-                        text:'좋아요를 취소하였습니다.🥺',
-                        type:'success',
-                        id:uuidv4()
-                    });
                 }).catch((er)=>{
                     console.log(er)
                     toast_add({
@@ -246,9 +281,9 @@ const BoardDetail = (props) => {
     const thumbDown = (e, reply)=>{
         setIsThumbDown(true);
         e.stopPropagation();
-        axios.get(`http://localhost:3002/comments`).then((res)=>{
-            const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum;
-            const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum + 1;
+        axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+            const updatedThumbUpNum = res.data.thumbUpNum;
+            const updatedThumbDownNum = res.data.thumbDownNum + 1;
             axios.put(`http://localhost:3002/comments/${reply.id}`,{
                 text: reply.text,
                 date: reply.date,
@@ -276,9 +311,9 @@ const BoardDetail = (props) => {
     const thumbDownCancel = (e, reply)=>{
         setIsThumbDown(false);
         // e.stopPropagation();
-        axios.get(`http://localhost:3002/comments`).then((res)=>{
-            const updatedThumbUpNum = res.data[reply.id - 1].thumbUpNum;
-            const updatedThumbDownNum = res.data[reply.id - 1].thumbDownNum - 1;
+        axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+            const updatedThumbUpNum = res.data.thumbUpNum;
+            const updatedThumbDownNum = res.data.thumbDownNum - 1;
             axios.put(`http://localhost:3002/comments/${reply.id}`,{
                 text: reply.text,
                 date: reply.date,
@@ -375,7 +410,7 @@ const BoardDetail = (props) => {
                     });
                 })
     }
-    //삭제 버튼
+    //댓글삭제 버튼
     const replyDelete = (id)=>{
         console.log(id);
         axios.delete(`http://localhost:3002/comments/${id}`).then((res)=>{
@@ -394,16 +429,169 @@ const BoardDetail = (props) => {
             });
         })
     }
-
+    //정렬기준
+    //toggle Menu
+    const [openClear, setOpenClear] = useState(false);
+    const toggleClear = () => {
+        setOpenClear((prev) => (!prev));
+    };
+    //최신순
+    const replyLately = ()=>{
+            setCurrentPage(1);
+            axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`,{
+                params:{
+                    _page:1,
+                    _limit:10,
+                    _sort:'date',
+                    _order:'desc',
+                }
+            })
+            .then((res)=>{
+                setReplyCommentsPage(res.data);
+                setTotalPost(res.headers['x-total-count'])
+                toggleClear()
+            }).catch((er)=>{
+                console.log(er)
+            })
+    }
+    //인기순
+    const replyPopular=()=>{
+        setCurrentPage(1);
+            axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`,{
+                params:{
+                    _page:1,
+                    _limit:10,
+                    _sort:'thumbUpNum',
+                    _order:'desc',
+                }
+            })
+            .then((res)=>{
+                setReplyCommentsPage(res.data);
+                setTotalPost(res.headers['x-total-count'])
+                toggleClear()
+            }).catch((er)=>{
+                console.log(er)
+            })
+    }
+    //
+    //toggle Menu 게시글 수정삭제 토글
+    const [openPost, setOpenPost] = useState(false);
+    const togglePost = () => {
+        setOpenPost((prev) => (!prev));
+    }
+    
+    //post UP
+    const postUp = (e,id)=>{
+        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+            const existingEmail = res.data.userEmail? res.data.userEmail : '';
+            const updatedThumbUpNum = postUpNum + 1;
+            setIsPostUp(true)
+                axios.put(`http://localhost:3002/posts/${id}`,{
+                    title,
+                    body,
+                    date,
+                    email: userE,
+                    publicM,
+                    postUpNum: updatedThumbUpNum,
+                    isPostUp,
+                    id,
+                    userEmail:[
+                        ...existingEmail,
+                        localStorage.getItem('user')
+                    ]
+                }).then((res)=>{
+                    getDetail();
+                    postUpVali();
+                    toast_add({
+                        text:'좋아요!!🤩🤩',
+                        type:'success',
+                        id:uuidv4()
+                    });
+                }).catch((er)=>{
+                    console.log(er)
+                    toast_add({
+                        text:`${er}`,
+                        type:'error',
+                        id:uuidv4()
+                    });
+                })
+        })
+    }
+    //게시글좋아요 취소
+    const postUpCancel=(e,id)=>{
+        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+            const existingEmail = res.data.userEmail;
+            const nowUser = localStorage.getItem('user');
+            const filterdEmail = existingEmail.filter(v=>v !== nowUser)
+            const updatedThumbUpNum = postUpNum - 1;
+            setIsPostUp(false)
+                axios.put(`http://localhost:3002/posts/${id}`,{
+                    title,
+                    body,
+                    date,
+                    email: userE,
+                    publicM,
+                    postUpNum: updatedThumbUpNum,
+                    isPostUp,
+                    id,
+                    userEmail: filterdEmail,
+                }).then((res)=>{
+                    getDetail();
+                    postUpVali();
+                }).catch((er)=>{
+                    console.log(er)
+                    toast_add({
+                        text:`${er}`,
+                        type:'error',
+                        id:uuidv4()
+                    });
+                })
+        })
+}
+    //불꽃놀이
+    const [fireworks, setFireworks] = useState([]);
+    const createFireworks = (e) => {
+        const x = e.pageX;
+        const y = e.pageY;
+        for (let i = 0; i < 10; i++) {
+            const randomX = x + getRandomInt(-20, 20);
+            const randomY = y + getRandomInt(-20, 20);
+            const fireworkStyle = {
+            left: `${randomX}px`,
+            top: `${randomY}px`,
+            backgroundColor: getRandomColor(),
+            };
+            setFireworks((prevFireworks) => [
+            ...prevFireworks,
+            <div key={i} className="firework" style={fireworkStyle}></div>,
+            ]);
+        }
+        setTimeout(() => {
+            setFireworks([]);
+        }, 1000);
+    }
 
     return (
         <>
-        <div className="container boardDetailMain" style={{minHeight:'300px',marginTop:'13rem'}}>
+        <div className="container boardDetailMain" style={{minHeight:'350px',marginTop:'13rem'}}>
             <div className="d-flex justi">
                 <h1 className="fontW5 boardH1 detailH">{title}</h1>
                 <div>
-                    {isLogin&&userE===local?<Link to={`/board/${id}/edit`} className="btnSm btn--fix">수정</Link>:null}
-                    {isLogin&&userE===local?<button onClick={e=>deletePost(e,postId)} className="btnSm btn--fix" style={{color:'#c92a2a'}}>삭제</button>:null}
+                    {
+                        isLogin&&userE===local &&
+                        <MoreVertIcon className="cursor-pointer menu-item2" style={{fontSize:'22px',color:'#616161'}} onClick={() => togglePost()}></MoreVertIcon>
+                    }
+                    {
+                        openPost&&
+                        <div className="clearParent">
+                            <div className="clearModal3">
+                                <ul style={{lineHeight:'30px'}}>
+                                    <li className="cursor-pointer clearList" ><Link to={`/board/${id}/edit`}><EditIcon style={{verticalAlign:'middle',fontSize:'18px'}}/>수정</Link></li>
+                                    <li className="cursor-pointer clearList" onClick={e=>deletePost(e,postId)}><DeleteOutlinedIcon style={{verticalAlign:'middle',fontSize:'20px'}}/>삭제</li>
+                                </ul>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
             <div className="d-flex justi" style={{borderBottom:"1px solid #ced4da",padding:"1rem 0"}}>
@@ -432,16 +620,42 @@ const BoardDetail = (props) => {
             </div>
             <div style={{padding:'1rem 0', fontSize:'18px',color:'#757575'}}>{body}</div>
         </div>
+        <div className="" style={{margin:'2rem 0'}}>
+            {/* 게시글 좋아요 */}
+            {/* 폭죽 */}
+            <div>{fireworks}</div>
+            {
+                isPostUp === false ? 
+                <>
+                <Tooltip title="게시글 좋아요" arrow style={{fontSize:'32px'}}>
+                    <div className="d-flex justifyC ">
+                        <ThumbUpAltOutlinedIcon onClick={(e)=>{postUp(e,id); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'50px',padding:'0.55rem',borderRadius:'100%'}}/>
+                    </div>
+                </Tooltip>
+                <div className="d-flex justifyC">{postUpNum}</div>
+                </>
+                :
+                <>
+                <Tooltip title="좋아요 취소" arrow style={{fontSize:'32px'}}>
+                    <div className="d-flex justifyC ">
+                        <ThumbUpIcon onClick={(e)=>postUpCancel(e,id)} className="cursor-pointer thumb" style={{fontSize:'50px',padding:'0.55rem',borderRadius:'100%',color:'1c6470'}}/>
+                    </div>
+                </Tooltip>
+                <div className="d-flex justifyC">{postUpNum}</div>
+                </>
+            }
+        </div>
+        {/* 댓글인풋 */}
         <div className="reply">
             <div className="textA detailText" style={{marginBottom:'5rem'}} >
                 <Textarea
-                style={{fontSize:'20px'}}
+                style={{fontSize:'17px'}}
                 value={text}
                 onChange={(event) => setText(event.target.value)}
                 minRows={3}
                 maxRows={4}
                 startDecorator={
-                    <Box sx={{ display: 'flex', gap: 1}}>
+                    <Box sx={{ display: 'flex', gap: 1.3}}>
                         <IconButton variant="outlined" color="neutral" onClick={addEmoji('👍')} style={{fontSize:'25px'}}>
                             👍
                         </IconButton>
@@ -460,6 +674,12 @@ const BoardDetail = (props) => {
                         <IconButton variant="outlined" color="neutral" onClick={addEmoji('🔥')} style={{fontSize:'25px'}}>
                             🔥
                         </IconButton>
+                        <IconButton variant="outlined" color="neutral" onClick={addEmoji('🥺')} style={{fontSize:'25px'}}>
+                            🥺
+                        </IconButton>
+                        <IconButton variant="outlined" color="neutral" onClick={addEmoji('😰')} style={{fontSize:'25px'}}>
+                            😰
+                        </IconButton>
                     </Box>
                 }
                 endDecorator={
@@ -469,10 +689,25 @@ const BoardDetail = (props) => {
                 }
                 sx={{ minWidth: 300 }}
                 />
-                <div style={{textAlign:'right',marginTop:'0.5rem'}} onClick={detailReply}>
-                    <button className="btnSm btn--primary">등록</button>
+                <div style={{textAlign:'right',marginTop:'0.5rem'}} >
+                    <button className="btnSm btn--primary" onClick={detailReply}>등록</button>
                 </div>
             </div>
+            <div className="d-flex cursor-pointer clearAll" style={{marginBottom:'2rem'}} onClick={toggleClear}>
+                <ClearAllIcon style={{fontSize:'25px',marginRight:'0.5rem'}}/>
+                <div>정렬기준</div>
+            </div>
+            {
+                openClear&&
+                <div className="clearParent">
+                    <div className="clearModal">
+                        <ul style={{lineHeight:'30px'}}>
+                            <li className="cursor-pointer clearList" onClick={replyLately}>최신순</li>
+                            <li className="cursor-pointer clearList" onClick={replyPopular}>인기순</li>
+                        </ul>
+                    </div>
+                </div>
+            }
             <div>
                 {
                     replyCommentsPage.map((v,i)=>{
@@ -525,7 +760,7 @@ const BoardDetail = (props) => {
                                                     sx={{ minWidth: 200 }}
                                                     />
                                                     <div style={{textAlign:'right',marginTop:'0.5rem'}} >
-                                                        <button className="btnSm btn--fix reMobtn" onClick={()=>replyModify(v.id)}>취소</button>
+                                                        <button className="btnSm btn--fix reMobtn" onClick={()=>{replyModify(v.id); toggleMenu(v.id)}}>취소</button>
                                                         <button className="btnSm btn--primary reMobtn" onClick={()=>replyModifyBtn(v)}>수정</button>
                                                     </div>
                                                 </div>
@@ -535,37 +770,54 @@ const BoardDetail = (props) => {
                                             {
                                                 replyModifyForm[v.id] 
                                                 ? 
-                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'450px'}}></p>
+                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'400px'}}></p>
                                                 :
-                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'450px'}}>{v.text}</p>
+                                                <p className="detailTextReply" style={{padding:'0.5rem 0 0 0', wordWrap:'break-word', width:'400px'}}>{v.text}</p>
                                             }
                                             {/* 좋아요 */}
                                             <div className="d-flex alignC">
-                                                {
-                                                    v.isThumbUp===false ? <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                        : <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                }
-                                                
+                                                {/* 폭죽 */}
+                                                <div>{fireworks}</div>
+                                                <Tooltip title="좋아요" arrow style={{fontSize:'32px'}}>
+                                                    {
+                                                        v.isThumbUp===false ? <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                            : <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                    }
+                                                </Tooltip>
                                                 <div style={{marginRight:'1rem'}}>{v.thumbUpNum}</div>
-                                                {
-                                                    v.isThumbDown ===false ? <ThumbDownAltOutlinedIcon onClick={(e)=>{thumbDown(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                        : <ThumbDownIcon onClick={(e)=>{thumbDownCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                }
+                                                <Tooltip title="싫어요" arrow style={{fontSize:'32px'}}>
+                                                    {
+                                                        v.isThumbDown ===false ? <ThumbDownAltOutlinedIcon onClick={(e)=>{thumbDown(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                            : <ThumbDownIcon onClick={(e)=>{thumbDownCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                    }
+                                                </Tooltip>
                                                 {admin==='admin@admin.com'&&<div style={{marginRight:'1rem'}}>{v.thumbDownNum}</div>}
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="reM1">
-                                        <div key={v.id} className="reM2">
-                                            <MoreVertIcon className="cursor-pointer menu-item2" style={{fontSize:'22px',color:'#616161'}} onClick={() => toggleMenu(v.id)}></MoreVertIcon>
-                                            {openMenus[v.id] && (
-                                                <div className="menu">
-                                                    <div onClick={()=>replyModify(v.id)} className="menu-item cursor-pointer">수정</div>
-                                                    <div onClick={()=>replyDelete(v.id)} className="menu-item cursor-pointer">삭제</div>
-                                                </div>
-                                            )}
+                                    {
+                                        isLogin && v.email === local ? 
+                                        <div className="">
+                                            <div key={v.id} className="">
+                                                <MoreVertIcon className="cursor-pointer menu-item2" style={{fontSize:'22px',color:'#616161'}} onClick={() => toggleMenu(v.id)}></MoreVertIcon>
+                                                {openMenus[v.id] && (
+                                                    <div className="clearParent">
+                                                        <div className="clearModalReply" style={{width:'72px'}}>
+                                                            <ul style={{lineHeight:'30px'}}>
+                                                                <li onClick={()=>replyModify(v.id)} className="cursor-pointer clearList"><EditIcon style={{verticalAlign:'middle',fontSize:'18px'}}/>수정</li>
+                                                                <li onClick={()=>replyDelete(v.id)} className="cursor-pointer clearList"><DeleteOutlinedIcon style={{verticalAlign:'middle',fontSize:'20px'}}/>삭제</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                    
+                                            </div>
                                         </div>
-                                    </div>
+                                        :
+                                        <div></div>
+                                    }
+                                    
                                 </div>
                             </div>
                         )
@@ -583,5 +835,16 @@ const BoardDetail = (props) => {
         </>
     )
 }
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+function getRandomColor() {
+const letters = '0123456789ABCDEF';
+let color = '#';
+for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+}
+return color;
+}
 export default BoardDetail
