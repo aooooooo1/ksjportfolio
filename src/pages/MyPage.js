@@ -6,11 +6,12 @@ import { ref, uploadBytes , listAll,list ,getDownloadURL } from 'firebase/storag
 import { v4 } from 'uuid';
 import useToast from '../hooks/toast';
 import InputForm from '../components/InputForm';
-import { Link, useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom/cjs/react-router-dom';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import Table from '@mui/joy/Table';
 import DeleteIcon from "@mui/icons-material/Delete";
 import Pagination1 from '../components/Pagination';
+import Pagination2 from '../components/PaginationLike';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import axios from 'axios';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
@@ -21,6 +22,7 @@ import { logout as reduxLogout } from "../redux/authSlice";
 import { useDispatch } from 'react-redux';
 
 const MyPage = () => {
+    const {myId} = useParams();
     const [post, setPost] = useState([]);
     const [users, setUsers] = useState([]);
     const [usersId, setUsersId] = useState(0);
@@ -41,6 +43,9 @@ const MyPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPost, setTotalPost] = useState(0);
     const [numberOfPages, setNumberOfPages] = useState(0);
+    const [likeNumberOfPages, setLikeNumberOfPages] = useState(0);
+    const [likeCurPage , setLikeCurPage] = useState(0);
+    const [likeTotal , setLikeTotal] = useState(0);
     //서치
     const [searchInput, setSearchInput] = useState('');
     //사용자의 정보를 user에 넣음
@@ -54,22 +59,27 @@ const MyPage = () => {
     useEffect(()=>{
         //페이지 갯수
         setNumberOfPages(Math.ceil(totalPost / limit))
-    },[totalPost,limit])
+        setLikeNumberOfPages(Math.ceil(likeTotal / 10));
+    },[totalPost,limit,likeTotal])
 
-    const getPostHistory = (page)=>{
-        history.push(`${location.pathname}?page=${page}`);
-        getPost(page);
-    }
+    // const getPostHistory = (page)=>{
+    //     history.push(`${location.pathname}?page=${page}`);
+    //     getPost(page);
+    // }
+    // const getPostHistoryLike = (page)=>{
+    //     history.push(`${location.pathname}?page=${page}`);
+    //     getPostLike(page);
+    // }
     //게시글 가져오는 함수
     const getPost = useCallback((page)=>{
         setCurrentPage(page);
         let params = {
-        _page:page,
-            _limit:limit,
+            _page:page,
+            _limit:5,
             _sort:'id',
             _order:'desc',
             title_like:searchInput,
-            email:user.email
+            email:localStorage.getItem('user')
         }
         axios.get(`http://localhost:3002/posts`,{
         params:params
@@ -85,50 +95,109 @@ const MyPage = () => {
         })
         })
     },[limit,searchInput,user.email])
+
+    //유저 이미지 넣기
+    const [userP, setUserP]=useState(false);
+    const matchingUser =useCallback(()=>{
+        let userImg = users.map(user => user.email === localStorage.getItem('user'));
+        if(userImg.includes(true)){
+            setUserP(true)
+            // console.log(userP)
+        }else{
+            setUserP(false)
+        }
+    },[users] )
+    useEffect(()=>{
+        matchingUser()
+    },[matchingUser])
+
+
     //좋아요 한 게시글 가져오는 함수
-    // const [postUp, setPostUp] = useState([]);
-    const postUp = useRef(new Set());
+    // const postUp = useRef([]);
+    const [ postUp, setPostUp] = useState([]);
+    const nowUser = localStorage.getItem('user')
     const getPostLike = useCallback((page)=>{
+        setLikeCurPage(page);
         let params = {
-        _page:page,
-            _limit:limit,
-            _sort:'id',
-            _order:'desc',
-            title_like:searchInput,
+            publicM:true,
         }
         axios.get(`http://localhost:3002/posts`,{
-        params:params
+            params:params
         })
         .then((res)=>{
-            const nowUser = localStorage.getItem('user')
-            const likePost = res.data
-            const likedPosts = new Set();
-            for(let i = 0; i < likePost.length; i++){
-                let forLike = likePost[i].userEmail;
-                for(let j = 0; j < forLike.length; j++){
-                    let forEmail = forLike[j];
-                    let likePostBool = forEmail === nowUser
-                    if(likePostBool){
-                        likedPosts.add(likePost[i]);
+            const filteredLikePost = res.data.filter((item) =>
+                item.userEmail.includes(nowUser)
+            );
+            axios.get(`http://localhost:3002/likePost`).then((res)=>{
+                const vali = res.data.map(v=>v.id === parseInt(myId))
+                if(vali.includes(true)){
+                    axios.put(`http://localhost:3002/likePost/${myId}`,{
+                        filteredLikePost,
+                        nowUser:nowUser
+                    }).then((res)=>{
+                        axios.get(`http://localhost:3002/likePost/${myId}`,{
+                            params: {
+                                _page: page,
+                                _limit: 10,
+                                _sort: 'id',
+                                _order: 'desc',
+                            },
+                        }).then((res)=>{
+                            setPostUp(res.data.filteredLikePost)
+                            // setLikeTotal(res.headers['x-total-count'])
+                        }).catch((er)=>{
+                            console.log(er)
+                        })
+                    }).catch((er)=>{
+                        console.log(er)
+                    })
+                    return
+                }else{
+                    axios.post(`http://localhost:3002/likePost`,{
+                        filteredLikePost,
+                        nowUser:nowUser
+                    }).then((res)=>[
+                        console.log(res)
+                    ]).catch((er)=>{
+                        console.log(er)
+                    })
+                }
+            })
+            const getlikePost = res.data
+            setPostUp(() => {
+                const updatedPostUp = [];
+                if (getlikePost) {
+                    for (let i = 0; i < getlikePost.length; i++) {
+                        const postlikeUser = getlikePost[i].userEmail;
+                        if (postlikeUser) {
+                            for (let j = 0; j < postlikeUser.length; j++) {
+                                const forEmail = postlikeUser[j];
+                                if (forEmail === nowUser) {
+                                    updatedPostUp.push(getlikePost[i]);
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            postUp.current = [...likedPosts];
-            console.log(postUp.current)
+                console.log('좋아요 게시글 수 ',updatedPostUp.length)
+                setLikeTotal(updatedPostUp.length);
+                return updatedPostUp;
+            });
         }).catch((er)=>{
-        toast_add({
-            text:`${er}`,
-            type:'error',
-            id:uuidv4()
+            toast_add({
+                text:`${er}`,
+                type:'error',
+                id:uuidv4()
+            });
+            console.log(er)
         })
-        })
-    },[limit,searchInput,toast_add])
+    },[limit,nowUser,myId])
 
-    //페이지주소가 바뀔때 마다 실행
+    // 페이지주소가 바뀔때 마다 실행
     useEffect(()=>{
-        getPost(parseInt(urlPage)||1)
+        getPost(1)
         getPostLike(1)
-    },[urlPage,getPost,getPostLike])
+    },[getPost, getPostLike])
 
 
     //게시글 삭제
@@ -167,7 +236,6 @@ const MyPage = () => {
 
 
     //서버에서 사진경로 가져오기
-    //유저정보
     useEffect(()=>{
         axios.get(`http://localhost:3002/user`).then((res)=>{
             setUsers(res.data);
@@ -176,8 +244,6 @@ const MyPage = () => {
         });
     },[])
     const userEmails = users.map(u => u.email);
-    // console.log(userEmails);
-    // console.log(userEmails.includes(userEmail))
 
     //업로드 버튼
     function uploadServerImg(){
@@ -267,6 +333,14 @@ const MyPage = () => {
         });
     }
 
+    const [postNum, setPostNum] = useState(0);
+    useEffect(()=>{
+        setPostNum((currentPage-1)*limit + 1);
+    },[currentPage,limit]) 
+    const [postNum2, setPostNum2] = useState(0);
+    useEffect(()=>{
+        setPostNum2((likeCurPage-1)*limit + 1);
+    },[likeCurPage,limit]) 
 
     return (
         <div className='container chargeMain'>
@@ -334,7 +408,7 @@ const MyPage = () => {
                     post.length > 0 ? post.map((po,i)=>{
                     return(
                         <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
-                            <td style={{textAlign:"center"}}>{i+1}</td>
+                            <td style={{textAlign:"center"}}>{i+postNum}</td>
                             <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
                             <td className='boardDate' style={{textAlign:"center"}}>{po.date}</td>
                             <td className='media768'>
@@ -370,7 +444,7 @@ const MyPage = () => {
                 }
                 </tbody>
             </Table>
-            <Pagination1 currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
+            <Pagination1 currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPost}/>
             {/* 좋아요 게시글 */}
             <h3 className='fontW5' style={{marginTop:'3rem'}}><span className="barMy"></span>좋아요 누른 게시글</h3>
             <Table aria-label="basic table" style={{fontSize:"16px"}}>
@@ -385,10 +459,10 @@ const MyPage = () => {
                 </thead>
                 <tbody>
                 {
-                    postUp.current.length > 0 ? postUp.current.map((post,i)=>{
+                    postUp.length > 0 ? postUp.map((post,i)=>{
                     return(
                         <tr key={i+1} onClick={()=>history.push(`/board/${post.id}`)} className="cursor-pointer">
-                            <td style={{textAlign:"center"}}>{i+1}</td>
+                            <td style={{textAlign:"center"}}>{i+postNum2}</td>
                             <td style={{textAlign:"center"}} className="line-limit">{post.title}</td>
                             <td className='boardDate' style={{textAlign:"center"}}>{post.date}</td>
                             <td className='media768'>
@@ -415,11 +489,12 @@ const MyPage = () => {
                         </tr>
                     );
                     }) : <tr>
-                            <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다.</td>
+                            <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다. 좋아요를 눌러주세요!😶😶 </td>
                         </tr>
                 }
                 </tbody>
             </Table>
+            <Pagination2 likeCurPage={likeCurPage} likeNumberOfPages={likeNumberOfPages} onClick={getPostLike}/>
         </div>
     )
 }  

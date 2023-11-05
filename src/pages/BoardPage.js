@@ -18,7 +18,7 @@ import { list ,getDownloadURL, ref, listAll } from 'firebase/storage';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
-
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 const BoardPage = () => {
   const isAdmin = useSelector((state)=>{
@@ -91,7 +91,6 @@ const BoardPage = () => {
     //유저정보
     axios.get(`http://localhost:3002/user`).then((res)=>{
       setUsers(res.data);
-      console.log('유저데이터',res.data)
     }).catch((er)=>{
       console.log(er);
     });
@@ -188,7 +187,38 @@ const BoardPage = () => {
     }
     getPostPopular();
   }
+  //제목에 댓글 수 넣기
+  const [replyTotal, setReplyTotal] = useState([]);
+  const showReplyNum = useCallback( ()=>{
+    axios.get(`http://localhost:3002/comments`).then((res)=>{
+      
+      const filteredReply = res.data.map(v=>v.postId)
+      // console.log('댓글', filteredReply);
+      const postNumber = post.map(post=>post.id)
+      // console.log('게시글id',postNumber)
+      
+      const commentCountByPostId = {};
+      filteredReply.forEach((comment)=>{
+        if (commentCountByPostId[comment]) {
+          commentCountByPostId[comment] += 1;
+        } else {
+          commentCountByPostId[comment] = 1;
+        }
+      });
+      // console.log(commentCountByPostId)
+      const postsWithCommentCounts = post.map((post) => {
+        const commentCount = commentCountByPostId[post.id] || 0;
+        // return { title: `${post.title} (${commentCount} comments)` };
+        return commentCount;
+      });
+      // console.log(postsWithCommentCounts);
+      setReplyTotal(postsWithCommentCounts);
 
+    })
+  },[post])
+  useEffect(()=>{
+    showReplyNum()
+  },[showReplyNum])
   return (
     <div className="container chargeMain">
       <h1 className="textA fontW5">{isAdmin?'관리자 게시판':'게시판'}</h1>
@@ -240,7 +270,12 @@ const BoardPage = () => {
                 return(
                   <tr style={{backgroundColor:'rgb(255 240 240)'}} key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
                     <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td>
-                    <td style={{textAlign:"center"}} className="line-limit">{po.title}</td>
+                    <td style={{textAlign:"center"}} className="line-limit">{po.title}
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                      </span>
+                    </td>
+                    
                     <td style={{textAlign:"center",color:'#9E9E9E',fontSize:'14px'}} className='boardDate'>{po.date}</td>
                     <td style={{textAlign:"center"}}>
                       {
@@ -281,6 +316,12 @@ const BoardPage = () => {
                       {po.title}
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
                         <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
+                      {
+                        replyTotal[i]
+                      }
                       </span>
                     </td>
                     {/* 날짜 */}

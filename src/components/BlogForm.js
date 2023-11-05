@@ -87,7 +87,8 @@ const BlogForm = ({edit}) => {
                     email:user.email,
                     publicM,
                     postUpNum:0,
-                    isPostUp:false
+                    isPostUp:false,
+                    userEmail: []
                 }).then(()=>{
                     history.push(`/board/${id}`);
                 }).catch(()=>{
@@ -109,7 +110,8 @@ const BlogForm = ({edit}) => {
                 publicM,
                 comments,
                 postUpNum:0,
-                isPostUp:false
+                isPostUp:false,
+                userEmail: []
             }).then(()=>{
                 history.push('/board');
                 toast_add({

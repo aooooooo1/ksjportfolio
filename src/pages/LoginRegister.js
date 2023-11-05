@@ -12,6 +12,7 @@ import { login as reduxLogin , loginAdmin} from "../redux/authSlice";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import axios from "axios";
 
 const LoginRegister = () => {
   const [eye, setEye] = useState(false);
@@ -53,6 +54,16 @@ const LoginRegister = () => {
             email,
             password,
         );
+        axios.post(`http://localhost:3002/user`,{
+          email,
+          imageListS:"/broken-image.jpg" 
+        }).then((res)=>{
+          toast_add({
+            text:`${res}`,
+            type: 'success',
+            id : uuidv4()
+          })
+        })
         toast_add({
           text:'성공적으로 회원가입이 완료되었습니다. 바로 로그인 해주세요!',
           type: 'success',
@@ -100,17 +111,25 @@ const LoginRegister = () => {
       dispatch(reduxLogin());
       localStorage.removeItem('user');
       localStorage.setItem('user',user.user.email);
-      if(user.user.email === 'admin@admin.com'){
-        dispatch(loginAdmin());
-        localStorage.setItem('reloadAndRedirect', '/my');
-        window.location.reload();
-      }
+      const nowUser = localStorage.getItem('user')
+      axios.get(`http://localhost:3002/user`).then((res)=>{
+          const filteredUser = res.data.filter((item)=>item.email === nowUser);
+          console.log(filteredUser[0].id)
+          if(user.user.email === 'admin@admin.com'){
+            dispatch(loginAdmin());
+            localStorage.setItem('reloadAndRedirect', `/my/${filteredUser[0].id}`);
+            window.location.reload();
+          }
+          history.push(`/my/${filteredUser[0].id}`);
+          window.location.reload();
+      }).catch((er)=>{
+          console.log(er);
+      });
       toast_add({
         text: '정상적으로 로그인을 성공하였습니다.',
         type: 'success',
         id:uuidv4()
       })
-      history.push('/my');
     } catch(error){
       console.log(error.message);
       toast_add({
@@ -219,6 +238,31 @@ const LoginRegister = () => {
                       : <VisibilityIcon style={{fontSize:"30px",height:'100%'}}/>
                     }
                   </span>
+                </div>
+              </div>
+              <div style={{paddingBottom:'2rem'}}>
+                <h4 style={{fontWeight:'500'}}>약관</h4>
+                <div className="d-flex" style={{padding:'0.3rem 0'}}>
+                  <input type="checkbox" style={{width:'20px',height:'20px'}}/>
+                  <h4 style={{fontWeight:'500',marginLeft:'0.5rem'}}>전체동의</h4>
+                </div>
+                <p>마케팅 정보 수신동의(이메일,SMS/MMS)(선택)동의를 포함합니다.</p>
+                <div style={{borderBottom:'1px solid #bdbdbd',padding:'0.5rem 0'}}></div>
+                <div className="d-flex" style={{padding:'0.3rem 0'}}>
+                  <input type="checkbox" style={{width:'20px',height:'20px'}}/>
+                  <h4 style={{fontWeight:'500',marginLeft:'0.5rem'}}>(필수) 개인회원 약관에 동의</h4>
+                </div>
+                <div className="d-flex" style={{padding:'0.3rem 0'}}>
+                  <input type="checkbox" style={{width:'20px',height:'20px'}}/>
+                  <h4 style={{fontWeight:'500',marginLeft:'0.5rem'}}>(필수) 개인정보 수집 및 이용에 동의</h4>
+                </div>
+                <div className="d-flex" style={{padding:'0.3rem 0'}}>
+                  <input type="checkbox" style={{width:'20px',height:'20px'}}/>
+                  <h4 style={{fontWeight:'400',marginLeft:'0.5rem'}}>(선택) 마케팅 정보 수신 동의 - 이메일</h4>
+                </div>
+                <div className="d-flex" style={{padding:'0.3rem 0'}}>
+                  <input type="checkbox" style={{width:'20px',height:'20px'}}/>
+                  <h4 style={{fontWeight:'400',marginLeft:'0.5rem'}}>(선택) 마케팅 정보 수신 동의 - SMS/MMS</h4>
                 </div>
               </div>
               <button type="button" onClick={register} className="btnSm btn--primary">시작하기 (Enter)</button>

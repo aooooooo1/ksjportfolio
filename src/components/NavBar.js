@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom"
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -20,14 +20,30 @@ const NavBar = ({isScrolled}) => {
     const isLogin = useSelector((state)=>{
         return state.auth.isLogin;
     })
-    //유저정보-이미지 가져옴
+
+
+    //마이페이지 이동
     const [users, setUsers] = useState([]);
+    const goToMy = ()=>{
+        const nowUser = localStorage.getItem('user')
+        axios.get(`http://localhost:3002/user`).then((res)=>{
+                setUsers(res.data);
+                const filteredUser = res.data.filter((item)=>item.email === nowUser);
+                const myId = filteredUser[0].id
+                history.push(`/my/${myId}`)
+            }).catch((er)=>{
+                console.log(er);
+            });
+    }
+
+
+    //유저정보-이미지 가져옴
     useEffect(()=>{
         axios.get(`http://localhost:3002/user`).then((res)=>{
                 setUsers(res.data);
             }).catch((er)=>{
                 console.log(er);
-        });
+            });
     },[])
     //admin
     const [adminMode, setAdminMode]=useState(false);
@@ -66,6 +82,22 @@ const NavBar = ({isScrolled}) => {
             id : uuidv4()
         });
     }
+
+    const [userP, setUserP]=useState(false);
+    const matchingUser =useCallback(()=>{
+        let userImg = users.map(user => user.email === localStorage.getItem('user'));
+        if(userImg.includes(true)){
+            setUserP(true)
+            // console.log(userP)
+        }else{
+            setUserP(false)
+        }
+    },[users] )
+    useEffect(()=>{
+        matchingUser()
+    },[matchingUser])
+
+
     return (
         <header id="header" className={`header ${isScrolled?'header--scroll':''}`}>
             <nav className="nav container">
@@ -84,28 +116,37 @@ const NavBar = ({isScrolled}) => {
                             <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath ==='/board' ? 'nav__link--active':''}`}>{adminMode?'관리자 게시판':'게시판'}</Link>
                         </li>
                         {
-                            isLogin ? <>
+                            isLogin ? 
+                            <>
                             <li className="nav__item">
-                                <Link to="/my" onClick={closeMenu} className={`nav__link ${curPath ==='/my' ? 'nav__link--active':''}`}>
+                                <div onClick={()=>{closeMenu(); goToMy()}}  className={`cursor-pointer nav__link ${curPath.includes(`/my/`) ? 'nav__link--active':''}`}>
                                 <div>
                                     {
                                         users.map((u)=>{
                                             if(u.email === localStorage.getItem('user')){
-                                            return (
-                                                <Avatar 
-                                                className='avatar'
-                                                style={{ border: '1px solid gray'}}
-                                                key={u.imageListS}
-                                                alt=""
-                                                src={u.imageListS}
-                                                />
-                                            )
+                                                return(
+                                                    <Avatar 
+                                                    className='avatar'
+                                                    style={{ border: '1px solid gray'}}
+                                                    key={u.imageListS}
+                                                    alt=""
+                                                    src={u.imageListS}
+                                                    />
+                                                )
                                             }
-                                            return null;
+                                            return null
                                         })
                                     }
                                 </div>
-                                </Link>
+                                {
+                                    userP ? null :
+                                    <Avatar
+                                        className='avatar'
+                                        style={{ border: '1px solid gray' }}
+                                        src="/broken-image.jpg"
+                                    />
+                                }
+                                </div>
                             </li>
                             {/* <li className="nav__item">
                                 <div onClick={logout} className="nav__link cursor-pointer">로그아웃</div>

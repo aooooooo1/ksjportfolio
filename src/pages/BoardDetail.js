@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min"
 import { useSelector } from "react-redux";
 import '../css/BoardDetail.css';
@@ -113,7 +113,6 @@ const BoardDetail = (props) => {
     //게시글 좋아용 validate
     const postUpVali = useCallback(()=>{
         axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
-            // console.log('post/userEmail',res.data.userEmail[0])
             const existingEmail = res.data.userEmail;
             const nowUser = localStorage.getItem('user');
             if(existingEmail){
@@ -126,12 +125,41 @@ const BoardDetail = (props) => {
             }
         })
     },[id])
+    //댓글 좋아용 validate
+    // const [commentUpVali, setCommentUpVali] = useState({});
+    const commentUpVali = useRef({});
+    const replyUpVali = useCallback(()=>{
+        const nowUser1 = localStorage.getItem('user');
+        axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`).then((res)=>{
+            const existingReply = res.data;
+            // console.log('원레있던댓글 ',existingReply)
+
+            let comUpVali = existingReply.map(v => v.thumbUpUserEmail.map(e=>e===nowUser1));
+            // console.log(comUpVali)
+            if(comUpVali){
+                for(let i = 0; i < comUpVali.length; i++){
+                    if(comUpVali[i].includes(true)){
+                        commentUpVali.current = {...commentUpVali.current , [existingReply[i].id]:true }
+                    }else{
+                        commentUpVali.current = {...commentUpVali.current, [existingReply[i].id]:false }
+                    }
+                }
+            }
+        })
+    },[props.match.params.id])
+    // console.log(commentUpVali.current[9])
+
+
+
+
+
     //게시글내용 한번 가져오기
     useEffect(()=>{
         getDetail();
         getDetailReply();
         postUpVali();
-    },[getDetailReply,postUpVali,getDetail]);
+        replyUpVali()
+    },[getDetailReply,postUpVali,getDetail,replyUpVali]);
 
     
 
@@ -176,7 +204,9 @@ const BoardDetail = (props) => {
                     thumbUpNum,
                     thumbDownNum,
                     isThumbUp:false,
-                    isThumbDown
+                    isThumbDown,
+                    thumbUpUserEmail:[],
+                    thumbDownUserEmail:[]
                 }).then((res) => {
                     console.log('120',res.data)
                     const newComment = res.data;
@@ -211,11 +241,14 @@ const BoardDetail = (props) => {
         setPostNum((currentPage-1)*10 + 1);
     },[currentPage]) 
 
-    //좋아요
+    //댓글좋아요
     const thumbUp = (e, reply)=>{
         setIsThumbUp(true)
         e.stopPropagation();
-            axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+        
+        axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+                const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
+                const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
                 const updatedThumbUpNum = res.data.thumbUpNum + 1;
                 const updatedThumbDownNum = res.data.thumbDownNum;
                 setIsThumbUp(true)
@@ -228,8 +261,16 @@ const BoardDetail = (props) => {
                     thumbDownNum: updatedThumbDownNum,
                     id: reply.id,
                     isThumbUp : true,
-                    isThumbDown : reply.isThumbDown
+                    isThumbDown : reply.isThumbDown,
+                    thumbUpUserEmail:[
+                        ...existingUpEmail,
+                        localStorage.getItem('user')
+                    ],
+                    thumbDownUserEmail:[
+                        ...existingDownEmail,
+                    ],
                 }).then((res)=>{
+                    replyUpVali();
                     setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                     getDetailReply();
                     toast_add({
@@ -252,6 +293,10 @@ const BoardDetail = (props) => {
             setIsThumbUp(false);
             e.stopPropagation();
             axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+                const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
+                const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
+                const nowUser = localStorage.getItem('user');
+                const filterdEmail = existingUpEmail.filter(v=>v !== nowUser)
                 const updatedThumbUpNum = res.data.thumbUpNum - 1;
                 const updatedThumbDownNum = res.data.thumbDownNum;
                 axios.put(`http://localhost:3002/comments/${reply.id}`,{
@@ -263,8 +308,13 @@ const BoardDetail = (props) => {
                     thumbDownNum: updatedThumbDownNum,
                     id: reply.id,
                     isThumbUp: false,
-                    isThumbDown : reply.isThumbDown
+                    isThumbDown : reply.isThumbDown,
+                    thumbUpUserEmail:filterdEmail,
+                    thumbDownUserEmail:[
+                        ...existingDownEmail,
+                    ],
                 }).then((res)=>{
+                    replyUpVali();
                     setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                     getDetailReply();
                 }).catch((er)=>{
@@ -282,6 +332,8 @@ const BoardDetail = (props) => {
         setIsThumbDown(true);
         e.stopPropagation();
         axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+            const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
+            const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
             const updatedThumbUpNum = res.data.thumbUpNum;
             const updatedThumbDownNum = res.data.thumbDownNum + 1;
             axios.put(`http://localhost:3002/comments/${reply.id}`,{
@@ -293,7 +345,14 @@ const BoardDetail = (props) => {
                 thumbDownNum: updatedThumbDownNum,
                 id: reply.id,
                 isThumbUp:reply.isThumbUp,
-                isThumbDown:true
+                isThumbDown:true,
+                thumbUpUserEmail:[
+                    ...existingUpEmail,
+                ],
+                thumbDownUserEmail:[
+                    ...existingDownEmail,
+                    localStorage.getItem('user')
+                ],
             }).then((res)=>{
                 setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                 getDetailReply();
@@ -312,6 +371,10 @@ const BoardDetail = (props) => {
         setIsThumbDown(false);
         // e.stopPropagation();
         axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
+            const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
+            const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
+            const nowUser = localStorage.getItem('user');
+            const filterdEmail = existingDownEmail.filter(v=>v !== nowUser)
             const updatedThumbUpNum = res.data.thumbUpNum;
             const updatedThumbDownNum = res.data.thumbDownNum - 1;
             axios.put(`http://localhost:3002/comments/${reply.id}`,{
@@ -323,7 +386,11 @@ const BoardDetail = (props) => {
                 thumbDownNum: updatedThumbDownNum,
                 id: reply.id,
                 isThumbUp:reply.isThumbUp,
-                isThumbDown:false
+                isThumbDown:false,
+                thumbUpUserEmail:[
+                    ...existingUpEmail
+                ],
+                thumbDownUserEmail:filterdEmail
             }).then((res)=>{
                 setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                 getDetailReply();
@@ -780,9 +847,26 @@ const BoardDetail = (props) => {
                                                 <div>{fireworks}</div>
                                                 <Tooltip title="좋아요" arrow style={{fontSize:'32px'}}>
                                                     {
-                                                        v.isThumbUp===false ? <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                            : <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                        commentUpVali.current[v.id] ? <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                        : <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+
                                                     }
+                                                    {/* {   
+                                                        v.thumbUpUserEmail.map(email=>{
+                                                            if(email === localStorage.getItem('user')){
+                                                                 <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                            }
+                                                            return null
+                                                        })
+                                                    }
+                                                    {   
+                                                        v.thumbUpUserEmail.map(email=>{
+                                                            if(email !== localStorage.getItem('user')){
+                                                                return <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                            }
+                                                            return null
+                                                        })
+                                                    } */}
                                                 </Tooltip>
                                                 <div style={{marginRight:'1rem'}}>{v.thumbUpNum}</div>
                                                 <Tooltip title="싫어요" arrow style={{fontSize:'32px'}}>

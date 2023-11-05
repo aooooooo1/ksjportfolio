@@ -42,7 +42,7 @@ const PageArr = [
         component:LoginRegister,
     },
     {
-        path:'/my',
+        path:'/my/:myId',
         component:My,
     },
 ]

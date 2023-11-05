@@ -89,10 +89,10 @@ tr:hover{
 }
 @media screen and (max-width:768px) {
     th{
-        font-size: 13px;
+        font-size: 13px !important;
     }
     td{
-        font-size: 13px;
+        font-size: 13px !important;
     }
     .boardDate{
         display: none;
