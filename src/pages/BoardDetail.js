@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min"
 import { useSelector } from "react-redux";
 import '../css/BoardDetail.css';
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link, useLocation } from "react-router-dom/cjs/react-router-dom";
 import Box from '@mui/joy/Box';
 import IconButton from '@mui/joy/IconButton';
 import Textarea from '@mui/joy/Textarea';
@@ -25,7 +25,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
 
+
 const BoardDetail = (props) => {
+    //boardAdmin인지 체크
+    const location = useLocation();
+    const isBoardAdmin = location.pathname.includes('/boardAdmin');
     const admin = localStorage.getItem('user');
     const [users, setUsers] = useState([]);
     const [replyComments, setReplyComments]=useState([]);
@@ -35,6 +39,7 @@ const BoardDetail = (props) => {
     })
     const {id} = useParams();
     const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('');
     const [body, setBody] = useState('');
     const [date, setDate] = useState();
     const [userE, setUserE] =useState('');
@@ -95,24 +100,30 @@ const BoardDetail = (props) => {
         })
     },[props.match.params.id])
 
-
+    //게시글 한번 가져오기
+    const [userServerImg, setUserServerImg] = useState('');
+    const [ userEmail, setUserEmail] = useState([]);
+    const [post, setPost] = useState([]);
     const getDetail = useCallback((page=1)=>{
-        axios.get(`http://localhost:3002/posts/${props.match.params.id}`)
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}`)
         .then((res)=>{
+            setPost(res.data);
             setTitle(res.data.title);
             setBody(res.data.body);
             setDate(res.data.date);
+            setCategory(res.data.category);
             setUserE(res.data.email);
-            setBoardId(res.data.id);
             setPublicM(res.data.publicM);
-            setReplyComments(res.data.comments);
             setPostUpNum(res.data.postUpNum);
             setIsPostUp(res.data.isPostUp);
+            setUserServerImg(res.data.userServerImg);
+            setUserEmail(res.data.userEmail);
+            setBoardId(res.data.id);
         })
     },[props.match.params.id])
     //게시글 좋아용 validate
     const postUpVali = useCallback(()=>{
-        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail;
             const nowUser = localStorage.getItem('user');
             if(existingEmail){
@@ -130,7 +141,7 @@ const BoardDetail = (props) => {
     const commentUpVali = useRef({});
     const replyUpVali = useCallback(()=>{
         const nowUser1 = localStorage.getItem('user');
-        axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`).then((res)=>{
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`).then((res)=>{
             const existingReply = res.data;
             // console.log('원레있던댓글 ',existingReply)
 
@@ -243,6 +254,14 @@ const BoardDetail = (props) => {
 
     //댓글좋아요
     const thumbUp = (e, reply)=>{
+        if(localStorage.getItem('user')===null){
+            toast_add({
+                text:'로그인 해주세요.😓😓',
+                type:'error',
+                id:uuidv4()
+            });
+            return;
+        }
         setIsThumbUp(true)
         e.stopPropagation();
         
@@ -288,7 +307,7 @@ const BoardDetail = (props) => {
                 })
             })
     }
-    //좋아요 취소
+    //reply좋아요 취소
     const thumbUpCancel=(e, reply)=>{
             setIsThumbUp(false);
             e.stopPropagation();
@@ -329,6 +348,14 @@ const BoardDetail = (props) => {
     }
     //싫어요
     const thumbDown = (e, reply)=>{
+        if(localStorage.getItem('user')===null){
+            toast_add({
+                text:'로그인 해주세요.😓😓',
+                type:'error',
+                id:uuidv4()
+            });
+            return;
+        }
         setIsThumbDown(true);
         e.stopPropagation();
         axios.get(`http://localhost:3002/comments/${reply.id}`).then((res)=>{
@@ -407,7 +434,7 @@ const BoardDetail = (props) => {
     //게시글 삭제
     const deletePost = (e,id)=>{
         e.stopPropagation();
-        axios.delete(`http://localhost:3002/posts/${id}`).then(()=>{
+        axios.delete(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then(()=>{
             toast_add({
                 text:'성공적으로 게시글을 삭제 완료 하였습니다.',
                 type:'success',
@@ -435,7 +462,7 @@ const BoardDetail = (props) => {
     const [replyModifyText, setReplyModifyText] = useState('');
     const replyModify = (id)=>{
         setReplyModifyForm((prev)=>({[id]:!prev[id]}));
-        axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`)
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`)
         .then((res)=>{
             const re = res.data;
             const filterReply = re.filter((v)=>{
@@ -505,7 +532,7 @@ const BoardDetail = (props) => {
     //최신순
     const replyLately = ()=>{
             setCurrentPage(1);
-            axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`,{
+            axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -524,7 +551,7 @@ const BoardDetail = (props) => {
     //인기순
     const replyPopular=()=>{
         setCurrentPage(1);
-            axios.get(`http://localhost:3002/posts/${props.match.params.id}/comments`,{
+            axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -549,13 +576,22 @@ const BoardDetail = (props) => {
     
     //post UP
     const postUp = (e,id)=>{
-        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+        if(localStorage.getItem('user')===null){
+            toast_add({
+                text:'로그인 해주세요.😓😓',
+                type:'error',
+                id:uuidv4()
+            });
+            return;
+        }
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail? res.data.userEmail : '';
             const updatedThumbUpNum = postUpNum + 1;
             setIsPostUp(true)
-                axios.put(`http://localhost:3002/posts/${id}`,{
+                axios.put(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
                     title,
                     body,
+                    category,
                     date,
                     email: userE,
                     publicM,
@@ -565,7 +601,8 @@ const BoardDetail = (props) => {
                     userEmail:[
                         ...existingEmail,
                         localStorage.getItem('user')
-                    ]
+                    ],
+                    userServerImg
                 }).then((res)=>{
                     getDetail();
                     postUpVali();
@@ -586,13 +623,13 @@ const BoardDetail = (props) => {
     }
     //게시글좋아요 취소
     const postUpCancel=(e,id)=>{
-        axios.get(`http://localhost:3002/posts/${id}`).then((res)=>{
+        axios.get(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail;
             const nowUser = localStorage.getItem('user');
             const filterdEmail = existingEmail.filter(v=>v !== nowUser)
             const updatedThumbUpNum = postUpNum - 1;
             setIsPostUp(false)
-                axios.put(`http://localhost:3002/posts/${id}`,{
+                axios.put(`http://localhost:3002/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
                     title,
                     body,
                     date,
@@ -602,6 +639,8 @@ const BoardDetail = (props) => {
                     isPostUp,
                     id,
                     userEmail: filterdEmail,
+                    category,
+                    userServerImg
                 }).then((res)=>{
                     getDetail();
                     postUpVali();
@@ -653,7 +692,7 @@ const BoardDetail = (props) => {
                         <div className="clearParent">
                             <div className="clearModal3">
                                 <ul style={{lineHeight:'30px'}}>
-                                    <li className="cursor-pointer clearList" ><Link to={`/board/${id}/edit`}><EditIcon style={{verticalAlign:'middle',fontSize:'18px'}}/>수정</Link></li>
+                                    <li className="cursor-pointer clearList" ><Link to={`/${isBoardAdmin?'boardAdmin':'board'}/${id}/edit`}><EditIcon style={{verticalAlign:'middle',fontSize:'18px'}}/>수정</Link></li>
                                     <li className="cursor-pointer clearList" onClick={e=>deletePost(e,postId)}><DeleteOutlinedIcon style={{verticalAlign:'middle',fontSize:'20px'}}/>삭제</li>
                                 </ul>
                             </div>
@@ -685,6 +724,7 @@ const BoardDetail = (props) => {
                 </div>
                 <div>{date}</div>
             </div>
+            <img src={userServerImg} alt=""></img>
             <div style={{padding:'1rem 0', fontSize:'18px',color:'#757575'}}>{body}</div>
         </div>
         <div className="" style={{margin:'2rem 0'}}>

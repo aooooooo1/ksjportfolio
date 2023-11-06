@@ -94,7 +94,7 @@ const MyPage = () => {
             id:uuidv4()
         })
         })
-    },[limit,searchInput,user.email])
+    },[limit,searchInput,user])
 
     //유저 이미지 넣기
     const [userP, setUserP]=useState(false);
@@ -179,7 +179,7 @@ const MyPage = () => {
                         }
                     }
                 }
-                console.log('좋아요 게시글 수 ',updatedPostUp.length)
+                // console.log('좋아요 게시글 수 ',updatedPostUp.length)
                 setLikeTotal(updatedPostUp.length);
                 return updatedPostUp;
             });

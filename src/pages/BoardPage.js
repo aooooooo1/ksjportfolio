@@ -2,7 +2,6 @@ import { Link, useHistory, useLocation } from 'react-router-dom/cjs/react-router
 import '../css/Board.css';
 import Table from '@mui/joy/Table';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import InputForm from "../components/InputForm";
 import Pagination from '../components/Pagination';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -13,18 +12,17 @@ import { auth, storage } from '../firebase-config';
 import useToast from '../hooks/toast';
 import { v4 as uuidv4 } from 'uuid';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { Avatar } from '@mui/material';
-import { list ,getDownloadURL, ref, listAll } from 'firebase/storage';
-import CampaignIcon from '@mui/icons-material/Campaign';
+import { Avatar, Tooltip } from '@mui/material';
+import { ref } from 'firebase/storage';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-
+import SearchIcon from '@mui/icons-material/Search';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 const BoardPage = () => {
   const isAdmin = useSelector((state)=>{
     return state.auth.isAdmin
   })
-
   const isLogin = useSelector((state)=>{
     return state.auth.isLogin;
   })
@@ -35,12 +33,7 @@ const BoardPage = () => {
           setUser(currentUser);
       })
   },[])
-  const userEmail = localStorage.getItem('user');
   const imageListRef = ref(storage, `userProfileImg`);
-    const [imageList, setImageList] = useState([]);
-
-  // const [imageListS, setImageListS] = useState();
-
   const [post, setPost] = useState([]);
   const [users, setUsers] = useState([]);
   const history = useHistory();
@@ -60,10 +53,6 @@ const BoardPage = () => {
 
 
 
-  const [imgUserEmail, setImgUserEmail] = useState([]);
-
-
-
 
   let limit = 10
   useEffect(()=>{
@@ -75,6 +64,149 @@ const BoardPage = () => {
     history.push(`${location.pathname}?page=${page}`);
     getPost(page);
   }
+  //유저정보 가져오기
+  const getUser = useCallback(()=>{
+    axios.get(`http://localhost:3002/user`).then((res)=>{
+      setUsers(res.data);
+    }).catch((er)=>{
+      toast_add({
+        text:`${er}`,
+        type:'success',
+        id:uuidv4()
+    })
+    });
+  },[])
+  //qna게시글 가져오기
+  const [qnaPost, setQnaPost] = useState([]);
+  const getQna = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        category:'qna',
+        publicM:true
+      }
+    }).then((res)=>{
+      setQnaPost(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //prepare 게시글 가져오기
+  const [preparePost, setPreparePost] = useState([]);
+  const getPrepare = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        category:'prepare',
+        publicM:true
+      }
+    }).then((res)=>{
+      setPreparePost(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //notice 게시글 가져오기
+  const [noticePost, setNoticePost] = useState([]);
+  const getNotice = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        category:'notice',
+        publicM:true
+      }
+    }).then((res)=>{
+      setNoticePost(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //notice 게시글 가져오기
+  const [newPost, setNewPost] = useState([]);
+  const getNew = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        category:'new',
+        publicM:true
+      }
+    }).then((res)=>{
+      setNewPost(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //free 게시글 가져오기
+  const [freePost, setFreePost] = useState([]);
+  const getFree = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        category:'free',
+        publicM:true
+      }
+    }).then((res)=>{
+      setFreePost(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //전체 게시글 5개 가져오기
+  const [post5, setPost5]= useState([])
+  const getPost5 = ()=>{
+    axios.get(`http://localhost:3002/posts`,{
+      params:{
+        _page:1,
+        _limit:5,
+        _sort:'id',
+        _order:'desc',
+        publicM:true
+      }
+    }).then((res)=>{
+      setPost5(res.data);
+    }).catch((er)=>{
+      console.log(er)
+    })
+  }
+  //관리자 게시글 가져오기
+  const [adminPost, setAdminPost]= useState([])
+  const getPostAdmin = useCallback(()=>{
+    //게시글정보
+    axios.get(`http://localhost:3002/adminPosts`)
+      .then((res)=>{
+        setAdminPost(res.data);
+    }).catch((er)=>{
+      toast_add({
+        text:`${er}`,
+        type:'success',
+        id:uuidv4()
+    })
+    })
+  },[])
+  useEffect(()=>{
+    getPost5()
+    getFree()
+    getNew()
+    getNotice()
+    getPrepare()
+    getQna()
+    getPostAdmin()
+  },[getPostAdmin])
   //게시글 가져오는 함수
   const getPost = useCallback((page)=>{
     setCurrentPage(page);
@@ -88,12 +220,6 @@ const BoardPage = () => {
     if(!isAdmin){
       params = {...params, publicM:true};
     }
-    //유저정보
-    axios.get(`http://localhost:3002/user`).then((res)=>{
-      setUsers(res.data);
-    }).catch((er)=>{
-      console.log(er);
-    });
     //게시글정보
     axios.get(`http://localhost:3002/posts`,{
       params:params
@@ -111,8 +237,9 @@ const BoardPage = () => {
   },[limit,isAdmin,searchInput])
   //페이지주소가 바뀔때 마다 실행
   useEffect(()=>{
+    getUser()
     getPost(parseInt(urlPage)||1)
-  },[urlPage,getPost])
+  },[urlPage,getPost,getUser])
 
 
   //게시글 삭제
@@ -166,7 +293,7 @@ const BoardPage = () => {
       //유저정보
       axios.get(`http://localhost:3002/user`).then((res)=>{
         setUsers(res.data);
-        console.log('유저데이터',res.data)
+        // console.log('유저데이터',res.data)
       }).catch((er)=>{
         console.log(er);
       });
@@ -189,13 +316,13 @@ const BoardPage = () => {
   }
   //제목에 댓글 수 넣기
   const [replyTotal, setReplyTotal] = useState([]);
+  const [adminReplyTotal, setAdminReplyTotal] = useState([]);
+  const [post5ReplyTotal, setPost5ReplyTotal] = useState([]);
   const showReplyNum = useCallback( ()=>{
     axios.get(`http://localhost:3002/comments`).then((res)=>{
       
       const filteredReply = res.data.map(v=>v.postId)
-      // console.log('댓글', filteredReply);
       const postNumber = post.map(post=>post.id)
-      // console.log('게시글id',postNumber)
       
       const commentCountByPostId = {};
       filteredReply.forEach((comment)=>{
@@ -205,25 +332,219 @@ const BoardPage = () => {
           commentCountByPostId[comment] = 1;
         }
       });
-      // console.log(commentCountByPostId)
       const postsWithCommentCounts = post.map((post) => {
         const commentCount = commentCountByPostId[post.id] || 0;
-        // return { title: `${post.title} (${commentCount} comments)` };
         return commentCount;
       });
-      // console.log(postsWithCommentCounts);
+      const adminPostReply = adminPost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
+      const post5Reply = post5.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
       setReplyTotal(postsWithCommentCounts);
+      setAdminReplyTotal(adminPostReply)
+      setPost5ReplyTotal(post5Reply)
 
     })
-  },[post])
+  },[post, adminPost])
   useEffect(()=>{
     showReplyNum()
   },[showReplyNum])
   return (
+    <>
+      <div className='communityFont'>
+        <Tooltip title="다양한 사람들과 다양한 주제로 많은 이야기를 나눠보세요." arrow>
+          <h1 className=" fontW5"><span className='h1color2'>Modu</span><span className='h1color'> Community</span></h1>
+        </Tooltip>
+      </div>
     <div className="container chargeMain">
-      <h1 className="textA fontW5">{isAdmin?'관리자 게시판':'게시판'}</h1>
+      <div className='boardEvent'>
+        <div style={{backgroundColor:'#dde0f4', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
+          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
+          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
+          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 프로모션! 1,800여명의 주요 기업 멘토와 1:1로 커리어 관련 고민을 나눌 수 있는 멘토링매치 서비스에서 프로모션 진행 중이에요.</p>
+        </div>
+        <div style={{backgroundColor:'#d0fff4', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
+          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
+          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
+          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 프로모션! 1,800여명의 주요 기업 멘토와 </p>
+        </div>
+        <div style={{backgroundColor:'#f8f8c3', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
+          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
+          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
+          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 .</p>
+        </div>
+      </div>
+      <div className='boardCategory'>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          {
+            post5.map((post, i)=>{
+              return(
+                <div className='d-flex justifyB cursor-pointer miniPosts' style={{marginBottom:'0.5rem'}}>
+                  <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                  <div>
+                    <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                      <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                    </span>
+                    <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                      <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
+                      {
+                        post5ReplyTotal[i]
+                      }
+                    </span>
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+        </div>
+      </div>
+      <div className='boardCategory'>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+        </div>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+        </div>
+      </div>
+      <div className='boardCategory'>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+        </div>
+        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
+          <div className='d-flex' style={{alignItems:'center'}}>
+            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
+            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+          </div>
+          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
+            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
+            <span>like, reply</span>
+          </div>
+        </div>
+      </div>
       <div className="py-3 d-flex justify-content-between">
-          <InputForm onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
+          <div className='inputBox'>
+            <span style={{height:'100%'}}><SearchIcon className='postSearch' style={{verticalAlign:'middle',fontSize:'35px'}}/></span>
+            <input style={{border:'hidden', padding:'5px', color:'#757575'}} onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
+          </div>
           {
             isLogin ? 
               <Link to="/board/create" className="postAdd">
@@ -251,33 +572,24 @@ const BoardPage = () => {
       }
       </div>
       <Table aria-label="basic table" style={{fontSize:"16px"}}>
-        <thead>
+        {/* <thead>
           <tr>
-            <th style={{ width: '10%', textAlign:"center" }}>번호</th>
-            <th style={{textAlign:"center"}}>제목</th>
-            <th className='boardDate' style={{ width: '20%', textAlign:"center"}}>날짜</th>
             <th style={{width:'6%'}}></th>
+            <th style={{textAlign:"center"}}>제목</th>
+            <th className='boardDate' style={{ width: '10%', textAlign:"center"}}>날짜</th>
             <th className='writer' style={{ textAlign:"center"}}>글쓴이</th>
             {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>}
             {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>공개</th>}
           </tr>
-        </thead>
+        </thead> */}
         <tbody>
           {/* 관리자공지사항 */}
           {
-            post.map((po)=>{
+            adminPost.map((po,i)=>{
               if(po.email === 'admin@admin.com' && po.publicM === true){
                 return(
-                  <tr style={{backgroundColor:'rgb(255 240 240)'}} key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
-                    <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td>
-                    <td style={{textAlign:"center"}} className="line-limit">{po.title}
-                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
-                      </span>
-                    </td>
-                    
-                    <td style={{textAlign:"center",color:'#9E9E9E',fontSize:'14px'}} className='boardDate'>{po.date}</td>
-                    <td style={{textAlign:"center"}}>
+                  <tr key={po.id} onClick={()=>history.push(`/boardAdmin/${po.id}`)} className="cursor-pointer adminPost">
+                    <td style={{textAlign:"center", width:'10%'}}>
                       {
                         users.map((u)=>{
                           if(u.email === po.email){
@@ -295,7 +607,21 @@ const BoardPage = () => {
                         })
                       }
                     </td>
-                    <td style={{textAlign:"center"}}>{po.email.split('@')[0]}</td>
+                    {/* <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td> */}
+                    <td style={{textAlign:"center"}} className="line-limit">{po.title}
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
+                      {
+                        adminReplyTotal[i]
+                      }
+                      </span>
+                    </td>
+                    <td style={{textAlign:"center",color:'#9E9E9E',fontSize:'14px',width:'10%'}} className='boardDate'>{po.date}</td>
+                    
+                    <td style={{textAlign:"center", width:'20%'}}>{po.email.split('@')[0]}</td>
                     {isAdmin&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
                     {isAdmin&&<td className='media768'></td>}
                   </tr>
@@ -309,25 +635,8 @@ const BoardPage = () => {
             post.length > 0 ? post.map((po,i)=>{
               return(
                 <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
-                    {/* 번호 */}
-                    <td style={{textAlign:"center",fontSize:'14px',color:'#757575'}}>{postNum + i}</td>
-                    {/* 제목 */}
-                    <td style={{textAlign:"center"}} className="line-limit">
-                      {po.title}
-                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
-                      </span>
-                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
-                      {
-                        replyTotal[i]
-                      }
-                      </span>
-                    </td>
-                    {/* 날짜 */}
-                    <td className='boardDate' style={{textAlign:"center", color:'#9E9E9E',fontSize:'14px'}}>{po.date}</td>
-                    {/* 프로필 사진*/}
-                    <td> 
+                  {/* 프로필 사진*/}
+                  <td style={{width:'10%'}}> 
                     {
                       users.map((u)=>{
                         if(u.email === po.email){
@@ -344,9 +653,25 @@ const BoardPage = () => {
                         return null;
                       })
                     }
+                  </td>
+                    {/* 제목 */}
+                    <td style={{textAlign:"center",color:'#616161'}} className="line-limit">
+                      {po.title}
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
+                      {
+                        replyTotal[i]
+                      }
+                      </span>
                     </td>
+                    {/* 날짜 */}
+                    <td className='boardDate' style={{textAlign:"center", color:'#9E9E9E',fontSize:'14px',width:'10%'}}>{po.date}</td>
+                    
                     {/* 닉네임 */}
-                    <td style={{textAlign:'center', fontWeight:'500'}}>
+                    <td style={{textAlign:'center', fontWeight:'500',color:'#757575', width:'20%'}}>
                       {po.email ? po.email.split('@')[0]:''}
                     </td>
                     {/* 삭제 */}
@@ -365,6 +690,7 @@ const BoardPage = () => {
         <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
       
     </div>
+    </>
   )
 }
 

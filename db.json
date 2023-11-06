@@ -1,4 +1,21 @@
 {
+  "adminPosts": [
+    {
+      "title": "ad123123bbbbb",
+      "body": "ad",
+      "date": "23. 11. 06",
+      "email": "admin@admin.com",
+      "publicM": true,
+      "postUpNum": 2,
+      "isPostUp": false,
+      "id": 1,
+      "userEmail": [
+        "admin@admin.com",
+        "123@test.com"
+      ],
+      "userServerImg": ""
+    }
+  ],
   "posts": [
     {
       "title": "f",
@@ -184,7 +201,7 @@
       "email": "123@test.com",
       "publicM": true,
       "postUpNum": 1,
-      "isPostUp": false,
+      "isPostUp": true,
       "id": 27,
       "userEmail": [
         "123@test.com"
@@ -197,7 +214,7 @@
       "email": "123@test.com",
       "publicM": true,
       "postUpNum": 2,
-      "isPostUp": false,
+      "isPostUp": true,
       "id": 28,
       "userEmail": [
         "123@test.com",
@@ -207,19 +224,16 @@
     {
       "title": "add2",
       "body": "2",
-      "date": "23년 11월 05일",
+      "date": "23. 11. 06",
       "email": "123@test.com",
       "publicM": true,
-      "postUpNum": 5,
+      "postUpNum": 3,
       "isPostUp": false,
-      "id": 29,
+      "userImg": {},
       "userEmail": [
-        "123@test.com",
-        "test@test.com",
-        "wawoo@test.com",
-        "test11@test.com",
-        "test22@test.com"
-      ]
+        "123@test.com"
+      ],
+      "id": 29
     },
     {
       "title": "asdfasdfsadfasdfasdfasdfsadfsadfasdf",
@@ -232,6 +246,244 @@
       "isPostUp": false,
       "userEmail": [],
       "id": 30
+    },
+    {
+      "title": "asdf",
+      "body": "sadf",
+      "date": "23. 11. 06",
+      "email": "admin@admin.com",
+      "publicM": true,
+      "postUpNum": 0,
+      "isPostUp": true,
+      "id": 31,
+      "userEmail": []
+    },
+    {
+      "title": "fasdf",
+      "body": "sdaf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 36
+    },
+    {
+      "title": "sdf",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 38
+    },
+    {
+      "title": "sdf",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpg3164bd64-d891-47e3-8f0a-75586818b43f?alt=media&token=8c291fff-86e0-4252-aff3-4af2e4d625ca",
+      "userEmail": [],
+      "id": 39
+    },
+    {
+      "title": "sdf123123",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpg308a3243-3265-4e27-8e06-26f9d111d8fb?alt=media&token=fcb2401d-3928-4829-b206-bd981e25ede0",
+      "userEmail": [],
+      "id": 40
+    },
+    {
+      "title": "sdf123123",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpg0099856e-0c7a-46f5-892d-9ad58780664a?alt=media&token=3164cdbf-bb76-4efa-aba4-14cd9b7bed48",
+      "userEmail": [],
+      "id": 41
+    },
+    {
+      "title": "zxcv",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpg0099856e-0c7a-46f5-892d-9ad58780664a?alt=media&token=3164cdbf-bb76-4efa-aba4-14cd9b7bed48",
+      "userEmail": [],
+      "id": 42
+    },
+    {
+      "title": "zxcv",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpg21f77fa9-e1f1-40ae-b807-b3083e39b8af?alt=media&token=3294048e-55ec-4a7f-9cfb-d5756ffed58a",
+      "userEmail": [],
+      "id": 43
+    },
+    {
+      "title": "hhhaaa",
+      "body": "dsf",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fhomeimg.jpgd51215d1-0aa3-457d-880a-b32408814616?alt=media&token=085eefac-abba-44d9-9ee5-77ee388a7eba",
+      "userEmail": [],
+      "id": 44
+    },
+    {
+      "title": "1111",
+      "body": "111",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "postUpNum": 1,
+      "isPostUp": false,
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fpointer.pngf4ee8fe4-9f25-47d2-803e-84dbb91c1935?alt=media&token=29ac594b-805c-4238-92bf-bf77450c8ed0",
+      "userEmail": [
+        "123@test.com"
+      ],
+      "id": 45
+    },
+    {
+      "title": "f",
+      "body": "f",
+      "category": "잡담",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": false,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 46
+    },
+    {
+      "title": "xzcv",
+      "body": "xzcv",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "postUpNum": 2,
+      "isPostUp": false,
+      "id": 47,
+      "userEmail": [
+        "123@test.com"
+      ],
+      "category": "잡담",
+      "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fport4.webp8d58c7cc-61b7-4e02-95c4-3ef5e624c426?alt=media&token=a1b2eddc-a9d2-4c49-9811-e3c0d3aaae2c"
+    },
+    {
+      "title": "f",
+      "body": "f",
+      "category": "free",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "postUpNum": 1,
+      "isPostUp": false,
+      "id": 48,
+      "userEmail": [
+        "123@test.com"
+      ],
+      "userServerImg": ""
+    },
+    {
+      "title": "sadf",
+      "body": "fsda",
+      "category": "prepare",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 49
+    },
+    {
+      "title": "fff",
+      "body": "f",
+      "category": "qna",
+      "date": "23. 11. 06",
+      "email": "123@test.com",
+      "publicM": true,
+      "postUpNum": 1,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [
+        "123@test.com"
+      ],
+      "id": 50
+    },
+    {
+      "title": "notive",
+      "body": "f",
+      "category": "notice",
+      "date": "23. 11. 07",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 51
+    },
+    {
+      "title": "new",
+      "body": "f",
+      "category": "new",
+      "date": "23. 11. 07",
+      "email": "123@test.com",
+      "publicM": true,
+      "comments": [],
+      "postUpNum": 0,
+      "isPostUp": false,
+      "userServerImg": "",
+      "userEmail": [],
+      "id": 52
     }
   ],
   "user": [
@@ -434,9 +686,115 @@
       "thumbUpUserEmail": [],
       "thumbDownUserEmail": [],
       "id": 15
+    },
+    {
+      "text": "asdf",
+      "date": "23년 11월 06일 19시37분",
+      "email": "123@test.com",
+      "postId": "45",
+      "thumbUpNum": 1,
+      "thumbDownNum": 0,
+      "id": 17,
+      "isThumbUp": true,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [
+        "123@test.com"
+      ],
+      "thumbDownUserEmail": []
+    },
+    {
+      "text": "asdf",
+      "date": "23년 11월 06일 20시27분",
+      "email": "admin@admin.com",
+      "postId": "1",
+      "thumbUpNum": 1,
+      "thumbDownNum": 0,
+      "id": 18,
+      "isThumbUp": true,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [
+        "admin@admin.com"
+      ],
+      "thumbDownUserEmail": []
+    },
+    {
+      "text": "asdfasdf",
+      "date": "23년 11월 06일 20시27분",
+      "email": "admin@admin.com",
+      "postId": "1",
+      "thumbUpNum": 0,
+      "thumbDownNum": 1,
+      "id": 19,
+      "isThumbUp": false,
+      "isThumbDown": true,
+      "thumbUpUserEmail": [],
+      "thumbDownUserEmail": [
+        "admin@admin.com"
+      ]
+    },
+    {
+      "text": "sadf",
+      "date": "23년 11월 06일 20시50분",
+      "email": "123@test.com",
+      "postId": "47",
+      "thumbUpNum": 1,
+      "thumbDownNum": 0,
+      "id": 20,
+      "isThumbUp": true,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [
+        "123@test.com"
+      ],
+      "thumbDownUserEmail": []
+    },
+    {
+      "text": "sadfsdf",
+      "date": "23년 11월 06일 20시50분",
+      "email": "123@test.com",
+      "postId": "47",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [],
+      "thumbDownUserEmail": [],
+      "id": 21
+    },
+    {
+      "text": "fasd",
+      "date": "23년 11월 06일 20시54분",
+      "email": "123@test.com",
+      "postId": "50",
+      "thumbUpNum": 1,
+      "thumbDownNum": 0,
+      "id": 22,
+      "isThumbUp": true,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [
+        "123@test.com"
+      ],
+      "thumbDownUserEmail": []
+    },
+    {
+      "text": "das",
+      "date": "23년 11월 07일 03시00분",
+      "email": "123@test.com",
+      "postId": "48",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [],
+      "thumbDownUserEmail": [],
+      "id": 23
     }
   ],
   "likePost": [
+    {
+      "filteredLikePost": [],
+      "nowUser": null,
+      "id": 1
+    },
     {
       "filteredLikePost": [
         {
@@ -486,12 +844,14 @@
           "date": "23년 11월 05일",
           "email": "admin@admin.com",
           "publicM": true,
-          "postUpNum": 3,
+          "postUpNum": 5,
           "isPostUp": true,
           "id": 20,
           "userEmail": [
             "12@test.com",
-            "123@test.com"
+            "123@test.com",
+            "wawoo@test.com",
+            "test22@test.com"
           ]
         },
         {
@@ -514,11 +874,26 @@
           "date": "23년 11월 05일",
           "email": "123@test.com",
           "publicM": true,
-          "postUpNum": 1,
+          "postUpNum": 2,
           "isPostUp": false,
           "id": 22,
           "userEmail": [
-            "123@test.com"
+            "123@test.com",
+            "test22@test.com"
+          ]
+        },
+        {
+          "title": "ff",
+          "body": "ff",
+          "date": "23년 11월 05일",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 2,
+          "isPostUp": false,
+          "id": 25,
+          "userEmail": [
+            "123@test.com",
+            "test22@test.com"
           ]
         },
         {
@@ -541,7 +916,7 @@
           "email": "123@test.com",
           "publicM": true,
           "postUpNum": 1,
-          "isPostUp": false,
+          "isPostUp": true,
           "id": 27,
           "userEmail": [
             "123@test.com"
@@ -553,20 +928,89 @@
           "date": "23년 11월 05일",
           "email": "123@test.com",
           "publicM": true,
-          "postUpNum": 1,
-          "isPostUp": false,
+          "postUpNum": 2,
+          "isPostUp": true,
           "id": 28,
           "userEmail": [
-            "123@test.com"
+            "123@test.com",
+            "test22@test.com"
           ]
+        },
+        {
+          "title": "add2",
+          "body": "2",
+          "date": "23. 11. 06",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 3,
+          "isPostUp": false,
+          "userImg": {},
+          "userEmail": [
+            "123@test.com"
+          ],
+          "id": 29
+        },
+        {
+          "title": "1111",
+          "body": "111",
+          "date": "23. 11. 06",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 1,
+          "isPostUp": false,
+          "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fpointer.pngf4ee8fe4-9f25-47d2-803e-84dbb91c1935?alt=media&token=29ac594b-805c-4238-92bf-bf77450c8ed0",
+          "userEmail": [
+            "123@test.com"
+          ],
+          "id": 45
+        },
+        {
+          "title": "xzcv",
+          "body": "xzcv",
+          "date": "23. 11. 06",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 2,
+          "isPostUp": false,
+          "id": 47,
+          "userEmail": [
+            "123@test.com"
+          ],
+          "category": "잡담",
+          "userServerImg": "https://firebasestorage.googleapis.com/v0/b/easylogin-b3a6e.appspot.com/o/userImg%2Fport4.webp8d58c7cc-61b7-4e02-95c4-3ef5e624c426?alt=media&token=a1b2eddc-a9d2-4c49-9811-e3c0d3aaae2c"
+        },
+        {
+          "title": "f",
+          "body": "f",
+          "category": "free",
+          "date": "23. 11. 06",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 1,
+          "isPostUp": false,
+          "id": 48,
+          "userEmail": [
+            "123@test.com"
+          ],
+          "userServerImg": ""
+        },
+        {
+          "title": "fff",
+          "body": "f",
+          "category": "qna",
+          "date": "23. 11. 06",
+          "email": "123@test.com",
+          "publicM": true,
+          "postUpNum": 1,
+          "isPostUp": false,
+          "userServerImg": "",
+          "userEmail": [
+            "123@test.com"
+          ],
+          "id": 50
         }
       ],
       "nowUser": "123@test.com",
-      "id": 1
-    },
-    {
-      "filteredLikePost": [],
-      "nowUser": null,
       "id": 2
     },
     {

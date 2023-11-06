@@ -26,6 +26,14 @@ const PageArr = [
         component:BoardPage,
     },
     {
+        path:'/boardAdmin/:id',
+        component:BoardDetail,
+    },
+    {
+        path:'/boardAdmin/:id/edit',
+        component:BoardEditPage,
+    },
+    {
         path:'/board/create',
         component:CreateBlogPage,
     },

@@ -3,7 +3,7 @@ export default function InputForm(props){
     return(
         <Input
             type='text'
-            style={{fontSize:"20px", width:"260px", backgroundColor:"#1c6470", borderRadius:'1rem',color:'white',fontSize:"16px"}}
+            style={{fontSize:"20px", width:"260px", backgroundColor:"#dee2e6", borderRadius:'1rem',color:'#757575'}}
             value={props.value}
             onChange={props.onChange}
             placeholder="검색.."

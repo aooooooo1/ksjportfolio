@@ -4,6 +4,17 @@
 .postAdd{
     color: #424242;
 }
+.postAdd:hover{
+    color: #424242;
+    background-color: #d4e6e9;
+    border-radius: 2rem;
+}
+.adminPost{
+    background-color:  #ffebeb;
+}
+.adminPost:hover{
+    background-color: #fbd9d9;
+}
 .page-link{
     font-size: 16px !important;
     border-radius: 3rem;
@@ -23,7 +34,7 @@
 }
 tr{
     transition: all 0.3s ease;
-    line-height: 2.5 !important;
+    line-height: 3.5 !important;
 }
 tr:hover{
     background-color: #d4e6e9;
@@ -87,6 +98,52 @@ tr:hover{
 .writer{
     width: 12%;
 }
+.inputBox{
+    border: 1px solid rgb(192, 190, 190);
+    display: flex;
+    justify-content: space-between;
+    border-radius: 3rem;
+}
+.inputBox:hover{
+    border: 1.5px solid;
+    color: #5d5c5c;
+}
+.postSelet{
+    border: none;
+    margin-left: 1rem;
+    color: #757575;
+    font-size: 16px;
+}
+.boardEvent{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+}
+.boardCategory{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+}
+.h1color{
+    /* color: #9e9e9e !important; */
+    color: #5099a6 !important;
+}
+.h1color2{
+    /* color: #9e9e9e !important; */
+    color: #e1dcdc !important;
+}
+.communityFont{
+    width: 100% !important;
+    font-size: 50px;
+    text-align: center;
+    background-color: #2d3232;
+    padding: 2rem 0;
+}
+.miniPosts:hover{
+    border-radius: 1rem;
+    background-color: #1c6470;
+}
+.miniPosts{
+    padding: 0.5rem;
+}
 @media screen and (max-width:768px) {
     th{
         font-size: 13px !important;
@@ -106,5 +163,15 @@ tr:hover{
     }
     .writerMy{
         display: none;
+    }
+    .boardEvent{
+        grid-template-columns: none;
+    }
+    .boardCategory{
+        grid-template-columns: none;
+    }
+    .communityFont{
+        font-size: 20px;
+        padding: 2rem 0;
     }
 }

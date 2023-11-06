@@ -61,7 +61,7 @@ label.active {
     font-size: 14px;
 }
 label.activeB {
-    transform: translateY(176px);
+    transform: translateY(180px);
     left: 2px;
     font-size: 14px;
 }
@@ -107,6 +107,10 @@ input{
 .field-wrap {
     position:relative;
     margin-bottom:40px;
+}
+.field-wrap2 {
+    position:relative;
+    margin-bottom:16px;
 }
 .top-row::after {
     content: "";

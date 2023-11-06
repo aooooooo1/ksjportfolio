@@ -1,10 +1,27 @@
+import axios from "axios";
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const Footer = () => {
+    const history = useHistory();
+
     const isLogin = useSelector(state=>{
         return state.auth.isLogin;
     })
+    //마이페이지 이동
+    const [users, setUsers] = useState([]);
+    const goToMy = ()=>{
+        const nowUser = localStorage.getItem('user')
+        axios.get(`http://localhost:3002/user`).then((res)=>{
+                setUsers(res.data);
+                const filteredUser = res.data.filter((item)=>item.email === nowUser);
+                const myId = filteredUser[0].id
+                history.push(`/my/${myId}`)
+            }).catch((er)=>{
+                console.log(er);
+            });
+    }
     return (
         <footer class="footer">
             <div class="d-grid footer__wrapper container">
@@ -45,7 +62,7 @@ const Footer = () => {
                         {
                             isLogin ?
                             <li class="footer__item">
-                                <Link to="/my">내정보</Link>
+                                <div className="cursor-pointer" onClick={goToMy}>내정보</div>
                             </li>
                             :
                             <li class="footer__item">
@@ -72,7 +89,7 @@ const Footer = () => {
                 </div>
             </div>
             <p class="footer__copyright container">
-                Copyright © Initiation and Termination 김성진 2023. All Rights Reserved
+                Copyright © Initiation and Termination 모두의 Portfolio 2023. All Rights Reserved
             </p>
         </footer>
     )

@@ -113,7 +113,7 @@ const NavBar = ({isScrolled}) => {
                             <Link to="/portfolio" onClick={closeMenu} className={`nav__link ${curPath ==='/portfolio' ? 'nav__link--active':''}`}>Portfolio</Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath ==='/board' ? 'nav__link--active':''}`}>{adminMode?'관리자 게시판':'게시판'}</Link>
+                            <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath.includes('/board') ? 'nav__link--active':''}`}>{adminMode?'관리자 게시판':'커뮤니티'}</Link>
                         </li>
                         {
                             isLogin ? 

@@ -188,7 +188,7 @@ const LoginRegister = () => {
     }else{
       setEye(true);
     }
-    console.log(eye)
+    // console.log(eye)
   }
   return (
     <div className="container containerP">
