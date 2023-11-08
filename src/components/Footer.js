@@ -13,7 +13,7 @@ const Footer = () => {
     const [users, setUsers] = useState([]);
     const goToMy = ()=>{
         const nowUser = localStorage.getItem('user')
-        axios.get(`http://localhost:3002/user`).then((res)=>{
+        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
                 setUsers(res.data);
                 const filteredUser = res.data.filter((item)=>item.email === nowUser);
                 const myId = filteredUser[0].id
