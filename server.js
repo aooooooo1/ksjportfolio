@@ -10,7 +10,7 @@ const middlewares = jsonServer.defaults({
 });
 
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3000;
 
 server.use(middlewares);
 
