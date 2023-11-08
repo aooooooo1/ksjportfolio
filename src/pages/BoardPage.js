@@ -1,9 +1,8 @@
 import { Link, useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom';
 import '../css/Board.css';
-import Table from '@mui/joy/Table';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import Pagination from '../components/Pagination';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from 'react-redux';
@@ -12,13 +11,16 @@ import { auth, storage } from '../firebase-config';
 import useToast from '../hooks/toast';
 import { v4 as uuidv4 } from 'uuid';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { Avatar, Tooltip } from '@mui/material';
+import { Avatar, Table, Tooltip } from '@mui/material';
 import { ref } from 'firebase/storage';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import ChatIcon from '@mui/icons-material/Chat';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+
 const BoardPage = () => {
   const isAdmin = useSelector((state)=>{
     return state.auth.isAdmin
@@ -50,7 +52,13 @@ const BoardPage = () => {
   const urlPage = url.get('page');
   //서치
   const [searchInput, setSearchInput] = useState('');
-
+  //type
+  const setFreeType = useRef(false);
+  const setAllType= useRef(false);
+  const setPrepareType = useRef(false);
+  const setQnaType = useRef(false);
+  const setNoticeType = useRef(false);
+  const setNewType= useRef(false);
 
 
 
@@ -58,6 +66,7 @@ const BoardPage = () => {
   useEffect(()=>{
     //페이지 갯수
     setNumberOfPages(Math.ceil(totalPost / limit))
+    // console.log('setNumberOfPages',Math.ceil(totalPost / limit))
   },[totalPost,limit])
 
   const getPostHistory = (page)=>{
@@ -208,7 +217,7 @@ const BoardPage = () => {
     getPostAdmin()
   },[getPostAdmin])
   //게시글 가져오는 함수
-  const getPost = useCallback((page)=>{
+  const getPost = useCallback((page=1)=>{
     setCurrentPage(page);
     let params = {
       _page:page,
@@ -216,6 +225,31 @@ const BoardPage = () => {
         _sort:'id',
         _order:'desc',
         title_like:searchInput,
+    }
+    // if(setAllType.current){
+    //   params = {
+    //     _page:page,
+    //       _limit:limit,
+    //       _sort:'id',
+    //       _order:'desc',
+    //       title_like:searchInput,
+    //   }
+    // }
+    if(setFreeType.current){
+      params = {...params, category:'free'}
+    }
+    // console.log('free',setFreeType.current)
+    if(setPrepareType.current){
+      params = {...params, category:'prepare'}
+    }
+    if(setQnaType.current){
+      params = {...params, category:'qna'}
+    }
+    if(setNoticeType.current){
+      params = {...params, category:'notice'}
+    }
+    if(setNewType.current){
+      params = {...params, category:'new'}
     }
     if(!isAdmin){
       params = {...params, publicM:true};
@@ -227,6 +261,7 @@ const BoardPage = () => {
       .then((res)=>{
         setPost(res.data);
         setTotalPost(res.headers['x-total-count'])
+        // console.log('게시글 갯수 ',res.headers['x-total-count'])
     }).catch(()=>{
       toast_add({
         text:'서버가 꺼져있습니다. 관리자에게 문의해 주세요.',
@@ -318,6 +353,11 @@ const BoardPage = () => {
   const [replyTotal, setReplyTotal] = useState([]);
   const [adminReplyTotal, setAdminReplyTotal] = useState([]);
   const [post5ReplyTotal, setPost5ReplyTotal] = useState([]);
+  const [freeReplyTotal, setFreeReplyTotal] = useState([]);
+  const [prepareReplyTotal, setPrepareReplyTotal] = useState([]);
+  const [qnaReplyTotal, setQnaReplyTotal] = useState([]);
+  const [noticeReplyTotal, setNoticeReplyTotal] = useState([]);
+  const [newReplyTotal, setNewReplyTotal] = useState([]);
   const showReplyNum = useCallback( ()=>{
     axios.get(`http://localhost:3002/comments`).then((res)=>{
       
@@ -344,353 +384,412 @@ const BoardPage = () => {
         const cnt = commentCountByPostId[post.id] || 0
         return cnt
       })
+      const free = freePost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
+      const prepare = preparePost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
+      const qna = qnaPost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
+      const notice = noticePost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
+      const new1 = newPost.map((post)=>{
+        const cnt = commentCountByPostId[post.id] || 0
+        return cnt
+      })
       setReplyTotal(postsWithCommentCounts);
       setAdminReplyTotal(adminPostReply)
       setPost5ReplyTotal(post5Reply)
-
+      setFreeReplyTotal(free);
+      setPrepareReplyTotal(prepare)
+      setQnaReplyTotal(qna);
+      setNoticeReplyTotal(notice);
+      setNewReplyTotal(new1);
     })
-  },[post, adminPost])
+  },[post, adminPost,freePost,preparePost,qnaPost,noticePost,newPost,post5])
   useEffect(()=>{
     showReplyNum()
   },[showReplyNum])
+  //type
+  const allC = (e)=>{
+    setPrepareType.current=false
+    setQnaType.current=false;
+    setNoticeType.current=false;
+    setFreeType.current=false;
+    setNewType.current=false;
+    // setAllType.current=true;
+    getPost()
+    
+  }
+  // console.log(setAllType.current)
+  const freeC = (e)=>{
+    setPrepareType.current=false
+    setQnaType.current=false;
+    setNoticeType.current=false;
+    setNewType.current=false;
+    setAllType.current=false;
+    setFreeType.current=true
+    getPost()
+    
+  }
+  const prepareC = (e)=>{
+    setQnaType.current=false;
+    setNoticeType.current=false;
+    setNewType.current=false;
+    setFreeType.current=false
+    setAllType.current=false;
+    setPrepareType.current=true
+    getPost()
+    
+  }
+  const qnaC = (e)=>{
+    setPrepareType.current=false
+    setNoticeType.current=false;
+    setNewType.current=false;
+    setAllType.current=false;
+    setFreeType.current=false
+    setQnaType.current=true;
+    getPost();
+  }
+  const noticeC = (e)=>{
+    setPrepareType.current=false
+    setQnaType.current=false;
+    setNewType.current=false;
+    setAllType.current=false;
+    setFreeType.current=false
+    setNoticeType.current=true;
+    getPost();
+    
+  }
+  const newC = (e)=>{
+    setPrepareType.current=false
+    setQnaType.current=false;
+    setNoticeType.current=false;
+    setFreeType.current=false
+    setAllType.current=false;
+    setNewType.current=true;
+    getPost()
+    
+  }
+  //이벤트 칼라 지정
+  const colors = ['#dde0f4','#d0fff4','#f8f8c3','#ffe3e3','#e7f5ff'];
+  //스크롤 이동
+  const allbtn = useRef(null);
+  const scrollToAllbtn = ()=>{
+    allbtn.current.scrollIntoView({behavior: 'smooth'});
+  };
   return (
-    <>
+    <div>
       <div className='communityFont'>
         <Tooltip title="다양한 사람들과 다양한 주제로 많은 이야기를 나눠보세요." arrow>
           <h1 className=" fontW5"><span className='h1color2'>Modu</span><span className='h1color'> Community</span></h1>
         </Tooltip>
       </div>
-    <div className="container chargeMain">
-      <div className='boardEvent'>
-        <div style={{backgroundColor:'#dde0f4', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
-          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
-          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
-          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 프로모션! 1,800여명의 주요 기업 멘토와 1:1로 커리어 관련 고민을 나눌 수 있는 멘토링매치 서비스에서 프로모션 진행 중이에요.</p>
-        </div>
-        <div style={{backgroundColor:'#d0fff4', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
-          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
-          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
-          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 프로모션! 1,800여명의 주요 기업 멘토와 </p>
-        </div>
-        <div style={{backgroundColor:'#f8f8c3', borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
-          <p style={{color:'#757575'}}><span style={{color:'#EF5350'}}>HOT🔥</span> 여기주목!</p>
-          <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>현직자와 대화할 사람!</h3>
-          <p style={{color:'#757575'}}>📢 1:1 현직자 상담 무료 .</p>
-        </div>
-      </div>
-      <div className='boardCategory'>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
+      <div className="container chargeMain">
+        {/* 이벤트 3개  */}
+        <div className='boardEvent'>
           {
-            post5.map((post, i)=>{
+            adminPost.map((post, i)=>{
               return(
-                <div className='d-flex justifyB cursor-pointer miniPosts' style={{marginBottom:'0.5rem'}}>
-                  <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                <div key={post.id + post.title + post.body} className='cursor-pointer' onClick={()=>history.push(`/boardAdmin/${post.id}`)} style={{backgroundColor:colors[i % colors.length], borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
+                  <p style={{color:'#757575'}}><span style={{color:'#EF5350',fontWeight:'500'}}>HOT🔥</span> 여기주목!</p>
+                  <h3 className='pOver'style={{fontWeight:'500',padding:'0.5rem 0'}}>{post.title}</h3>
+                  <p className='pOver1' style={{color:'#757575'}}>📢 {post.body}</p>
                   <div>
-                    <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                      <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{post.postUpNum}
-                    </span>
-                    <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                      <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
-                      {
-                        post5ReplyTotal[i]
-                      }
-                    </span>
-                  </div>
+                      <span style={{ color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon className='likeColor' style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                      </span>
+                      <span  style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon className='chatColor' style={{verticalAlign:'middle'}}/>
+                        {
+                          adminReplyTotal[i]
+                        }
+                      </span>
+                    </div>
                 </div>
               )
             })
           }
+          
         </div>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
-          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-        </div>
-      </div>
-      <div className='boardCategory'>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
-          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-        </div>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
-          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-        </div>
-      </div>
-      <div className='boardCategory'>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
-          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-        </div>
-        <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem', borderRadius:'3rem'}}>
-          <div className='d-flex' style={{alignItems:'center'}}>
-            <h3 style={{fontWeight:'500',padding:'0.5rem 0'}}>전체글</h3>
-            <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
-          </div>
-          <div className='d-flex justifyB' style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-          <div className='d-flex justifyB'style={{marginBottom:'1rem'}}>
-            <p style={{color:'#757575', fontSize:'19px'}}>asdfasdfasdfasdf</p>
-            <span>like, reply</span>
-          </div>
-        </div>
-      </div>
-      <div className="py-3 d-flex justify-content-between">
-          <div className='inputBox'>
-            <span style={{height:'100%'}}><SearchIcon className='postSearch' style={{verticalAlign:'middle',fontSize:'35px'}}/></span>
-            <input style={{border:'hidden', padding:'5px', color:'#757575'}} onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
-          </div>
-          {
-            isLogin ? 
-              <Link to="/board/create" className="postAdd">
-                  <PostAddIcon fontSize="large" style={{fontSize:"35px",verticalAlign:'middle'}}/>
-              </Link>
-            :
-            <Link to="/login" className="postAdd">
-              <PostAddIcon fontSize="large" style={{fontSize:"35px",verticalAlign:'middle'}}/>
-            </Link>
-          }
-      </div>
-      <div className="d-flex cursor-pointer clearAll" style={{marginBottom:'2rem'}} onClick={toggleClear}>
-        <ClearAllIcon style={{fontSize:'25px',marginRight:'0.5rem'}}/>
-      <div>정렬기준</div>
-      {
-          openClear&&
-          <div className="clearParent">
-              <div className="clearModalBoard" style={{width:'80px'}}>
-                  <ul style={{lineHeight:'30px', textAlign:'center'}}>
-                      <li className="cursor-pointer clearList" onClick={boardLately}>최신순</li>
-                      <li className="cursor-pointer clearList" onClick={boardPopular}>인기순</li>
-                  </ul>
-              </div>
-          </div>
-      }
-      </div>
-      <Table aria-label="basic table" style={{fontSize:"16px"}}>
-        {/* <thead>
-          <tr>
-            <th style={{width:'6%'}}></th>
-            <th style={{textAlign:"center"}}>제목</th>
-            <th className='boardDate' style={{ width: '10%', textAlign:"center"}}>날짜</th>
-            <th className='writer' style={{ textAlign:"center"}}>글쓴이</th>
-            {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>삭제</th>}
-            {isAdmin&&<th className='media768' style={{ width: '10%', textAlign:"center"}}>공개</th>}
-          </tr>
-        </thead> */}
-        <tbody>
-          {/* 관리자공지사항 */}
-          {
-            adminPost.map((po,i)=>{
-              if(po.email === 'admin@admin.com' && po.publicM === true){
+        {/* 전체 자유 */}
+        <div className='boardCategory'>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div onClick={()=>{scrollToAllbtn(); allC()}} className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 style={{fontWeight:'500',padding:'0.5rem 2rem'}}>전체글</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              post5.map((post, i)=>{
                 return(
-                  <tr key={po.id} onClick={()=>history.push(`/boardAdmin/${po.id}`)} className="cursor-pointer adminPost">
-                    <td style={{textAlign:"center", width:'10%'}}>
-                      {
-                        users.map((u)=>{
-                          if(u.email === po.email){
-                            return (
-                              <Avatar
-                                className='avatar'
-                                style={{ border: '1px solid gray'}}
-                                key={u.imageListS}
-                                alt=""
-                                src={u.imageListS}
-                              />
-                            )
-                          }
-                          return null;
-                        })
-                      }
-                    </td>
-                    {/* <td style={{textAlign:"center",color:'#B71C1C'}}><CampaignIcon style={{fontSize:'30px',verticalAlign:'middle'}}/></td> */}
-                    <td style={{textAlign:"center"}} className="line-limit">{po.title}
+                  <div key={post.id + post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
                       </span>
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
-                      {
-                        adminReplyTotal[i]
-                      }
-                      </span>
-                    </td>
-                    <td style={{textAlign:"center",color:'#9E9E9E',fontSize:'14px',width:'10%'}} className='boardDate'>{po.date}</td>
-                    
-                    <td style={{textAlign:"center", width:'20%'}}>{po.email.split('@')[0]}</td>
-                    {isAdmin&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
-                    {isAdmin&&<td className='media768'></td>}
-                  </tr>
-                )
-              }
-              return null;
-            })
-          }
-          {/* 게시판 */}
-          {
-            post.length > 0 ? post.map((po,i)=>{
-              return(
-                <tr key={po.id} onClick={()=>history.push(`/board/${po.id}`)} className="cursor-pointer">
-                  {/* 프로필 사진*/}
-                  <td style={{width:'10%'}}> 
-                    {
-                      users.map((u)=>{
-                        if(u.email === po.email){
-                          return (
-                            <Avatar
-                              className='avatar'
-                              style={{ border: '1px solid #dad4d4'}}
-                              key={u.imageListS}
-                              alt=""
-                              src={u.imageListS}
-                            />
-                          )
+                        <ChatBubbleOutlineIcon className='chatColor' style={{verticalAlign:'middle'}}/>
+                        {
+                          post5ReplyTotal[i]
                         }
-                        return null;
-                      })
-                    }
-                  </td>
-                    {/* 제목 */}
-                    <td style={{textAlign:"center",color:'#616161'}} className="line-limit">
-                      {po.title}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div onClick={()=>{scrollToAllbtn(); freeC()}} className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 style={{fontWeight:'500',padding:'0.5rem 2rem'}}>자유</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              freePost.map((post, i)=>{
+                return(
+                  <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ThumbUpAltOutlinedIcon style={{verticalAlign:'middle'}}/>{po.postUpNum}
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
                       </span>
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
-                        <ChatBubbleOutlineIcon style={{verticalAlign:'middle'}}/>
-                      {
-                        replyTotal[i]
-                      }
+                        <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                        {
+                          freeReplyTotal[i]
+                        }
                       </span>
-                    </td>
-                    {/* 날짜 */}
-                    <td className='boardDate' style={{textAlign:"center", color:'#9E9E9E',fontSize:'14px',width:'10%'}}>{po.date}</td>
-                    
-                    {/* 닉네임 */}
-                    <td style={{textAlign:'center', fontWeight:'500',color:'#757575', width:'20%'}}>
-                      {po.email ? po.email.split('@')[0]:''}
-                    </td>
-                    {/* 삭제 */}
-                    {isAdmin&&<td className='media768' onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}} /></td>}
-                    {/* 공개 */}
-                    {isAdmin&&<td className='media768' style={{textAlign:"center"}}>{po.publicM?'공개':<DoNotDisturbIcon style={{fontSize:'large', color:'#B71C1C',verticalAlign:'middle'}}/>}</td>}
-                </tr>
-              );
-            }) : <tr>
-                    <td colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다.</td>
-                </tr>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
+        {/* prepare , qna */}
+        <div className='boardCategory'>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div onClick={()=>{scrollToAllbtn(); prepareC()}} className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 style={{fontWeight:'500',padding:'0.5rem 2rem'}}>취준</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              preparePost.map((post, i)=>{
+                return(
+                  <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                        {
+                          prepareReplyTotal[i]
+                        }
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 onClick={()=>{scrollToAllbtn(); qnaC()}} style={{fontWeight:'500',padding:'0.5rem 2rem'}}>QnA</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              qnaPost.map((post, i)=>{
+                return(
+                  <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                        {
+                          qnaReplyTotal[i]
+                        }
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
+        {/* notice , new */}
+        <div className='boardCategory'>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div onClick={()=>{scrollToAllbtn(); noticeC()}} className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 style={{fontWeight:'500',padding:'0.5rem 2rem'}}>알림</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              noticePost.map((post, i)=>{
+                return(
+                  <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                        {
+                          noticeReplyTotal[i]
+                        }
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div style={{margin:'1rem',border:'1px solid #E0E0E0', padding:'1rem 0', borderRadius:'3rem'}}>
+            <div onClick={()=>{scrollToAllbtn(); newC()}} className='d-flex cursor-pointer' style={{alignItems:'center'}}>
+              <h3 style={{fontWeight:'500',padding:'0.5rem 2rem'}}>신입</h3>
+              <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
+            </div>
+            {
+              newPost.map((post, i)=>{
+                return(
+                  <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                    <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
+                    <div>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ThumbUpAltOutlinedIcon className='likeColor'style={{verticalAlign:'middle'}}/>{post.postUpNum}
+                      </span>
+                      <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
+                        <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                        {
+                          newReplyTotal[i]
+                        }
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
+        <div className="py-3 d-flex justify-content-between">
+            <div className='inputBox'>
+              <span style={{height:'100%'}}><SearchIcon className='postSearch' style={{verticalAlign:'middle',fontSize:'35px'}}/></span>
+              <input style={{border:'hidden', padding:'5px', color:'#757575'}} onChange={(e)=>setSearchInput(e.target.value)} onClick={search}/>
+            </div>
+            {
+              isLogin ? 
+                <Link to="/board/create" className="postAdd">
+                    <PostAddIcon fontSize="large" style={{fontSize:"35px",verticalAlign:'middle'}}/>
+                </Link>
+              :
+              <Link to="/login" className="postAdd">
+                <PostAddIcon fontSize="large" style={{fontSize:"35px",verticalAlign:'middle'}}/>
+              </Link>
+            }
+        </div>
+        <div className="d-flex cursor-pointer clearAll" style={{marginBottom:'2rem'}} onClick={toggleClear}>
+          <ClearAllIcon style={{fontSize:'25px',marginRight:'0.5rem'}}/>
+          <div>정렬기준</div>
+          {
+              openClear&&
+              <div className="clearParent">
+                  <div className="clearModalBoard" style={{width:'80px'}}>
+                      <ul style={{lineHeight:'30px', textAlign:'center'}}>
+                          <li className="cursor-pointer clearList" onClick={boardLately}>최신순</li>
+                          <li className="cursor-pointer clearList" onClick={boardPopular}>인기순</li>
+                      </ul>
+                  </div>
+              </div>
           }
-        </tbody>
-      </Table>
-      
-        <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
-      
+        </div>
+        <div>
+          <div style={{textAlign:'center', fontSize:'18px',marginBottom:'2rem'}}>
+            <div className='typeArr'>
+              <div className='typeArr1'>
+                <span ref={allbtn} onClick={allC} className='postType' style={{backgroundColor:'#ffd8a8'}}>전체</span>
+                <span onClick={()=>freeC()}value='free' className='postType'style={{backgroundColor:'#fcc2d7'}}>자유</span>
+                <span onClick={prepareC} className='postType'style={{backgroundColor:'#99e9f2'}}>취준</span>
+              </div>
+              <div>
+                <span onClick={qnaC}className='postType'style={{backgroundColor:'#a5d8ff'}}>QnA</span>
+                <span onClick={noticeC}className='postType'style={{backgroundColor:'#a9e34b'}}>알림</span>
+                <span onClick={newC}className='postType'style={{backgroundColor:'#E9CFEC'}}>신입</span>
+              </div>
+            </div>
+          </div>
+        </div>
+            {/* 게시판 */}
+            {
+              post.length > 0 ? post.map((po,i)=>{
+                return(
+                  <>
+                  <div className="cursor-pointer boardPost d-flex justifyB" key={po.id + po.body} onClick={()=>history.push(`/board/${po.id}`)} style={{borderBottom:'1px solid #E0E0E0',padding:'1rem'}}>
+                    <div style={{display:'grid',justifyItems:'center'}}>
+                      <div>
+                        {
+                          users.map((u)=>{
+                            if(u.email === po.email){
+                              return (
+                                <Avatar
+                                  className='avatar'
+                                  style={{ border: '1px solid #dad4d4'}}
+                                  key={u.imageListS}
+                                  alt=""
+                                  src={u.imageListS}
+                                />
+                              )
+                            }
+                            return null;
+                          })
+                        }
+                      </div>
+                      <div style={{color:'#757575'}}>{po.email ? po.email.split('@')[0]:''}</div>
+                      <div>
+                        <span style={{ paddingRight:'1rem'}}>
+                          <ThumbUpIcon style={{verticalAlign:'middle',color:'#1c6470'}}/>{po.postUpNum}
+                        </span>
+                        <span >
+                          <ChatIcon className='chatColor'style={{verticalAlign:'middle'}}/>
+                          {
+                            replyTotal[i]
+                          }
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{justifyItems:'center', display:'grid', width:'55%'}}>
+                      <div className='pOver' style={{fontSize:'18px',paddingTop:'1rem',color:'#757575'}}>{po.title}</div>
+                      <div className='pOver' style={{fontSize:'14px' , margin:'1rem'}}>{po.body}</div>
+                    </div>
+                    <div>
+                      <div style={{textAlign:'end',fontSize:'12px'}}>{po.id}</div>
+                      <div style={{fontSize:'14px'}}>{po.date}</div>
+                    </div>
+                  </div>
+                  </>
+                );
+              }) 
+              : 
+              <div>
+                <p colSpan={3} style={{textAlign:'center'}}>게시글이 존재 하지 않습니다.</p>
+              </div>
+            }
+          <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={getPostHistory}/>
+
+      </div>
     </div>
-    </>
   )
 }
 

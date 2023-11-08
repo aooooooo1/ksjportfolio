@@ -725,7 +725,7 @@ const BoardDetail = (props) => {
                 <div>{date}</div>
             </div>
             <img src={userServerImg} alt=""></img>
-            <div style={{padding:'1rem 0', fontSize:'18px',color:'#757575'}}>{body}</div>
+            <div style={{padding:'1rem 0', fontSize:'18px',color:'#757575',overflowWrap:'anywhere'}}>{body}</div>
         </div>
         <div className="" style={{margin:'2rem 0'}}>
             {/* 게시글 좋아요 */}

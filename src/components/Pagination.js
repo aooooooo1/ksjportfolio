@@ -1,10 +1,15 @@
 import '../css/Board.css';
 import propTypes from 'prop-types';
-const Pagination1 = ({currentPage, numberOfPages, onClick, showPage}) => {
-    const currentSet = Math.ceil(currentPage/showPage);
-    const lastSet = Math.ceil(numberOfPages/showPage);
+const Pagination = ({currentPage, numberOfPages, onClick, showPage}) => {
+    let currentSet = Math.ceil(currentPage/showPage);
+    const lastSet = Math.ceil(numberOfPages/5);
     const startPage = showPage*(currentSet-1) + 1
-    const numberOfPagesSet = currentSet === lastSet ? numberOfPages%showPage : showPage;
+    let arrPage = numberOfPages%showPage;
+    if(arrPage === 0){
+        arrPage = numberOfPages
+    }
+    const numberOfPagesSet = currentSet === lastSet ? arrPage : 5
+    
 
     return (
         <div className="pagination p1">
@@ -23,7 +28,7 @@ const Pagination1 = ({currentPage, numberOfPages, onClick, showPage}) => {
         </div>
     )
 }
-Pagination1.propTypes={
+Pagination.propTypes={
     // 현제페이지 넘버
     currentPage: propTypes.number,
     // 페이징네이션의 갯수
@@ -32,8 +37,8 @@ Pagination1.propTypes={
     onClick: propTypes.func.isRequired,
     showPage: propTypes.number
 }
-Pagination1.defaultProps={
+Pagination.defaultProps={
     currentPage:1,
     showPage:5
 }
-export default Pagination1;
+export default Pagination;

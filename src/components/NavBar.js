@@ -61,27 +61,6 @@ const NavBar = ({isScrolled}) => {
     const closeMenu = ()=>{
         setIsMenuOpen(false);
     }
-    //logout
-    const logout = async ()=>{
-        if(localStorage.getItem('user')==='admin@admin.com'){
-            await signOut(auth);
-            dispatch(reduxLogout());
-            history.push('/');
-            setTimeout(()=>{
-                window.location.reload();
-            },500)
-        }else{
-            await signOut(auth);
-            dispatch(reduxLogout());
-            console.log('로그아웃 정상완료')
-        }
-        history.push('/');
-        toast_add({
-            text:'로그아웃 되었습니다. 안녕히가세요.',
-            type: 'success',
-            id : uuidv4()
-        });
-    }
 
     const [userP, setUserP]=useState(false);
     const matchingUser =useCallback(()=>{
@@ -110,7 +89,7 @@ const NavBar = ({isScrolled}) => {
                             <Link to="/charge" onClick={()=>{closeMenu();}} className={`nav__link ${curPath ==='/charge' ? 'nav__link--active':''}`}>요금</Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/portfolio" onClick={closeMenu} className={`nav__link ${curPath ==='/portfolio' ? 'nav__link--active':''}`}>Portfolio</Link>
+                            <Link to="/portfolio" onClick={closeMenu} className={`nav__link ${curPath.includes('/portfolio') ? 'nav__link--active':''}`}>Portfolio</Link>
                         </li>
                         <li className="nav__item">
                             <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath.includes('/board') ? 'nav__link--active':''}`}>{adminMode?'관리자 게시판':'커뮤니티'}</Link>

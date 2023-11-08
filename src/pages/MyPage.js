@@ -1,6 +1,6 @@
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Avatar } from '@mui/material';
+import { Avatar, Tooltip } from '@mui/material';
 import { auth, storage } from '../firebase-config';
 import { ref, uploadBytes , listAll,list ,getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
@@ -320,6 +320,7 @@ const MyPage = () => {
             setTimeout(()=>{
                 window.location.reload();
             },500)
+            return;
         }else{
             await signOut(auth);
             dispatch(reduxLogout());
@@ -343,8 +344,12 @@ const MyPage = () => {
     },[likeCurPage,limit]) 
 
     return (
+        <>
+        <div className='communityFont'>
+            <h1 className=" fontW5"><span className='h1color2'>Modu</span><span className='h1color'> My page</span></h1>
+        </div>
         <div className='container chargeMain'>
-            <h1 className="textA fontW5" style={{marginBottom:'2rem'}}>내정보</h1>
+            {/* <h1 className="textA fontW5" style={{marginBottom:'2rem'}}>내정보</h1> */}
             <div className='myImgDiv'>
                 <div>
                     <div>
@@ -430,7 +435,8 @@ const MyPage = () => {
                                 }
                             </td>
                             <td className='writerMy' style={{textAlign:'center'}}>
-                                {po.email ? po.email.split('@')[0]:''}
+                                {/* {po.email ? po.email.split('@')[0]:''} */}
+                                {po.email.split('@')[0]}
                             </td>
                             {/* 딜리트 아이콘 */}
                             {(user.email===po.email)?<td onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}}/></td>:<td></td>}
@@ -496,6 +502,7 @@ const MyPage = () => {
             </Table>
             <Pagination2 likeCurPage={likeCurPage} likeNumberOfPages={likeNumberOfPages} onClick={getPostLike}/>
         </div>
+        </>
     )
 }  
 

@@ -132,17 +132,69 @@ tr:hover{
 }
 .communityFont{
     width: 100% !important;
-    font-size: 50px;
+    font-size: 35px;
     text-align: center;
     background-color: #2d3232;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
 }
 .miniPosts:hover{
     border-radius: 1rem;
-    background-color: #1c6470;
+    background-color: #e3eef0;
 }
 .miniPosts{
     padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+.miniPosts p {
+    color: rgb(117, 117, 117);
+    font-size: 19px;
+    display: -webkit-box;
+    overflow-wrap: anywhere;
+    width: 70%;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+.pOver{
+    display: -webkit-box;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+.pOver1{
+    display: -webkit-box;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+.chatColor{
+    color: #06367e;
+}
+.likeColor{
+    color: #1c6470;
+}
+.boardPost{
+    transition: all 0.3s ease;
+}
+.boardPost:hover{
+    background-color: #d4e6e9;
+}
+.postType{
+    cursor: pointer;
+    padding:0.5rem 1.5rem;
+    border-radius:2rem;
+    color:#616161;
+    margin: 0 3px;
+    transition: all 0.5s ease;
+}
+.postType:hover{
+    border: 1px solid black;
+}
+.typeArr{
+    display: flex;
+    justify-content: center;
 }
 @media screen and (max-width:768px) {
     th{
@@ -173,5 +225,11 @@ tr:hover{
     .communityFont{
         font-size: 20px;
         padding: 2rem 0;
+    }
+    .typeArr{
+        display: block;
+    }
+    .typeArr1{
+        margin-bottom: 2rem;
     }
 }

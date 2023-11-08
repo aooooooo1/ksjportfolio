@@ -7,6 +7,7 @@ import My from './pages/MyPage';
 import CreateBlogPage from './pages/CreateBlogPage';
 import BoardDetail from './pages/BoardDetail';
 import BoardEditPage from './pages/BoardEditPage';
+import Ksj from './pages/Ksj';
 
 const PageArr = [
     {
@@ -20,6 +21,10 @@ const PageArr = [
     {
         path:'/portfolio',
         component:Portfolio,
+    },
+    {
+        path:'/portfolio/ksj',
+        component:Ksj,
     },
     {
         path:'/board',

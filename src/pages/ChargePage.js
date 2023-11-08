@@ -25,10 +25,11 @@ const ChargePage = () => {
         return state.auth.isLogin;
     })
     return (
+        <>
+        <div className='communityFont'>
+            <h1 className=" fontW5"><span className='h1color2'>Modu</span><span className='h1color'> 요금</span></h1>
+        </div>
         <div className='chargeMain container'>
-            <div className='textAlign py-3 textKo cardH'>
-                <h1 className='h1'>모두의 <span className='primaryC'>Portfolio</span> 요금</h1>
-            </div>
             <div className='d-flex justify-content-center '>
             <Card size="lg" variant="outlined" className="cardW">
                 <Chip size="lg" variant="outlined" color="neutral" style={{fontSize:"14px",backgroundColor:"#1c6470",color:"#fff",padding:"4px 12px"}}>
@@ -84,6 +85,7 @@ const ChargePage = () => {
             </Card>
             </div>
         </div>
+        </>
     )
 }
 
