@@ -32,7 +32,6 @@ const BoardDetail = (props) => {
     const isBoardAdmin = location.pathname.includes('/boardAdmin');
     const admin = localStorage.getItem('user');
     const [users, setUsers] = useState([]);
-    const [replyComments, setReplyComments]=useState([]);
     const [replyCommentsPage, setReplyCommentsPage]=useState([]);
     const isLogin = useSelector((state)=>{
         return state.auth.isLogin;
@@ -82,23 +81,24 @@ const BoardDetail = (props) => {
         //페이지 갯수
         setNumberOfPages(Math.ceil(totalPost / 10))
     },[totalPost])
-    // comments 댓글 가져오기
+    // comments 댓글불러오기 가져오기
     const getDetailReply = useCallback((page=1)=>{
         setCurrentPage(page);
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts/${props.match.params.id}/comments`,{
+        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
             params:{
                 _page:page,
                 _limit:10
             }
         })
         .then((res)=>{
-            // console.log('useE',res.data);
-            setReplyCommentsPage(res.data);
+            const filteredReply = res.data.filter(reply=>reply.postId === id)
+            console.log('useE',filteredReply);
+            setReplyCommentsPage(filteredReply);
             setTotalPost(res.headers['x-total-count'])
         }).catch((er)=>{
             console.log(er)
         })
-    },[props.match.params.id])
+    },[id])
 
     //게시글 한번 가져오기
     const [userServerImg, setUserServerImg] = useState('');
@@ -139,13 +139,14 @@ const BoardDetail = (props) => {
     //댓글 좋아용 validate
     // const [commentUpVali, setCommentUpVali] = useState({});
     const commentUpVali = useRef({});
+    const commentDownVali = useRef({});
     const replyUpVali = useCallback(()=>{
         const nowUser1 = localStorage.getItem('user');
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`).then((res)=>{
-            const existingReply = res.data;
+        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`).then((res)=>{
+            const existingReply = res.data.filter(v=>v.postId===id);
             // console.log('원레있던댓글 ',existingReply)
-
             let comUpVali = existingReply.map(v => v.thumbUpUserEmail.map(e=>e===nowUser1));
+            let comDownVali = existingReply.map(v => v.thumbDownUserEmail.map(e=>e===nowUser1));
             // console.log(comUpVali)
             if(comUpVali){
                 for(let i = 0; i < comUpVali.length; i++){
@@ -156,8 +157,17 @@ const BoardDetail = (props) => {
                     }
                 }
             }
+            if(comDownVali){
+                for(let i = 0; i < comDownVali.length; i++){
+                    if(comDownVali[i].includes(true)){
+                        commentDownVali.current = {...commentDownVali.current , [existingReply[i].id]:true }
+                    }else{
+                        commentDownVali.current = {...commentDownVali.current, [existingReply[i].id]:false }
+                    }
+                }
+            }
         })
-    },[props.match.params.id])
+    },[])
     // console.log(commentUpVali.current[9])
 
 
@@ -217,7 +227,7 @@ const BoardDetail = (props) => {
                     isThumbUp:false,
                     isThumbDown,
                     thumbUpUserEmail:[],
-                    thumbDownUserEmail:[]
+                    thumbDownUserEmail:[],
                 }).then((res) => {
                     console.log('120',res.data)
                     const newComment = res.data;
@@ -381,6 +391,7 @@ const BoardDetail = (props) => {
                     localStorage.getItem('user')
                 ],
             }).then((res)=>{
+                replyUpVali()
                 setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                 getDetailReply();
             }).catch((er)=>{
@@ -419,6 +430,7 @@ const BoardDetail = (props) => {
                 ],
                 thumbDownUserEmail:filterdEmail
             }).then((res)=>{
+                replyUpVali()
                 setThumbUpCounts({...thumbUpCounts, [reply.id]:res.data});
                 getDetailReply();
             }).catch((er)=>{
@@ -455,20 +467,20 @@ const BoardDetail = (props) => {
         setOpenMenus((prevOpenMenus) => ({
             [commentId]: !prevOpenMenus[commentId],
         }));
-        console.log(openMenus)
+        // console.log(openMenus)
     };
     //댓글 수정 들어가기 버튼
     const [replyModifyForm, setReplyModifyForm] = useState({});
     const [replyModifyText, setReplyModifyText] = useState('');
     const replyModify = (id)=>{
         setReplyModifyForm((prev)=>({[id]:!prev[id]}));
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`)
+        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`)
         .then((res)=>{
             const re = res.data;
             const filterReply = re.filter((v)=>{
                 return v.id === id
             })
-            console.log(filterReply[0].text);
+            // console.log(filterReply[0].text);
             setReplyModifyText(filterReply[0].text);
         }).catch((er)=>{
             console.log(er)
@@ -532,7 +544,7 @@ const BoardDetail = (props) => {
     //최신순
     const replyLately = ()=>{
             setCurrentPage(1);
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`,{
+            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -541,7 +553,8 @@ const BoardDetail = (props) => {
                 }
             })
             .then((res)=>{
-                setReplyCommentsPage(res.data);
+                const fi = res.data.filter(v=>v.postId===id)
+                setReplyCommentsPage(fi);
                 setTotalPost(res.headers['x-total-count'])
                 toggleClear()
             }).catch((er)=>{
@@ -551,7 +564,7 @@ const BoardDetail = (props) => {
     //인기순
     const replyPopular=()=>{
         setCurrentPage(1);
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}/comments`,{
+            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -560,7 +573,8 @@ const BoardDetail = (props) => {
                 }
             })
             .then((res)=>{
-                setReplyCommentsPage(res.data);
+                const fi = res.data.filter(v=>v.postId===id)
+                setReplyCommentsPage(fi);
                 setTotalPost(res.headers['x-total-count'])
                 toggleClear()
             }).catch((er)=>{
@@ -891,27 +905,12 @@ const BoardDetail = (props) => {
                                                         : <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
 
                                                     }
-                                                    {/* {   
-                                                        v.thumbUpUserEmail.map(email=>{
-                                                            if(email === localStorage.getItem('user')){
-                                                                 <ThumbUpIcon onClick={(e)=>{thumbUpCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#1c6470',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                            }
-                                                            return null
-                                                        })
-                                                    }
-                                                    {   
-                                                        v.thumbUpUserEmail.map(email=>{
-                                                            if(email !== localStorage.getItem('user')){
-                                                                return <ThumbUpAltOutlinedIcon onClick={(e)=>{thumbUp(e, v); createFireworks(e)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
-                                                            }
-                                                            return null
-                                                        })
-                                                    } */}
                                                 </Tooltip>
                                                 <div style={{marginRight:'1rem'}}>{v.thumbUpNum}</div>
                                                 <Tooltip title="싫어요" arrow style={{fontSize:'32px'}}>
                                                     {
-                                                        v.isThumbDown ===false ? <ThumbDownAltOutlinedIcon onClick={(e)=>{thumbDown(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
+                                                        commentDownVali.current[v.id]
+                                                         ? <ThumbDownAltOutlinedIcon onClick={(e)=>{thumbDown(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
                                                             : <ThumbDownIcon onClick={(e)=>{thumbDownCancel(e, v)}} className="cursor-pointer thumb" style={{fontSize:'30px', color:'#757575',padding:'0.55rem',borderRadius:'100%'}}/>
                                                     }
                                                 </Tooltip>

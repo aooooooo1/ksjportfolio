@@ -362,7 +362,7 @@ const BoardPage = () => {
     axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`).then((res)=>{
       
       const filteredReply = res.data.map(v=>v.postId)
-      console.log(filteredReply);
+      // console.log(filteredReply);
       const commentCountByPostId = {};
       filteredReply.forEach((comment)=>{
         if (commentCountByPostId[comment]) {
@@ -376,7 +376,7 @@ const BoardPage = () => {
         const commentCount = commentCountByPostId[post.id] || 0;
         return commentCount;
       });
-      console.log(postsWithCommentCounts);
+      // console.log(postsWithCommentCounts);
       const adminPostReply = adminPost.map((post)=>{
         const cnt = commentCountByPostId[post.id] || 0
         return cnt
