@@ -64,17 +64,19 @@ const NavBar = ({isScrolled}) => {
 
     const [userP, setUserP]=useState(false);
     const matchingUser =useCallback(()=>{
-        let userImg = users.map(user => user.email === localStorage.getItem('user'));
-        if(userImg.includes(true)){
-            setUserP(true)
-            // console.log(userP)
-        }else{
-            setUserP(false)
+        if(users){
+            let userImg = users.map(user => user.email === localStorage.getItem('user'));
+            if(userImg.includes(true)){
+                setUserP(true)
+                // console.log(userP)
+            }else{
+                setUserP(false)
+            }
         }
     },[users] )
     useEffect(()=>{
         matchingUser()
-    },[matchingUser])
+    },[])
 
 
     return (
