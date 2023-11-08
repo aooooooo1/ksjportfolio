@@ -362,8 +362,7 @@ const BoardPage = () => {
     axios.get(`http://localhost:3002/comments`).then((res)=>{
       
       const filteredReply = res.data.map(v=>v.postId)
-      const postNumber = post.map(post=>post.id)
-      
+      console.log(filteredReply);
       const commentCountByPostId = {};
       filteredReply.forEach((comment)=>{
         if (commentCountByPostId[comment]) {
@@ -372,10 +371,12 @@ const BoardPage = () => {
           commentCountByPostId[comment] = 1;
         }
       });
+      
       const postsWithCommentCounts = post.map((post) => {
         const commentCount = commentCountByPostId[post.id] || 0;
         return commentCount;
       });
+      console.log(postsWithCommentCounts);
       const adminPostReply = adminPost.map((post)=>{
         const cnt = commentCountByPostId[post.id] || 0
         return cnt

@@ -1046,6 +1046,19 @@
       "thumbUpUserEmail": [],
       "thumbDownUserEmail": [],
       "id": 25
+    },
+    {
+      "text": "asdf",
+      "date": "23년 11월 08일 10시20분",
+      "email": "123@test.com",
+      "postId": "71",
+      "thumbUpNum": 0,
+      "thumbDownNum": 0,
+      "isThumbUp": false,
+      "isThumbDown": false,
+      "thumbUpUserEmail": [],
+      "thumbDownUserEmail": [],
+      "id": 26
     }
   ],
   "likePost": [
