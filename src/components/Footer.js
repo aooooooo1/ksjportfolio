@@ -76,14 +76,7 @@ const Footer = () => {
                     <h4 class="footer__title">Connect to..</h4>
                     <ul class="footer__list">
                         <li class="footer__item">
-                            <a href="https://github.com/aooooooo1" class="footer__link" target="_blank">
-                                김성진 GitHub 바로가기
-                            </a>
-                        </li>
-                        <li class="footer__item">
-                            <a href="https://www.miricanvas.com/v/12gehq6" class="footer__link" target="_blank">
-                                포트폴리오 기획서 살펴보기
-                            </a>
+                            <Link to="/">모두의 Portfolio</Link>
                         </li>
                     </ul>
                 </div>

@@ -196,7 +196,33 @@ tr:hover{
     display: flex;
     justify-content: center;
 }
+.grid768{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.portText{
+    padding:2rem;
+    text-align:center;
+    width:50%;
+    display:grid;
+    height:330px;
+}
+.portH{
+    font-size: 30px;
+    font-weight: 500;
+}
 @media screen and (max-width:768px) {
+    .portText{
+        padding:0;
+        text-align:center;
+        width:auto;
+        display:grid;
+        height:auto;
+    }
+    .portH{
+        font-size: 20px;
+        font-weight: 500;
+    }
     th{
         font-size: 13px !important;
     }
@@ -231,5 +257,12 @@ tr:hover{
     }
     .typeArr1{
         margin-bottom: 2rem;
+    }
+    .grid768{
+        display: grid;
+        grid-template-columns:  1fr;
+    }
+    .portImg{
+        width: 150px;
     }
 }

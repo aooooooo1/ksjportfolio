@@ -449,7 +449,7 @@ const Ksj = () => {
                         </tr>
                         <tr>
                             <td class="offer__price-now">사용기술</td>
-                            <td class="offer__price-before">Redux, react-Router, MUI, Json-server, axios, uuid, firebase</td>
+                            <td class="offer__price-before">Redux, react-Router, MUI, Json-server, axios, uuid, firebase, heroku</td>
                         </tr>
                     </table>
                 </div>
@@ -488,7 +488,7 @@ const Ksj = () => {
             <div class="section__header1">
                 <span class="offer__subtitle1">역할과 구현내용</span>   
             </div>
-            <div class="wrapper container" style={{marginBottom:'5rem'}}>
+            <div class="wrapper container">
                 <Tabs
                 variant="outlined"
                 aria-label="Pricing plan"
@@ -564,7 +564,29 @@ const Ksj = () => {
                 </Tabs>
             </div>
         </section>
-
+        <section className='section'>
+            <div className='section__header'>
+                <h2 className='section__title'>Contact</h2>
+            </div>
+            <div className='d-grid newsletter__wrapper container'>
+                <div className='newletter__content'>
+                    <h2 className='newsletter__title' style={{fontWeight:'500'}}>김성진</h2>
+                    <p className='newsletter__description'>
+                        pdqovvarxx@naver.com <br/>
+                        010-7613-9012
+                    </p>
+                </div>
+                <form className='newsletter__form'>
+                    <div className='form__group'>
+                        <div className='btn btn--primary'>
+                            <a href='http://github.com/aooooooo1' className='alink' target='_blank' rel='noopener noreferrer'>
+                                김성진 github 바로가기
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
     </>
     )
 }
