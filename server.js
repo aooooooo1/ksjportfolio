@@ -11,7 +11,11 @@ server.use(middlewares);
 
 server.use(
     jsonServer.rewriter({
-        "/api/*:": "$1",
+        "/api/posts*": "/posts/$1",
+        "/api/user*": "/user/$1",
+        "/api/adminPosts*": "/adminPosts/$1",
+        "/api/comments*": "/comments/$1",
+        "/api/likePost*": "/likePost/$1",
     })
 );
 server.use(router);
