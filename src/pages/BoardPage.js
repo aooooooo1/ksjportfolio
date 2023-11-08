@@ -75,7 +75,7 @@ const BoardPage = () => {
   }
   //유저정보 가져오기
   const getUser = useCallback(()=>{
-    axios.get(`http://localhost:3002/user`).then((res)=>{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
       setUsers(res.data);
     }).catch((er)=>{
       toast_add({
@@ -88,7 +88,7 @@ const BoardPage = () => {
   //qna게시글 가져오기
   const [qnaPost, setQnaPost] = useState([]);
   const getQna = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -106,7 +106,7 @@ const BoardPage = () => {
   //prepare 게시글 가져오기
   const [preparePost, setPreparePost] = useState([]);
   const getPrepare = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -124,7 +124,7 @@ const BoardPage = () => {
   //notice 게시글 가져오기
   const [noticePost, setNoticePost] = useState([]);
   const getNotice = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -142,7 +142,7 @@ const BoardPage = () => {
   //notice 게시글 가져오기
   const [newPost, setNewPost] = useState([]);
   const getNew = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -160,7 +160,7 @@ const BoardPage = () => {
   //free 게시글 가져오기
   const [freePost, setFreePost] = useState([]);
   const getFree = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -178,7 +178,7 @@ const BoardPage = () => {
   //전체 게시글 5개 가져오기
   const [post5, setPost5]= useState([])
   const getPost5 = ()=>{
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -196,7 +196,7 @@ const BoardPage = () => {
   const [adminPost, setAdminPost]= useState([])
   const getPostAdmin = useCallback(()=>{
     //게시글정보
-    axios.get(`http://localhost:3002/adminPosts`)
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/adminPosts`)
       .then((res)=>{
         setAdminPost(res.data);
     }).catch((er)=>{
@@ -255,7 +255,7 @@ const BoardPage = () => {
       params = {...params, publicM:true};
     }
     //게시글정보
-    axios.get(`http://localhost:3002/posts`,{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
       params:params
     })
       .then((res)=>{
@@ -280,7 +280,7 @@ const BoardPage = () => {
   //게시글 삭제
   const deletePost = (e,id)=>{
     e.stopPropagation();
-    axios.delete(`http://localhost:3002/posts/${id}`).then(()=>{
+    axios.delete(`https://moduport-8df0cce82098.herokuapp.com/api/posts/${id}`).then(()=>{
       getPost();
       toast_add({
         text:'성공적으로 게시글을 삭제 완료 하였습니다.',
@@ -326,14 +326,14 @@ const BoardPage = () => {
         params = {...params, publicM:true};
       }
       //유저정보
-      axios.get(`http://localhost:3002/user`).then((res)=>{
+      axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
         setUsers(res.data);
         // console.log('유저데이터',res.data)
       }).catch((er)=>{
         console.log(er);
       });
       //게시글정보
-      axios.get(`http://localhost:3002/posts`,{
+      axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/posts`,{
         params:params
       })
         .then((res)=>{
@@ -359,7 +359,7 @@ const BoardPage = () => {
   const [noticeReplyTotal, setNoticeReplyTotal] = useState([]);
   const [newReplyTotal, setNewReplyTotal] = useState([]);
   const showReplyNum = useCallback( ()=>{
-    axios.get(`http://localhost:3002/comments`).then((res)=>{
+    axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`).then((res)=>{
       
       const filteredReply = res.data.map(v=>v.postId)
       console.log(filteredReply);
