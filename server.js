@@ -17,4 +17,4 @@ server.use(
 server.use(router);
 server.listen(port, ()=>{
     console.log('jsonserver is running!!');
-})
+});
