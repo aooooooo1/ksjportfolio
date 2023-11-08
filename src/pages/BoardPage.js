@@ -360,59 +360,59 @@ const BoardPage = () => {
   const [newReplyTotal, setNewReplyTotal] = useState([]);
   const showReplyNum = useCallback( ()=>{
     axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`).then((res)=>{
+      if(res.data){
+        const filteredReply = res.data.map((v)=>v.postId)
+        const commentCountByPostId = {};
+        filteredReply.forEach((comment)=>{
+          if (commentCountByPostId[comment]) {
+            commentCountByPostId[comment] += 1;
+          } else {
+            commentCountByPostId[comment] = 1;
+          }
+        });
+        const postsWithCommentCounts = post.map((post) => {
+          const commentCount = commentCountByPostId[post.id] || 0;
+          return commentCount;
+        });
+        const adminPostReply = adminPost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const post5Reply = post5.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const free = freePost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const prepare = preparePost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const qna = qnaPost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const notice = noticePost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        const new1 = newPost.map((post)=>{
+          const cnt = commentCountByPostId[post.id] || 0
+          return cnt
+        })
+        setReplyTotal(postsWithCommentCounts);
+        setAdminReplyTotal(adminPostReply)
+        setPost5ReplyTotal(post5Reply)
+        setFreeReplyTotal(free);
+        setPrepareReplyTotal(prepare)
+        setQnaReplyTotal(qna);
+        setNoticeReplyTotal(notice);
+        setNewReplyTotal(new1);
+
+      }
       
-      const filteredReply = res.data.map(v=>v.postId)
-      // console.log(filteredReply);
-      const commentCountByPostId = {};
-      filteredReply.forEach((comment)=>{
-        if (commentCountByPostId[comment]) {
-          commentCountByPostId[comment] += 1;
-        } else {
-          commentCountByPostId[comment] = 1;
-        }
-      });
-      
-      const postsWithCommentCounts = post.map((post) => {
-        const commentCount = commentCountByPostId[post.id] || 0;
-        return commentCount;
-      });
-      // console.log(postsWithCommentCounts);
-      const adminPostReply = adminPost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const post5Reply = post5.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const free = freePost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const prepare = preparePost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const qna = qnaPost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const notice = noticePost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      const new1 = newPost.map((post)=>{
-        const cnt = commentCountByPostId[post.id] || 0
-        return cnt
-      })
-      setReplyTotal(postsWithCommentCounts);
-      setAdminReplyTotal(adminPostReply)
-      setPost5ReplyTotal(post5Reply)
-      setFreeReplyTotal(free);
-      setPrepareReplyTotal(prepare)
-      setQnaReplyTotal(qna);
-      setNoticeReplyTotal(notice);
-      setNewReplyTotal(new1);
     })
   },[post, adminPost,freePost,preparePost,qnaPost,noticePost,newPost,post5])
   useEffect(()=>{
@@ -554,7 +554,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              freePost.map((post, i)=>{
+              freePost.map((post, index)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -565,7 +565,7 @@ const BoardPage = () => {
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
                         <ChatBubbleOutlineIcon className='chatColor'style={{verticalAlign:'middle'}}/>
                         {
-                          freeReplyTotal[i]
+                          freeReplyTotal[index]
                         }
                       </span>
                     </div>
