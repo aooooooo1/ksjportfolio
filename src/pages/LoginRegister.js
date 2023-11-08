@@ -114,14 +114,14 @@ const LoginRegister = () => {
       const nowUser = localStorage.getItem('user')
       axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
           const filteredUser = res.data.filter((item)=>item.email === nowUser);
-          console.log(filteredUser[0].id)
+          // console.log(filteredUser[0].id)
           if(user.user.email === 'admin@admin.com'){
             dispatch(loginAdmin());
             localStorage.setItem('reloadAndRedirect', `/my/${filteredUser[0].id}`);
-            window.location.reload();
+            // window.location.reload();
           }
           history.push(`/my/${filteredUser[0].id}`);
-          window.location.reload();
+          // window.location.reload();
       }).catch((er)=>{
           console.log(er);
       });

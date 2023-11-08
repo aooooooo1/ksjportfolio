@@ -240,7 +240,7 @@ tr:hover{
         height: 30px !important;
     }
     .writerMy{
-        display: none;
+        /* display: none; */
     }
     .boardEvent{
         grid-template-columns: none;

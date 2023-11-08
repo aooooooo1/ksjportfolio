@@ -436,7 +436,7 @@ const MyPage = () => {
                             </td>
                             <td className='writerMy' style={{textAlign:'center'}}>
                                 {/* {po.email ? po.email.split('@')[0]:''} */}
-                                {po.email.split('@')[0]}
+                                {/* {po.email ? po.email.split('@')[0]:''} */}
                             </td>
                             {/* 딜리트 아이콘 */}
                             {(user.email===po.email)?<td onClick={e=>deletePost(e,po.id)} style={{textAlign:"center", color:"darkred",cursor:"pointer"}}><DeleteIcon fontSize="large" style={{verticalAlign:'middle'}}/></td>:<td></td>}
