@@ -1,3 +1,7 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+
 const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router('./db.json');
@@ -19,6 +23,15 @@ server.use(
         "/api/likePost*": "/likePost/$1",
     })
 );
+
+app.get('./*', function(req, res){
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log('Server is running!');
+});
+
 server.use(router);
 server.listen(port, ()=>{
     console.log('jsonserver is running!!');
