@@ -528,7 +528,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              post5.map((post, i)=>{
+              post5.length > 1 && post5.map((post, i)=>{
                 return(
                   <div key={post.id + post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -554,7 +554,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              freePost.map((post, index)=>{
+              freePost.length > 1 && freePost.map((post, index)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -583,7 +583,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              preparePost.map((post, i)=>{
+              preparePost.length > 1 && preparePost.map((post, i)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -609,7 +609,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              qnaPost.map((post, i)=>{
+              qnaPost.length > 1 && qnaPost.map((post, i)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -638,7 +638,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              noticePost.map((post, i)=>{
+              noticePost.length > 1&& noticePost.map((post, i)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
@@ -664,7 +664,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              newPost.map((post, i)=>{
+              newPost.length > 1 && newPost.map((post, i)=>{
                 return(
                   <div key={post.id+ post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
