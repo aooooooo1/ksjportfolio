@@ -74,7 +74,9 @@ const BoardPage = () => {
   //유저정보 가져오기
   const getUser = useCallback(()=>{
     axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
-      setUsers(res.data);
+      if(res.data){
+        setUsers(res.data);
+      }
     }).catch((er)=>{
       toast_add({
         text:`${er}`,
@@ -96,7 +98,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setQnaPost(res.data);
+      if(res.data){
+        setQnaPost(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -114,7 +118,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setPreparePost(res.data);
+      if(res.data){
+        setPreparePost(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -132,7 +138,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setNoticePost(res.data);
+      if(res.data){
+        setNoticePost(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -150,7 +158,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setNewPost(res.data);
+      if(res.data){
+        setNewPost(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -168,7 +178,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setFreePost(res.data);
+      if(res.data){
+        setFreePost(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -185,7 +197,9 @@ const BoardPage = () => {
         publicM:true
       }
     }).then((res)=>{
-      setPost5(res.data);
+      if(res.data){
+        setPost5(res.data);
+      }
     }).catch((er)=>{
       console.log(er)
     })
@@ -224,15 +238,6 @@ const BoardPage = () => {
         _order:'desc',
         title_like:searchInput,
     }
-    // if(setAllType.current){
-    //   params = {
-    //     _page:page,
-    //       _limit:limit,
-    //       _sort:'id',
-    //       _order:'desc',
-    //       title_like:searchInput,
-    //   }
-    // }
     if(setFreeType.current){
       params = {...params, category:'free'}
     }
@@ -257,7 +262,9 @@ const BoardPage = () => {
       params:params
     })
       .then((res)=>{
-        setPost(res.data);
+        if(res.data){
+          setPost(res.data);
+        }
         setTotalPost(res.headers['x-total-count'])
         // console.log('게시글 갯수 ',res.headers['x-total-count'])
     }).catch(()=>{
