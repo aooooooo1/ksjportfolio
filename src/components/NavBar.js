@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom"
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase-config";
-import { logout as reduxLogout } from "../redux/authSlice";
-import useToast from "../hooks/toast";
-import { v4 as uuidv4 } from 'uuid';
+import {  useSelector } from "react-redux";
 import axios from "axios";
 import { Avatar } from "@mui/material";
 
@@ -14,8 +9,6 @@ const NavBar = ({isScrolled}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
     const curPath = location.pathname;
-    const dispatch = useDispatch();
-    const {toast_add} = useToast();
     const history = useHistory();
     const isLogin = useSelector((state)=>{
         return state.auth.isLogin;
@@ -76,7 +69,7 @@ const NavBar = ({isScrolled}) => {
     },[users] )
     useEffect(()=>{
         matchingUser()
-    },[])
+    },[matchingUser])
 
 
     return (

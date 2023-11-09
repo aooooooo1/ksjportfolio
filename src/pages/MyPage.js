@@ -1,8 +1,8 @@
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Avatar, Tooltip } from '@mui/material';
+import { Avatar } from '@mui/material';
 import { auth, storage } from '../firebase-config';
-import { ref, uploadBytes , listAll,list ,getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes  ,getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 import useToast from '../hooks/toast';
 import InputForm from '../components/InputForm';
@@ -25,20 +25,19 @@ const MyPage = () => {
     const {myId} = useParams();
     const [post, setPost] = useState([]);
     const [users, setUsers] = useState([]);
-    const [usersId, setUsersId] = useState(0);
     const history = useHistory();
     const inputRef = useRef(null);
     const [userImg, setUserImg] = useState(null);
     // const [imageList, setImageList] = useState([]);
-    const [imageListS, setImageListS] = useState('');
+    const [, setImageListS] = useState('');
     const {toast_add} = useToast();
     const userEmail = localStorage.getItem('user');
     // const imageListRef = ref(storage, `${userEmail}`);
-    const imageListRef = ref(storage, `userProfileImg`);
+    // const imageListRef = ref(storage, `userProfileImg`);
     //주소 가져오기
-    const location = useLocation();
-    const url = new URLSearchParams(location.search);
-    const urlPage = url.get('page');
+    // const location = useLocation();
+    // const url = new URLSearchParams(location.search);
+    // const urlPage = url.get('page');
     //페이징네이션
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPost, setTotalPost] = useState(0);

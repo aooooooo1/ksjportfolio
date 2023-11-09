@@ -8,7 +8,6 @@ import Toast from './components/Toast';
 import { useDispatch, useSelector } from 'react-redux';
 import useToast from './hooks/toast';
 import { login , loginAdmin} from './redux/authSlice';
-import Tooltip from '@mui/material/Tooltip';
 
 function App() {
   const dispatch = useDispatch();
@@ -41,7 +40,7 @@ function App() {
       dispatch(loginAdmin());
     }
     setLoad(false);
-  },[])
+  },[dispatch])
   if(load){
     return <div>wait...</div>
   }

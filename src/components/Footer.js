@@ -10,7 +10,7 @@ const Footer = () => {
         return state.auth.isLogin;
     })
     //마이페이지 이동
-    const [users, setUsers] = useState([]);
+    const [, setUsers] = useState([]);
     const goToMy = ()=>{
         const nowUser = localStorage.getItem('user')
         axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{

@@ -4,15 +4,13 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import Pagination from '../components/Pagination';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth, storage } from '../firebase-config';
+import { auth } from '../firebase-config';
 import useToast from '../hooks/toast';
 import { v4 as uuidv4 } from 'uuid';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { Avatar, Table, Tooltip } from '@mui/material';
-import { ref } from 'firebase/storage';
+import { Avatar, Tooltip } from '@mui/material';
+// import { ref } from 'firebase/storage';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -29,13 +27,13 @@ const BoardPage = () => {
     return state.auth.isLogin;
   })
   //사용자의 정보를 user에 넣음
-  const [user, setUser] = useState({});
+  const [, setUser] = useState({});
   useEffect(()=>{
       onAuthStateChanged(auth, (currentUser)=>{
           setUser(currentUser);
       })
   },[])
-  const imageListRef = ref(storage, `userProfileImg`);
+  // const imageListRef = ref(storage, `userProfileImg`);
   const [post, setPost] = useState([]);
   const [users, setUsers] = useState([]);
   const history = useHistory();
@@ -45,7 +43,7 @@ const BoardPage = () => {
   const [totalPost, setTotalPost] = useState(0);
   const [numberOfPages, setNumberOfPages] = useState(0);
   //게시글 넘버
-  const [postNum, setPostNum] = useState(0);
+  const [, setPostNum] = useState(0);
   //주소 가져오기
   const location = useLocation();
   const url = new URLSearchParams(location.search);
@@ -278,23 +276,23 @@ const BoardPage = () => {
 
 
   //게시글 삭제
-  const deletePost = (e,id)=>{
-    e.stopPropagation();
-    axios.delete(`https://moduport-8df0cce82098.herokuapp.com/api/posts/${id}`).then(()=>{
-      getPost();
-      toast_add({
-        text:'성공적으로 게시글을 삭제 완료 하였습니다.',
-        type:'success',
-        id:uuidv4()
-      })
-    }).catch((er)=>{
-      toast_add({
-        text:`${er}`,
-        type:'error',
-        id:uuidv4()
-      });
-    })
-  }
+  // const deletePost = (e,id)=>{
+  //   e.stopPropagation();
+  //   axios.delete(`https://moduport-8df0cce82098.herokuapp.com/api/posts/${id}`).then(()=>{
+  //     getPost();
+  //     toast_add({
+  //       text:'성공적으로 게시글을 삭제 완료 하였습니다.',
+  //       type:'success',
+  //       id:uuidv4()
+  //     })
+  //   }).catch((er)=>{
+  //     toast_add({
+  //       text:`${er}`,
+  //       type:'error',
+  //       id:uuidv4()
+  //     });
+  //   })
+  // }
   //서치함수
   const search = ()=>{
     getPost(1)
