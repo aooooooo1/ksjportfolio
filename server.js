@@ -1,8 +1,6 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-
 const jsonServer = require('json-server');
+const path = require('path');
+
 const server = jsonServer.create();
 const router = jsonServer.router('./db.json');
 const middlewares = jsonServer.defaults({
@@ -13,7 +11,7 @@ const middlewares = jsonServer.defaults({
 const port = process.env.PORT || 3002;
 
 server.use(middlewares);
-
+server.use(jsonServer.bodyParser);
 server.use(
     jsonServer.rewriter({
         "/api/posts*": "/posts/$1",
@@ -25,10 +23,6 @@ server.use(
 );
 
 server.use(router);
-
-app.use('/api', server);
-app.use(express.static('build'));
-
-app.listen(port, () => {
-    console.log('Server is running!');
+server.listen(port, ()=>{
+    console.log('JSON Server is running');
 });
