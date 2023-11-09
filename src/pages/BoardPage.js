@@ -199,6 +199,7 @@ const BoardPage = () => {
     }).then((res)=>{
       if(res.data){
         setPost5(res.data);
+        console.log(res.data)
       }
     }).catch((er)=>{
       console.log(er)
