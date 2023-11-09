@@ -27,20 +27,11 @@ server.use(
 // app.get('./*', function(req, res){
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
-// Use the router middleware
 server.use(router);
 
-// Use the server as middleware in the express app
 app.use('/api', server);
-
-// Serve static files
 app.use(express.static('build'));
 
-app.listen(port, () => {
-    console.log('Server is running!');
-});
-
-server.use(router);
 server.listen(port, ()=>{
     console.log('jsonserver is running!!');
 });
