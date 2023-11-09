@@ -99,7 +99,7 @@ const NavBar = ({isScrolled}) => {
                                 <div onClick={()=>{closeMenu(); goToMy()}}  className={`cursor-pointer nav__link ${curPath.includes(`/my/`) ? 'nav__link--active':''}`}>
                                 <div>
                                     {
-                                        users.map((u)=>{
+                                        Array.isArray(users) && users.map((u)=>{
                                             if(u.email === localStorage.getItem('user')){
                                                 return(
                                                     <Avatar 
