@@ -99,7 +99,7 @@ const BlogForm = ({edit}) => {
                         // console.log(res)
                         setUserServerImg(res);
                         if(edit){
-                            axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}/${id}`,{
+                            axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}/${id}`,{
                                 title,
                                 body,
                                 category,
@@ -123,7 +123,7 @@ const BlogForm = ({edit}) => {
                         }
                         const comments = [];
                         //데이터 post
-                        axios.post(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin? 'adminPosts':'posts'}`,{
+                        axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin? 'adminPosts':'posts'}`,{
                             title,
                             body,
                             category,
@@ -159,7 +159,7 @@ const BlogForm = ({edit}) => {
             console.log(userServerImg)
             //수정일때
             if(edit){
-                axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}/${id}`,{
+                axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}/${id}`,{
                     title,
                     body,
                     category,
@@ -183,7 +183,7 @@ const BlogForm = ({edit}) => {
             }
             const comments = [];
             //데이터 post
-            axios.post(`https://moduport-8df0cce82098.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}`,{
+            axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}`,{
                 title,
                 body,
                 category,
@@ -215,7 +215,7 @@ const BlogForm = ({edit}) => {
     
     useEffect(()=>{
         if(edit){
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
+            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
                 setTitle(res.data.title);
                 setBody(res.data.body);
                 setDate(res.data.date);

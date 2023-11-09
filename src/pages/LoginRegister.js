@@ -54,7 +54,7 @@ const LoginRegister = () => {
             email,
             password,
         );
-        axios.post(`https://moduport-8df0cce82098.herokuapp.com/api/user`,{
+        axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`,{
           email,
           imageListS:"/broken-image.jpg" 
         }).then((res)=>{
@@ -112,7 +112,7 @@ const LoginRegister = () => {
       localStorage.removeItem('user');
       localStorage.setItem('user',user.user.email);
       const nowUser = localStorage.getItem('user')
-      axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
+      axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
           const filteredUser = res.data.filter((item)=>item.email === nowUser);
           // console.log(filteredUser[0].id)
           if(user.user.email === 'admin@admin.com'){

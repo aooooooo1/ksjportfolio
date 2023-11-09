@@ -84,7 +84,7 @@ const BoardDetail = (props) => {
     // comments 댓글불러오기 가져오기
     const getDetailReply = useCallback((page=1)=>{
         setCurrentPage(page);
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`,{
             params:{
                 _page:page,
                 _limit:10
@@ -105,7 +105,7 @@ const BoardDetail = (props) => {
     const [ userEmail, setUserEmail] = useState([]);
     const [post, setPost] = useState([]);
     const getDetail = useCallback((page=1)=>{
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}`)
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${props.match.params.id}`)
         .then((res)=>{
             setPost(res.data);
             setTitle(res.data.title);
@@ -123,7 +123,7 @@ const BoardDetail = (props) => {
     },[props.match.params.id])
     //게시글 좋아용 validate
     const postUpVali = useCallback(()=>{
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail;
             const nowUser = localStorage.getItem('user');
             if(existingEmail){
@@ -142,7 +142,7 @@ const BoardDetail = (props) => {
     const commentDownVali = useRef({});
     const replyUpVali = useCallback(()=>{
         const nowUser1 = localStorage.getItem('user');
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`).then((res)=>{
             const existingReply = res.data.filter(v=>v.postId===id);
             // console.log('원레있던댓글 ',existingReply)
             let comUpVali = existingReply.map(v => v.thumbUpUserEmail.map(e=>e===nowUser1));
@@ -213,11 +213,11 @@ const BoardDetail = (props) => {
             return;
         }
         
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`)
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`)
             .then((res) => {
                 const postData = res.data;
                 // postData.comments.push(comment);
-                axios.post(`https://moduport-8df0cce82098.herokuapp.com/api/comments`, {
+                axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`, {
                     text,
                     date: formattedDate,
                     email: user.email,
@@ -251,7 +251,7 @@ const BoardDetail = (props) => {
     }
     //유저정보-이미지 가져옴
     useEffect(()=>{
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
                 setUsers(res.data);
             }).catch((er)=>{
                 console.log(er);
@@ -275,13 +275,13 @@ const BoardDetail = (props) => {
         setIsThumbUp(true)
         e.stopPropagation();
         
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
                 const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
                 const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
                 const updatedThumbUpNum = res.data.thumbUpNum + 1;
                 const updatedThumbDownNum = res.data.thumbDownNum;
                 setIsThumbUp(true)
-                axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`,{
+                axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`,{
                     text: reply.text,
                     date: reply.date,
                     email: reply.email,
@@ -321,14 +321,14 @@ const BoardDetail = (props) => {
     const thumbUpCancel=(e, reply)=>{
             setIsThumbUp(false);
             e.stopPropagation();
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
+            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
                 const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
                 const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
                 const nowUser = localStorage.getItem('user');
                 const filterdEmail = existingUpEmail.filter(v=>v !== nowUser)
                 const updatedThumbUpNum = res.data.thumbUpNum - 1;
                 const updatedThumbDownNum = res.data.thumbDownNum;
-                axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`,{
+                axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`,{
                     text: reply.text,
                     date: reply.date,
                     email: reply.email,
@@ -368,12 +368,12 @@ const BoardDetail = (props) => {
         }
         setIsThumbDown(true);
         e.stopPropagation();
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
             const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
             const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
             const updatedThumbUpNum = res.data.thumbUpNum;
             const updatedThumbDownNum = res.data.thumbDownNum + 1;
-            axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`,{
+            axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`,{
                 text: reply.text,
                 date: reply.date,
                 email: reply.email,
@@ -408,14 +408,14 @@ const BoardDetail = (props) => {
     const thumbDownCancel = (e, reply)=>{
         setIsThumbDown(false);
         // e.stopPropagation();
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`).then((res)=>{
             const existingUpEmail = res.data.thumbUpUserEmail ? res.data.thumbUpUserEmail : '';
             const existingDownEmail = res.data.thumbDownUserEmail ? res.data.thumbDownUserEmail : '';
             const nowUser = localStorage.getItem('user');
             const filterdEmail = existingDownEmail.filter(v=>v !== nowUser)
             const updatedThumbUpNum = res.data.thumbUpNum;
             const updatedThumbDownNum = res.data.thumbDownNum - 1;
-            axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${reply.id}`,{
+            axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${reply.id}`,{
                 text: reply.text,
                 date: reply.date,
                 email: reply.email,
@@ -446,7 +446,7 @@ const BoardDetail = (props) => {
     //게시글 삭제
     const deletePost = (e,id)=>{
         e.stopPropagation();
-        axios.delete(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then(()=>{
+        axios.delete(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then(()=>{
             toast_add({
                 text:'성공적으로 게시글을 삭제 완료 하였습니다.',
                 type:'success',
@@ -474,7 +474,7 @@ const BoardDetail = (props) => {
     const [replyModifyText, setReplyModifyText] = useState('');
     const replyModify = (id)=>{
         setReplyModifyForm((prev)=>({[id]:!prev[id]}));
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`)
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`)
         .then((res)=>{
             const re = res.data;
             const filterReply = re.filter((v)=>{
@@ -488,7 +488,7 @@ const BoardDetail = (props) => {
     }
     //수정완료버튼
     const replyModifyBtn = (v)=>{
-        axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${v.id}`,{
+        axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${v.id}`,{
                     text: replyModifyText,
                     date: formattedDate,
                     email: v.email ,
@@ -519,7 +519,7 @@ const BoardDetail = (props) => {
     //댓글삭제 버튼
     const replyDelete = (id)=>{
         console.log(id);
-        axios.delete(`https://moduport-8df0cce82098.herokuapp.com/api/comments/${id}`).then((res)=>{
+        axios.delete(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments/${id}`).then((res)=>{
             getDetailReply();
             toast_add({
                 text:'댓글 삭제 완료',
@@ -544,7 +544,7 @@ const BoardDetail = (props) => {
     //최신순
     const replyLately = ()=>{
             setCurrentPage(1);
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
+            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -564,7 +564,7 @@ const BoardDetail = (props) => {
     //인기순
     const replyPopular=()=>{
         setCurrentPage(1);
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/comments`,{
+            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`,{
                 params:{
                     _page:1,
                     _limit:10,
@@ -598,11 +598,11 @@ const BoardDetail = (props) => {
             });
             return;
         }
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail? res.data.userEmail : '';
             const updatedThumbUpNum = postUpNum + 1;
             setIsPostUp(true)
-                axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
+                axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
                     title,
                     body,
                     category,
@@ -637,13 +637,13 @@ const BoardDetail = (props) => {
     }
     //게시글좋아요 취소
     const postUpCancel=(e,id)=>{
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`).then((res)=>{
             const existingEmail = res.data.userEmail;
             const nowUser = localStorage.getItem('user');
             const filterdEmail = existingEmail.filter(v=>v !== nowUser)
             const updatedThumbUpNum = postUpNum - 1;
             setIsPostUp(false)
-                axios.put(`https://moduport-8df0cce82098.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
+                axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin?'adminPosts':'posts'}/${id}`,{
                     title,
                     body,
                     date,

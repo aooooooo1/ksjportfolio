@@ -19,7 +19,7 @@ const NavBar = ({isScrolled}) => {
     const [users, setUsers] = useState([]);
     const goToMy = ()=>{
         const nowUser = localStorage.getItem('user')
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
+        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
                 setUsers(res.data);
                 const filteredUser = res.data.filter((item)=>item.email === nowUser);
                 const myId = filteredUser[0].id
@@ -33,7 +33,7 @@ const NavBar = ({isScrolled}) => {
     //유저정보-이미지 가져옴
     useEffect(()=>{
         if(localStorage.getItem('user')){
-            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
+            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
                     setUsers(res.data);
                 }).catch((er)=>{
                     console.log(er);
