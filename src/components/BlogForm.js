@@ -123,7 +123,7 @@ const BlogForm = ({edit}) => {
                         }
                         const comments = [];
                         //데이터 post
-                        axios.post(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/${isBoardAdmin? 'adminPosts':'posts'}`,{
+                        axios.post(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/${isAdmin? 'adminPosts':'posts'}`,{
                             title,
                             body,
                             category,

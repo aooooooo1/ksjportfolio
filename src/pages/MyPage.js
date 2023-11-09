@@ -272,7 +272,7 @@ const MyPage = () => {
                         email:userEmail
                     }).then(() => {
                         console.log('데이터 업데이트 완료');
-                        window.location.reload();
+                        // window.location.reload();
                     })
                     .catch((er) => {
                         toast_add({
@@ -289,7 +289,7 @@ const MyPage = () => {
                         email:userEmail
                     }).then(() => {
                         console.log('데이터 업데이트 완료');
-                        window.location.reload();
+                        // window.location.reload();
                     })
                     .catch((er) => {
                         toast_add({
