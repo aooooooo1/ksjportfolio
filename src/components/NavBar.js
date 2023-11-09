@@ -32,11 +32,13 @@ const NavBar = ({isScrolled}) => {
 
     //유저정보-이미지 가져옴
     useEffect(()=>{
-        axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
-                setUsers(res.data);
-            }).catch((er)=>{
-                console.log(er);
-            });
+        if(localStorage.getItem('user')){
+            axios.get(`https://moduport-8df0cce82098.herokuapp.com/api/user`).then((res)=>{
+                    setUsers(res.data);
+                }).catch((er)=>{
+                    console.log(er);
+                });
+        }
     },[])
     //admin
     const [adminMode, setAdminMode]=useState(false);
@@ -59,7 +61,7 @@ const NavBar = ({isScrolled}) => {
     const matchingUser =useCallback(()=>{
         if(users){
             let userImg = users.filter(user => user.email === localStorage.getItem('user'));
-            if(userImg){
+            if(userImg.length > 0){
                 setUserP(true)
                 console.log(userImg)
             }else{
