@@ -533,9 +533,9 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              post5 ? post5.map((post, i)=>{
+              post5 ? post5.map((post, index)=>{
                 return(
-                  <div key={post.id + post.title} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
+                  <div key={post.id + post.title + 999} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
                     <div>
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
@@ -544,7 +544,7 @@ const BoardPage = () => {
                       <span style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
                         <ChatBubbleOutlineIcon className='chatColor' style={{verticalAlign:'middle'}}/>
                         {
-                          post5ReplyTotal[i]
+                          post5ReplyTotal[index]
                         }
                       </span>
                     </div>
