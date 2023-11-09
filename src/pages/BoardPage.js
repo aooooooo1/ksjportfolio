@@ -534,7 +534,7 @@ const BoardPage = () => {
               <KeyboardDoubleArrowRightIcon style={{color:'#757575', fontSize:'26px'}}/>
             </div>
             {
-              Array.isArray(users) && post5.map((post, index)=>{
+              Array.isArray(post5) && post5.map((post, index)=>{
                 return(
                   <div key={post.id + post.title + 999} onClick={()=>history.push(`/board/${post.id}`)} className='d-flex justifyB cursor-pointer miniPosts' style={{padding:'0.5rem 2rem'}}>
                     <p style={{color:'#757575', fontSize:'19px'}}>{post.title}</p>
