@@ -497,9 +497,9 @@ const BoardPage = () => {
         {/* 이벤트 3개  */}
         <div className='boardEvent'>
           {
-            adminPost.map((post, i)=>{
+            adminPost.map((post, index)=>{
               return(
-                <div key={post.id + post.title + post.body} className='cursor-pointer' onClick={()=>history.push(`/boardAdmin/${post.id}`)} style={{backgroundColor:colors[i % colors.length], borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
+                <div key={post.id + post.title + post.body} className='cursor-pointer' onClick={()=>history.push(`/boardAdmin/${post.id}`)} style={{backgroundColor:colors[index % colors.length], borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
                   <p style={{color:'#757575'}}><span style={{color:'#EF5350',fontWeight:'500'}}>HOT🔥</span> 여기주목!</p>
                   <h3 className='pOver'style={{fontWeight:'500',padding:'0.5rem 0'}}>{post.title}</h3>
                   <p className='pOver1' style={{color:'#757575'}}>📢 {post.body}</p>
@@ -510,7 +510,7 @@ const BoardPage = () => {
                       <span  style={{ marginLeft:'1rem', color:'#9E9E9E'}}>
                         <ChatBubbleOutlineIcon className='chatColor' style={{verticalAlign:'middle'}}/>
                         {
-                          adminReplyTotal[i]
+                          adminReplyTotal[index]
                         }
                       </span>
                     </div>
