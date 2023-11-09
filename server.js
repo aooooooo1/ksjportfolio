@@ -1,6 +1,6 @@
-// const express = require('express');
-// const path = require('path');
-// const app = express();
+const express = require('express');
+const path = require('path');
+const app = express();
 
 const jsonServer = require('json-server');
 const server = jsonServer.create();
@@ -27,10 +27,18 @@ server.use(
 // app.get('./*', function(req, res){
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
+// Use the router middleware
+server.use(router);
 
-// app.listen(port, () => {
-//     console.log('Server is running!');
-// });
+// Use the server as middleware in the express app
+app.use('/api', server);
+
+// Serve static files
+app.use(express.static('build'));
+
+app.listen(port, () => {
+    console.log('Server is running!');
+});
 
 server.use(router);
 server.listen(port, ()=>{
