@@ -60,8 +60,8 @@ const NavBar = ({isScrolled}) => {
     const [userP, setUserP]=useState(false);
     const matchingUser =useCallback(()=>{
         if(users){
-            let userImg = users.filter(user => user.email === localStorage.getItem('user'));
-            if(userImg.length > 0){
+            let userImg = users.map(user => user.email === localStorage.getItem('user'));
+            if(userImg.includes(true)){
                 setUserP(true)
                 console.log(userImg)
             }else{

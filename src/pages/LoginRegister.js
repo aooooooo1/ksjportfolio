@@ -118,7 +118,7 @@ const LoginRegister = () => {
           if(user.user.email === 'admin@admin.com'){
             dispatch(loginAdmin());
             localStorage.setItem('reloadAndRedirect', `/my/${filteredUser[0].id}`);
-            // window.location.reload();
+            window.location.reload();
           }
           history.push(`/my/${filteredUser[0].id}`);
           // window.location.reload();
