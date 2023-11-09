@@ -12,7 +12,7 @@ const PortfolioPage = () => {
                 <div className='grid768'>
                     <div style={{border:'1px solid #e0e0e0',margin:'1rem',borderRadius:'2rem'}}>
                         <div className='d-flex'>
-                            <div className='portImg'>
+                            <div className='portImg'style={{margin:'auto'}}>
                                 <img style={{borderRadius:'2rem'}} src={ksjimg} alt=''></img>
                             </div>
                             <div className='portText'>

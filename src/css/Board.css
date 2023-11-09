@@ -262,7 +262,4 @@ tr:hover{
         display: grid;
         grid-template-columns:  1fr;
     }
-    .portImg{
-        width: 150px;
-    }
 }
