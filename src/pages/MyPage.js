@@ -80,7 +80,7 @@ const MyPage = () => {
             title_like:searchInput,
             email:localStorage.getItem('user')
         }
-        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+        axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
         params:params
         })
         .then((res)=>{
@@ -120,21 +120,21 @@ const MyPage = () => {
         let params = {
             publicM:true,
         }
-        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+        axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
             params:params
         })
         .then((res)=>{
             const filteredLikePost = res.data.filter((item) =>
                 item.userEmail.includes(nowUser)
             );
-            axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/likePost`).then((res)=>{
+            axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/likePost`).then((res)=>{
                 const vali = res.data.map(v=>v.id === parseInt(myId))
                 if(vali.includes(true)){
-                    axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/likePost/${myId}`,{
+                    axios.put(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/likePost/${myId}`,{
                         filteredLikePost,
                         nowUser:nowUser
                     }).then((res)=>{
-                        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/likePost/${myId}`,{
+                        axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/likePost/${myId}`,{
                             params: {
                                 _page: page,
                                 _limit: 10,
@@ -152,7 +152,7 @@ const MyPage = () => {
                     })
                     return
                 }else{
-                    axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/likePost`,{
+                    axios.post(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/likePost`,{
                         filteredLikePost,
                         nowUser:nowUser
                     }).then((res)=>[
@@ -202,7 +202,7 @@ const MyPage = () => {
     //게시글 삭제
     const deletePost = (e,id)=>{
         e.stopPropagation();
-        axios.delete(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts/${id}`).then(()=>{
+        axios.delete(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts/${id}`).then(()=>{
         getPost();
         toast_add({
             text:'성공적으로 게시글을 삭제 완료 하였습니다.',
@@ -236,7 +236,7 @@ const MyPage = () => {
 
     //서버에서 사진경로 가져오기
     useEffect(()=>{
-        axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
+        axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
             setUsers(res.data);
         }).catch((er)=>{
             console.log(er);
@@ -267,7 +267,7 @@ const MyPage = () => {
                     console.log('로그인유저와 유저데이터에 유저이메일이 같은게 있다')
                     const matchingId = users.filter((u)=>u.email === userEmail).map((v)=>v.id);
                     console.log(matchingId)
-                    axios.put(`https://moduport-09b6894bf3f7.herokuapp.com/api/user/${matchingId}`,{
+                    axios.put(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/user/${matchingId}`,{
                         imageListS : res,
                         email:userEmail
                     }).then(() => {
@@ -284,7 +284,7 @@ const MyPage = () => {
                     });
                 }else{
                     console.log('이 사용자는 프사를 처음 등록합니다.')
-                    axios.post(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`,{
+                    axios.post(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/user`,{
                         imageListS: res,
                         email:userEmail
                     }).then(() => {

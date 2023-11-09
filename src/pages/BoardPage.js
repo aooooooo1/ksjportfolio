@@ -73,7 +73,7 @@ const BoardPage = () => {
   }
   //유저정보 가져오기
   const getUser = useCallback(()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
       if(res.data){
         setUsers(res.data);
       }
@@ -88,7 +88,7 @@ const BoardPage = () => {
   //qna게시글 가져오기
   const [qnaPost, setQnaPost] = useState([]);
   const getQna = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -108,7 +108,7 @@ const BoardPage = () => {
   //prepare 게시글 가져오기
   const [preparePost, setPreparePost] = useState([]);
   const getPrepare = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -128,7 +128,7 @@ const BoardPage = () => {
   //notice 게시글 가져오기
   const [noticePost, setNoticePost] = useState([]);
   const getNotice = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -148,7 +148,7 @@ const BoardPage = () => {
   //notice 게시글 가져오기
   const [newPost, setNewPost] = useState([]);
   const getNew = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -168,7 +168,7 @@ const BoardPage = () => {
   //free 게시글 가져오기
   const [freePost, setFreePost] = useState([]);
   const getFree = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -188,7 +188,7 @@ const BoardPage = () => {
   //전체 게시글 5개 가져오기
   const [post5, setPost5]= useState([])
   const getPost5 = ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:{
         _page:1,
         _limit:5,
@@ -209,7 +209,7 @@ const BoardPage = () => {
   const [adminPost, setAdminPost]= useState([])
   const getPostAdmin = useCallback(()=>{
     //게시글정보
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/adminPosts`)
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/adminPosts`)
       .then((res)=>{
         setAdminPost(res.data);
     }).catch((er)=>{
@@ -259,7 +259,7 @@ const BoardPage = () => {
       params = {...params, publicM:true};
     }
     //게시글정보
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
       params:params
     })
       .then((res)=>{
@@ -286,7 +286,7 @@ const BoardPage = () => {
   //게시글 삭제
   // const deletePost = (e,id)=>{
   //   e.stopPropagation();
-  //   axios.delete(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts/${id}`).then(()=>{
+  //   axios.delete(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts/${id}`).then(()=>{
   //     getPost();
   //     toast_add({
   //       text:'성공적으로 게시글을 삭제 완료 하였습니다.',
@@ -332,14 +332,14 @@ const BoardPage = () => {
         params = {...params, publicM:true};
       }
       //유저정보
-      axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
+      axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/user`).then((res)=>{
         setUsers(res.data);
         // console.log('유저데이터',res.data)
       }).catch((er)=>{
         console.log(er);
       });
       //게시글정보
-      axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/posts`,{
+      axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/posts`,{
         params:params
       })
         .then((res)=>{
@@ -365,7 +365,7 @@ const BoardPage = () => {
   const [noticeReplyTotal, setNoticeReplyTotal] = useState([]);
   const [newReplyTotal, setNewReplyTotal] = useState([]);
   const showReplyNum = useCallback( ()=>{
-    axios.get(`https://moduport-09b6894bf3f7.herokuapp.com/api/comments`).then((res)=>{
+    axios.get(`https://moduportfolio-09b6894bf3f7.herokuapp.com/api/comments`).then((res)=>{
       if(res.data){
         const filteredReply = res.data.map((v)=>v.postId)
         const commentCountByPostId = {};
