@@ -24,14 +24,11 @@ server.use(
     })
 );
 
-// app.get('./*', function(req, res){
-//     res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
 server.use(router);
 
 app.use('/api', server);
 app.use(express.static('build'));
 
-server.listen(port, ()=>{
-    console.log('jsonserver is running!!');
+app.listen(port, () => {
+    console.log('Server is running!');
 });
