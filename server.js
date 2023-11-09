@@ -1,17 +1,13 @@
 const jsonServer = require('json-server');
-const path = require('path');
-
 const server = jsonServer.create();
 const router = jsonServer.router('./db.json');
 const middlewares = jsonServer.defaults({
     static: "./build"
 });
 
-
 const port = process.env.PORT || 3002;
 
 server.use(middlewares);
-server.use(jsonServer.bodyParser);
 server.use(
     jsonServer.rewriter({
         "/api/posts*": "/posts/$1",
