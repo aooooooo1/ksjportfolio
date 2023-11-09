@@ -416,9 +416,9 @@ const BoardPage = () => {
         setQnaReplyTotal(qna);
         setNoticeReplyTotal(notice);
         setNewReplyTotal(new1);
-
       }
-      
+    }).catch((er)=>{
+      console.log(er)
     })
   },[post, adminPost,freePost,preparePost,qnaPost,noticePost,newPost,post5])
   useEffect(()=>{
@@ -503,7 +503,7 @@ const BoardPage = () => {
         {/* 이벤트 3개  */}
         <div className='boardEvent'>
           {
-            adminPost.map((post, index)=>{
+            Array.isArray(adminPost) && adminPost.map((post, index)=>{
               return(
                 <div key={post.id + post.title + post.body} className='cursor-pointer' onClick={()=>history.push(`/boardAdmin/${post.id}`)} style={{backgroundColor:colors[index % colors.length], borderRadius:'2rem', padding:'3rem', margin:'1rem'}}>
                   <p style={{color:'#757575'}}><span style={{color:'#EF5350',fontWeight:'500'}}>HOT🔥</span> 여기주목!</p>
@@ -740,14 +740,14 @@ const BoardPage = () => {
         </div>
             {/* 게시판 */}
             {
-              post.length > 0 ? post.map((po,i)=>{
+              Array.isArray(post) && post.length > 0 ? post.map((po,i)=>{
                 return(
                   <>
                   <div className="cursor-pointer boardPost d-flex justifyB" key={po.id + po.body} onClick={()=>history.push(`/board/${po.id}`)} style={{borderBottom:'1px solid #E0E0E0',padding:'1rem'}}>
                     <div style={{display:'grid',justifyItems:'center'}}>
                       <div>
                         {
-                          users.map((u)=>{
+                          Array.isArray(users) && users.map((u)=>{
                             if(u.email === po.email){
                               return (
                                 <Avatar
