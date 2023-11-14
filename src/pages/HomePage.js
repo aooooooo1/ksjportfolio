@@ -8,11 +8,37 @@ import port2 from '../img/port2.webp';
 import port3 from '../img/port3.webp';
 import port4 from '../img/port4.webp';
 import { useSelector } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
 
 const HomePage = () => {
     const isLogin = useSelector((state)=>{
         return state.auth.isLogin;
     })
+
+
+
+
+    const [state, setState] = useState(0);
+    console.log(state);
+    // useEffect(()=>{
+    //     console.log(state);
+    //     setState(prev=>prev+ 1);
+    //     setState(prev=>prev+ 1);
+    //     setState(prev=>prev+ 1);
+    //     setState(prev=>prev+ 1);
+    //     setState(prev=>prev+ 1);
+    // },[])
+    
+
+    
+
+
+
+
+
+
+
+
     return (
         <>
             <div className="homeMainImg" style={{backgroundImage:`url(${homeimg})`}}>

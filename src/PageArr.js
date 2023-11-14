@@ -12,19 +12,19 @@ import Ksj from './pages/Ksj';
 const PageArr = [
     {
         path:'/',
-        component:HomePage,
+        component:Ksj,
     },
     {
         path:'/charge',
         component:ChargePage,
     },
+    // {
+    //     path:'/portfolio',
+    //     component:Portfolio,
+    // },
     {
         path:'/portfolio',
-        component:Portfolio,
-    },
-    {
-        path:'/portfolio/ksj',
-        component:Ksj,
+        component:HomePage,
     },
     {
         path:'/board',

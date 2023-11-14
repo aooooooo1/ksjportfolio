@@ -84,6 +84,150 @@ const Ksj = () => {
             </div>
         </section>
         <section id="portfolio" class="video section">
+
+            {/* modu */}
+            <div class="d-grid1 offer__wrapper container">
+                <div class="offer__content">
+                    <span class="offer__subtitle">Portfolio</span>
+                    <p class="offer__duration">Web Aplication</p>
+                    <h3 class="offer__title">모두의<span style={{color: '#1c6470'}}> Portfolio</span></h3>
+                    <p class="offer__description">
+                        웹앱 포트폴리오 무료 서비스 플랫폼 입니다. 커뮤니티로 사용자들과 소통할 수 있습니다.
+                    </p>
+                    <table class="offer__price">
+                        <tr>
+                            <td class="offer__price-now">개발기간</td>
+                            <td class="offer__price-before">23.10 ~ 23.11(4주)</td>
+                        </tr>
+                        <tr>
+                            <td class="offer__price-now">개발인원</td>
+                            <td class="offer__price-before">1명</td>
+                        </tr>
+                        <tr>
+                            <td class="offer__price-now">언어</td>
+                            <td class="offer__price-before">JavaScript, HTML/CSS</td>
+                        </tr>
+                        <tr>
+                            <td class="offer__price-now">라이브러리</td>
+                            <td class="offer__price-before">React</td>
+                        </tr>
+                        <tr>
+                            <td class="offer__price-now">사용기술</td>
+                            <td class="offer__price-before">Redux, react-Router, MUI, Json-server, axios, uuid, firebase, heroku</td>
+                        </tr>
+                    </table>
+                </div>
+                <img src={modumain} alt="" class="offer__img"/>
+            </div>
+            <div class="destination__wrapper container swiper">
+                <div class="swiper-wrapper">
+                    <Swiper
+                    pagination={true}
+                    navigation={true}
+                    modules={[Pagination, Navigation]}
+                    >
+                        <SwiperSlide >
+                            <div class="destination__item swiper-slide">
+                                <img src={mo1} alt="" class="destination__img"/>
+                            </div>
+                        </SwiperSlide>
+                        <SwiperSlide >
+                            <div class="destination__item swiper-slide">
+                                <img src={mo2} alt="" class="destination__img"/>
+                            </div>
+                        </SwiperSlide>
+                        <SwiperSlide >
+                            <div class="destination__item swiper-slide">
+                                <img src={mo3} alt="" class="destination__img"/>
+                            </div>
+                        </SwiperSlide >
+                        <SwiperSlide>
+                            <div class="destination__item swiper-slide">
+                                <img src={mo4} alt="" class="destination__img"/>
+                            </div>
+                        </SwiperSlide>
+                    </Swiper>
+                </div>
+            </div>
+            <div class="section__header1">
+                <span class="offer__subtitle1">역할과 구현내용</span>   
+            </div>
+            <div class="wrapper container" style={{marginBottom:'15rem'}}>
+                <Tabs
+                variant="outlined"
+                aria-label="Pricing plan"
+                defaultValue={0}
+                sx={{
+                    width: '100%',
+                    borderRadius: 'lg',
+                    boxShadow: 'sm',
+                    overflow: 'auto',
+                    margin:'auto'
+                }}
+                >
+                <TabList
+                    disableUnderline
+                    tabFlex={1}
+                    sx={{
+                    [`& .${tabClasses.root}`]: {
+                        fontSize: '20px',
+                        fontWeight: 'md',
+                        [`&[aria-selected="true"]`]: {
+                        color: '#757575',
+                        bgcolor: 'background.surface',
+                        },
+                        [`&.${tabClasses.focusVisible}`]: {
+                        outlineOffset: '-4px',
+                        },
+                    },
+                    }}
+                >
+                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                    주요역할
+                    </Tab>
+                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                    플랫폼 설명
+                    </Tab>
+                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
+                    총평
+                    </Tab>  
+                </TabList>
+                <TabPanel value={0} style={{fontSize:'18px'}}>
+                    <Typography level="inherit" style={{padding:'2rem'}}>
+                        react를 이용하여 프로젝트를 준비하였습니다. 웹 제작 사이트를 참고하여 레이아웃을 잡았습니다. firebase로 회원가입/로그인/로그아웃과 사진을 업로드하고 사진의 URL을 다운로드하여 JsonServer db에 저장하였습니다.
+                    </Typography>
+                </TabPanel>
+                <TabPanel value={1} style={{fontSize:'18px'}}>
+                    <Typography level="inherit" style={{padding:'2rem',lineHeight:'1.6'}}>
+                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>좋아요</div>
+                        사용자는 회원가입을 통해서 커뮤니티 서비스를 이용할 수 있습니다. 게시글 좋아요 클릭시 해당 게시글 정보를 불러와 좋아요 컬럼의 기존에 좋아요를 누른 유저의 이메일과 해당 유저의 이메일이 스프레드배열로 저장되고 다시 서버로 put요청을 보넵니다. 좋아요 Number는 +1 이 됩니다. 중복은 불가합니다. 한번더 클릭시 반복요청 get,put작업으로 저장된 이메일이 사라지면서 해당 유저이메일이 삭제됩니다.
+                        로그인 하지 않은 유저는 리턴되며 하단 박스로 알림설정 됩니다. 댓글 좋아요/싫어요 기능도 같은 로직입니다. 유저는 싫어요 숫자를 볼수 없지만 관리자는 볼수 있습니다.
+                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>댓글 '더보기 버튼'/수정</div>
+                        댓글 더보기 버튼은 해당 댓글 작성자만 볼수 있습니다. 해당 댓글을 클릭시 해당 댓글인걸 인지하는 코드는 toggleMenu()함수에 댓글의 고유 id값을 값이 보넵니다.
+                        그리고 useState(&#123;&#125;) 훅스에 받은id를 이용해 prev =&gt; [id] = !prev[id] 라는 조건을 걸면 토글될때마다 참,거짓이 반복되며 해당 댓글 id가 객체배열에 저장됩니다. <br/>
+                        useState의 결과값이 참이면 미리 준비해 두었던 부모영향 아래의 position = absolute 인 박스를 보여지게 합니다.<br/>
+                        &nbsp;&nbsp; 위 로직으로 댓글수정버튼 클릭시 해당 댓글을 true값으로 만들고 Textarea가 보여지게 합니다. 동시에 서버에 요청을 보네 댓글의 정보를 받아옵니다.<br/>
+                        이후 filter()함수로 해당댓글 id와 같은 것만 남깁니다. 댓글은 데이터베이스에 배열로 담겨져 있기 때문에 남은댓글[0].text 를 state에 넣고 Textarea의 value값으로 지정해 줍니다.<br/>
+                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>댓글 수</div>
+                        커뮤니티 게시판 좋아요수는 게시글테이블에 있어서 바로 쓸수있지만 댓글은 다른 테이블이기에 게시글의 id와 연관지어야 합니다. 먼저 서버에 모든 댓글 get요청 후 받은 데이터의 map()함수를 이용해 리턴값을 게시글의 id로 해줍니다. <br/>
+                        게시글 id가 있는 배열이 만들어지면 <span style={{color:'#c92a2a'}}>빈 객체</span> 생성후 이 배열을 forEach로 객체접근방식인 객체[값] 을 이용해 '값'에 게시글 id인 배열 인덱스를 넣습니다.(댓글이 있는 게시글 id) <br/>
+                        &nbsp;&nbsp;조건을 걸어 만약 객체[게시글 id] 가 없으면 1을 넣고 있으면 += 1 을 해주면 게시글 id 가 5개 즉 댓글이 5개가 있으면 그 게시글id에 해당하는 댓글이 5개로 만들어집니다.<br/>
+                        1번 게시글에 댓글이 5개가 있고 2번에는 0개가 있으면 댓글 배열에는 ['1','1','1','1','1'] 가 나오고 이 배열에 forEach로를 돌리며 조건으로 빈 객체[value] 1이 있으면 + 1 없으면 1, 결국 1 : 5 가 나오게 됩니다.<br/>
+                        그리고 댓글 수 를 적용시키고 싶은 게시글배열에 "방금만든객체[불러온게시글.id] || 0 "을 해주면 게시글id의 값이 있으면 댓글수 도 함께 나오게 됩니다. 그 값을 state배열에 저장하고 jsx에서 map(value, index)함수 게시글을 사용하고 있는 리턴 값에 ex) ReplyTotal[index]
+                        의 값이 나옵니다. <br/>
+                        &nbsp;&nbsp;이 댓글 수 함수는 useEffect()의 영향을 받고 있으며 페이징네이션 함수가 실행되면 같이 실행되서 새로운 페이지에서도 새로 받아온 게시글 배열에 적용됩니다.
+                    </Typography>
+                </TabPanel>
+                <TabPanel value={2}style={{fontSize:'18px'}}>
+                    <Typography level="inherit"style={{padding:'2rem'}}>
+                    React 프로젝트를 통해 react에 대한 지식과 경험을 습득할 수 있어서 좋았습니다. <br/>
+                    애플리케이션이 앱처럼 구동되어 매우 만족했고 무엇보다 버그를 잡고 막힌 부분을 스스로 파악하며 문제해결능력을 키울 수 있었습니다.<br/>
+                    사용자의 입장에서 UI를 어떻게 잡을지 고민하며 다른 서비스플랫폼들을 참고하며 사용하기 쉽게 만들수 있었습니다.
+                    </Typography>
+                </TabPanel>
+                </Tabs>
+            </div>
+
             <div class="d-grid offer__wrapper container">
                 <div class="offer__content">
                     <span class="offer__subtitle">Portfolio</span>
@@ -421,148 +565,7 @@ const Ksj = () => {
                 </TabPanel>
                 </Tabs>
             </div>
-            {/* modu */}
-            <div class="d-grid1 offer__wrapper container">
-                <div class="offer__content">
-                    <span class="offer__subtitle">Portfolio</span>
-                    <p class="offer__duration">Web Aplication</p>
-                    <h3 class="offer__title">모두의<span style={{color: '#1c6470'}}> Portfolio</span></h3>
-                    <p class="offer__description">
-                        웹앱 포트폴리오 무료 서비스 플랫폼 입니다. 커뮤니티로 사용자들과 소통할 수 있습니다.
-                    </p>
-                    <table class="offer__price">
-                        <tr>
-                            <td class="offer__price-now">개발기간</td>
-                            <td class="offer__price-before">23.10 ~ 23.11(4주)</td>
-                        </tr>
-                        <tr>
-                            <td class="offer__price-now">개발인원</td>
-                            <td class="offer__price-before">1명</td>
-                        </tr>
-                        <tr>
-                            <td class="offer__price-now">언어</td>
-                            <td class="offer__price-before">JavaScript, HTML/CSS</td>
-                        </tr>
-                        <tr>
-                            <td class="offer__price-now">라이브러리</td>
-                            <td class="offer__price-before">React</td>
-                        </tr>
-                        <tr>
-                            <td class="offer__price-now">사용기술</td>
-                            <td class="offer__price-before">Redux, react-Router, MUI, Json-server, axios, uuid, firebase, heroku</td>
-                        </tr>
-                    </table>
-                </div>
-                <img src={modumain} alt="" class="offer__img"/>
-            </div>
-            <div class="destination__wrapper container swiper">
-                <div class="swiper-wrapper">
-                    <Swiper
-                    pagination={true}
-                    navigation={true}
-                    modules={[Pagination, Navigation]}
-                    >
-                        <SwiperSlide >
-                            <div class="destination__item swiper-slide">
-                                <img src={mo1} alt="" class="destination__img"/>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide >
-                            <div class="destination__item swiper-slide">
-                                <img src={mo2} alt="" class="destination__img"/>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide >
-                            <div class="destination__item swiper-slide">
-                                <img src={mo3} alt="" class="destination__img"/>
-                            </div>
-                        </SwiperSlide >
-                        <SwiperSlide>
-                            <div class="destination__item swiper-slide">
-                                <img src={mo4} alt="" class="destination__img"/>
-                            </div>
-                        </SwiperSlide>
-                    </Swiper>
-                </div>
-            </div>
-            <div class="section__header1">
-                <span class="offer__subtitle1">역할과 구현내용</span>   
-            </div>
-            <div class="wrapper container">
-                <Tabs
-                variant="outlined"
-                aria-label="Pricing plan"
-                defaultValue={0}
-                sx={{
-                    width: '100%',
-                    borderRadius: 'lg',
-                    boxShadow: 'sm',
-                    overflow: 'auto',
-                    margin:'auto'
-                }}
-                >
-                <TabList
-                    disableUnderline
-                    tabFlex={1}
-                    sx={{
-                    [`& .${tabClasses.root}`]: {
-                        fontSize: '20px',
-                        fontWeight: 'md',
-                        [`&[aria-selected="true"]`]: {
-                        color: '#757575',
-                        bgcolor: 'background.surface',
-                        },
-                        [`&.${tabClasses.focusVisible}`]: {
-                        outlineOffset: '-4px',
-                        },
-                    },
-                    }}
-                >
-                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                    주요역할
-                    </Tab>
-                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                    플랫폼 설명
-                    </Tab>
-                    <Tab disableIndicator variant="soft" sx={{ flexGrow: 1 }}>
-                    총평
-                    </Tab>  
-                </TabList>
-                <TabPanel value={0} style={{fontSize:'18px'}}>
-                    <Typography level="inherit" style={{padding:'2rem'}}>
-                        react를 이용하여 프로젝트를 준비하였습니다. 웹 제작 사이트를 참고하여 레이아웃을 잡았습니다. firebase로 회원가입/로그인/로그아웃과 사진을 업로드하고 사진의 URL을 다운로드하여 JsonServer db에 저장하였습니다.
-                    </Typography>
-                </TabPanel>
-                <TabPanel value={1} style={{fontSize:'18px'}}>
-                    <Typography level="inherit" style={{padding:'2rem',lineHeight:'1.6'}}>
-                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>좋아요</div>
-                        사용자는 회원가입을 통해서 커뮤니티 서비스를 이용할 수 있습니다. 게시글 좋아요 클릭시 해당 게시글 정보를 불러와 좋아요 컬럼의 기존에 좋아요를 누른 유저의 이메일과 해당 유저의 이메일이 스프레드배열로 저장되고 다시 서버로 put요청을 보넵니다. 좋아요 Number는 +1 이 됩니다. 중복은 불가합니다. 한번더 클릭시 반복요청 get,put작업으로 저장된 이메일이 사라지면서 해당 유저이메일이 삭제됩니다.
-                        로그인 하지 않은 유저는 리턴되며 하단 박스로 알림설정 됩니다. 댓글 좋아요/싫어요 기능도 같은 로직입니다. 유저는 싫어요 숫자를 볼수 없지만 관리자는 볼수 있습니다.
-                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>댓글 '더보기 버튼'/수정</div>
-                        댓글 더보기 버튼은 해당 댓글 작성자만 볼수 있습니다. 해당 댓글을 클릭시 해당 댓글인걸 인지하는 코드는 toggleMenu()함수에 댓글의 고유 id값을 값이 보넵니다.
-                        그리고 useState(&#123;&#125;) 훅스에 받은id를 이용해 prev =&gt; [id] = !prev[id] 라는 조건을 걸면 토글될때마다 참,거짓이 반복되며 해당 댓글 id가 객체배열에 저장됩니다. <br/>
-                        useState의 결과값이 참이면 미리 준비해 두었던 부모영향 아래의 position = absolute 인 박스를 보여지게 합니다.<br/>
-                        &nbsp;&nbsp; 위 로직으로 댓글수정버튼 클릭시 해당 댓글을 true값으로 만들고 Textarea가 보여지게 합니다. 동시에 서버에 요청을 보네 댓글의 정보를 받아옵니다.<br/>
-                        이후 filter()함수로 해당댓글 id와 같은 것만 남깁니다. 댓글은 데이터베이스에 배열로 담겨져 있기 때문에 남은댓글[0].text 를 state에 넣고 Textarea의 value값으로 지정해 줍니다.<br/>
-                        <div style={{color:'#757575',fontSize:'20px',textAlign:'center',padding:'1rem'}}>댓글 수</div>
-                        커뮤니티 게시판 좋아요수는 게시글테이블에 있어서 바로 쓸수있지만 댓글은 다른 테이블이기에 게시글의 id와 연관지어야 합니다. 먼저 서버에 모든 댓글 get요청 후 받은 데이터의 map()함수를 이용해 리턴값을 게시글의 id로 해줍니다. <br/>
-                        게시글 id가 있는 배열이 만들어지면 <span style={{color:'#c92a2a'}}>빈 객체</span> 생성후 이 배열을 forEach로 객체접근방식인 객체[값] 을 이용해 '값'에 게시글 id인 배열 인덱스를 넣습니다.(댓글이 있는 게시글 id) <br/>
-                        &nbsp;&nbsp;조건을 걸어 만약 객체[게시글 id] 가 없으면 1을 넣고 있으면 += 1 을 해주면 게시글 id 가 5개 즉 댓글이 5개가 있으면 그 게시글id에 해당하는 댓글이 5개로 만들어집니다.<br/>
-                        1번 게시글에 댓글이 5개가 있고 2번에는 0개가 있으면 댓글 배열에는 ['1','1','1','1','1'] 가 나오고 이 배열에 forEach로를 돌리며 조건으로 빈 객체[value] 1이 있으면 + 1 없으면 1, 결국 1 : 5 가 나오게 됩니다.<br/>
-                        그리고 댓글 수 를 적용시키고 싶은 게시글배열에 "방금만든객체[불러온게시글.id] || 0 "을 해주면 게시글id의 값이 있으면 댓글수 도 함께 나오게 됩니다. 그 값을 state배열에 저장하고 jsx에서 map(value, index)함수 게시글을 사용하고 있는 리턴 값에 ex) ReplyTotal[index]
-                        의 값이 나옵니다. <br/>
-                        &nbsp;&nbsp;이 댓글 수 함수는 useEffect()의 영향을 받고 있으며 페이징네이션 함수가 실행되면 같이 실행되서 새로운 페이지에서도 새로 받아온 게시글 배열에 적용됩니다.
-                    </Typography>
-                </TabPanel>
-                <TabPanel value={2}style={{fontSize:'18px'}}>
-                    <Typography level="inherit"style={{padding:'2rem'}}>
-                    React 프로젝트를 통해 react에 대한 지식과 경험을 습득할 수 있어서 좋았습니다. <br/>
-                    애플리케이션이 앱처럼 구동되어 매우 만족했고 무엇보다 버그를 잡고 막힌 부분을 스스로 파악하며 문제해결능력을 키울 수 있었습니다.<br/>
-                    사용자의 입장에서 UI를 어떻게 잡을지 고민하며 다른 서비스플랫폼들을 참고하며 사용하기 쉽게 만들수 있었습니다.
-                    </Typography>
-                </TabPanel>
-                </Tabs>
-            </div>
+            
         </section>
         <section className='section'>
             <div className='section__header'>

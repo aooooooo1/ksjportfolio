@@ -87,7 +87,7 @@ const NavBar = ({isScrolled}) => {
                             <Link to="/charge" onClick={()=>{closeMenu();}} className={`nav__link ${curPath ==='/charge' ? 'nav__link--active':''}`}>요금</Link>
                         </li>
                         <li className="nav__item">
-                            <Link to="/portfolio" onClick={closeMenu} className={`nav__link ${curPath.includes('/portfolio') ? 'nav__link--active':''}`}>Portfolio</Link>
+                            <Link to="/portfolio" onClick={closeMenu} className={`nav__link ${curPath.includes('/portfolio') ? 'nav__link--active':''}`}>소개</Link>
                         </li>
                         <li className="nav__item">
                             <Link to="/board" onClick={closeMenu} className={`nav__link ${curPath.includes('/board') ? 'nav__link--active':''}`}>{adminMode?'관리자 게시판':'커뮤니티'}</Link>
